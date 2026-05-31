@@ -9,7 +9,7 @@ public final class BuyerView {
 
     public void printBuyerProfile(String email) {
 
-        BuyerResponse buyerProfile = controller.searchUser(email);
+        BuyerResponse buyerProfile = controller.findByEmail(email);
 
         if (buyerProfile != null) {
             System.out.println("Name: " + buyerProfile.getName());

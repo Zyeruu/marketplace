@@ -11,7 +11,7 @@ public final class CartView {
 
     public void printBuyerCart(String email) {
 
-        CartResponse cart = controller.searchUser(email);
+        CartResponse cart = controller.findByEmail(email);
 
         if (cart != null)
             if (!cart.getCartItems().isEmpty()) {

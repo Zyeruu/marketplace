@@ -9,9 +9,9 @@ public final class CartController {
     private Buyer buyer;
     private CartRepository repository;
 
-    public CartResponse searchUser(String email) {
+    public CartResponse findByEmail(String email) {
 
-        CartResponse cartResponse = repository.emailExists(email);
+        CartResponse cartResponse = repository.findByEmail(email);
 
         if (cartResponse == null)
             System.out.println("User not found!");

@@ -10,7 +10,7 @@ import java.util.List;
 
 public final class CartRepository {
 
-    public CartResponse emailExists(String email) {
+    public CartResponse findByEmail(String email) {
 
         List<Buyer> buyerList = DataBase.getBuyerList();
 

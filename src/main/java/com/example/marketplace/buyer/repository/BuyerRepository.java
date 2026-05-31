@@ -8,8 +8,18 @@ import java.util.List;
 
 public final class BuyerRepository {
 
+    public boolean existsByEmail(String email) {
 
-    public BuyerResponse emailExists(String email) {
+        List<Buyer> buyerList = DataBase.getBuyerList();
+
+        if (!buyerList.isEmpty())
+            for (Buyer buyer : buyerList)
+                if (buyer.getEmail().equals(email))
+                    return true;
+        return false;
+    }
+
+    public BuyerResponse findByEmail(String email) {
 
         List<Buyer> buyerList = DataBase.getBuyerList();
 

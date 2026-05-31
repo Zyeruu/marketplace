@@ -7,9 +7,9 @@ public final class BuyerController {
 
     private BuyerRepository repository;
 
-    public BuyerResponse searchUser(String email) {
+    public BuyerResponse findByEmail(String email) {
 
-        BuyerResponse buyerResponse = repository.emailExists(email);
+        BuyerResponse buyerResponse = repository.findByEmail(email);
 
         if (buyerResponse == null) {
             System.out.println("Profile not found!");
