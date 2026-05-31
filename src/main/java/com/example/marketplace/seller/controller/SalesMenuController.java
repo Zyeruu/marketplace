@@ -9,14 +9,25 @@ public final class SalesMenuController {
 
     private SalesMenuRepository repository;
 
-    public List<TaxReceipt> searchUser(String email) {
+    public List<TaxReceipt> findByEmailAndCnpj(String email, String cnpj) {
 
-        List<TaxReceipt> taxReceiptList = repository.emailExists(email);
+        try {
+            return repository.findByEmailAndCnpj(email, cnpj);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
 
-        if (taxReceiptList == null)
-            System.out.println("Menu not found!");
+    public TaxReceipt findByEmailAndCnpjAndOrderId(String email, String cnpj, int orderId) {
 
-        return taxReceiptList;
-
+        try {
+            return repository.findByEmailAndCnpjAndOrderId(email, cnpj, orderId);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 }

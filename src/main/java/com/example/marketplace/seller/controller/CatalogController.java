@@ -7,14 +7,14 @@ public final class CatalogController {
 
     CatalogRepository repository;
 
-    public CatalogResponse searchCnpj(String storeCnpj) {
+    public CatalogResponse findByCnpj(String cnpj) {
 
-        CatalogResponse catalogResponse = repository.cnpjExists(storeCnpj);
-
-        if (catalogResponse == null) {
-            System.out.println("Catalog not found!");
+        try {
+            return repository.findByCnpj(cnpj);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
             return null;
         }
-        return catalogResponse;
     }
 }

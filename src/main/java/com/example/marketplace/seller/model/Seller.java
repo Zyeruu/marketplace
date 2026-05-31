@@ -7,6 +7,13 @@ public final class Seller {
     private String password;
     private Store store;
 
+    public Seller(String name, String email, String password, Store store) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.store = store;
+    }
+
     // Getters
     public String getName() {
         return name;

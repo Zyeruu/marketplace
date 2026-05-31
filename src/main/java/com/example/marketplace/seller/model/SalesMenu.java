@@ -25,7 +25,6 @@ public final class SalesMenu {
     }
 
     // Setters
-
     public void setTotalItemsSold(int totalItemsSold) {
         this.totalItemsSold = totalItemsSold;
     }

@@ -9,23 +9,63 @@ import java.util.List;
 
 public final class SalesMenuRepository {
 
-    public List<TaxReceipt> emailExists(String email) {
+    public boolean existsByEmail (String email) {
 
         List<Seller> sellerList = DataBase.getSellerList();
 
         if (!sellerList.isEmpty())
             for (Seller seller : sellerList)
-                if (seller.getEmail().equals(email)) {
+                if (seller.getEmail().equals(email))
+                    return true;
+        return false;
+    }
 
-                    List<TaxReceipt> taxReceiptListPointer = seller.getStore().getSalesMenu().getTaxReceiptsList();
-                    List<TaxReceipt> taxReceiptListCopy = new ArrayList<>();
+    public Seller findByEmail(String email) {
 
-                    // Copies the items from taxReceiptListPointer to taxReceiptListCopy
-                    for (TaxReceipt taxReceipt : taxReceiptListPointer)
-                        taxReceiptListCopy.add(new TaxReceipt(taxReceipt));
+        List<Seller> sellerList = DataBase.getSellerList();
 
-                    return taxReceiptListCopy;
-                }
+        for (Seller seller : sellerList)
+            if (seller.getEmail().equals(email))
+                return seller;
         return null;
+    }
+
+    public List<TaxReceipt> findByEmailAndCnpj(String email, String cnpj) {
+
+        if (!existsByEmail(email))
+            throw new IllegalArgumentException("The registered email address could not be found!");
+
+        Seller seller = findByEmail(email);
+
+        if (!seller.getStore().getCnpj().equals(cnpj))
+            throw new IllegalArgumentException("CNPJ does not match the registered email address!");
+
+        List<TaxReceipt> taxReceiptListPointer = seller.getStore().getSalesMenu().getTaxReceiptsList();
+        List<TaxReceipt> taxReceiptListCopy = new ArrayList<>();
+
+        // Copies the items from taxReceiptListPointer to taxReceiptListCopy
+        for (TaxReceipt taxReceipt : taxReceiptListPointer)
+            taxReceiptListCopy.add(new TaxReceipt(taxReceipt));
+
+        return taxReceiptListCopy;
+    }
+
+    public TaxReceipt findByEmailAndCnpjAndOrderId(String email, String cnpj, int orderId) {
+
+        if (!existsByEmail(email))
+            throw new IllegalArgumentException("The registered email address could not be found!");
+
+        Seller seller = findByEmail(email);
+
+        if (!seller.getStore().getCnpj().equals(cnpj))
+            throw new IllegalArgumentException("CNPJ does not match the registered email address!");
+
+        List<TaxReceipt> taxReceiptListPointer = seller.getStore().getSalesMenu().getTaxReceiptsList();
+
+        for (TaxReceipt taxReceipt : taxReceiptListPointer)
+            if (taxReceipt.getOrderId() == orderId)
+                return new TaxReceipt(taxReceipt);
+
+        throw new IllegalArgumentException("Order ID " + orderId + " not found!");
     }
 }

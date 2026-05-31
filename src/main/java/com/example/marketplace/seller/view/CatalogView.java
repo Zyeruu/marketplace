@@ -9,9 +9,9 @@ public final class CatalogView {
 
     CatalogController controller;
 
-    public void printCatalog(String storeCnpj) {
+    public void printCatalog(String cnpj) {
 
-        CatalogResponse catalog = controller.searchCnpj(storeCnpj);
+        CatalogResponse catalog = controller.findByCnpj(cnpj);
 
         if (catalog != null) {
             if (!catalog.getProductList().isEmpty()) {
