@@ -1,6 +1,7 @@
 package main.java.com.example.marketplace.seller.repository;
 
 import main.java.com.example.marketplace.database.DataBase;
+import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.payment.model.TaxReceipt;
 import main.java.com.example.marketplace.seller.model.Seller;
 
@@ -9,36 +10,15 @@ import java.util.List;
 
 public final class SalesMenuRepository {
 
-    public boolean existsByEmail (String email) {
-
-        List<Seller> sellerList = DataBase.getSellerList();
-
-        if (!sellerList.isEmpty())
-            for (Seller seller : sellerList)
-                if (seller.getEmail().equals(email))
-                    return true;
-        return false;
-    }
-
-    public Seller findByEmail(String email) {
-
-        List<Seller> sellerList = DataBase.getSellerList();
-
-        for (Seller seller : sellerList)
-            if (seller.getEmail().equals(email))
-                return seller;
-        return null;
-    }
-
     public List<TaxReceipt> findByEmailAndCnpj(String email, String cnpj) {
 
-        if (!existsByEmail(email))
-            throw new IllegalArgumentException("The registered email address could not be found!");
+        if (!DataBase.existsSellerByEmail(email))
+            throw new NotFoundException("Logged-in user does not exist!");
 
-        Seller seller = findByEmail(email);
+        Seller seller = DataBase.findSellerByEmail(email);
 
         if (!seller.getStore().getCnpj().equals(cnpj))
-            throw new IllegalArgumentException("CNPJ does not match the registered email address!");
+            throw new NotFoundException("CNPJ does not match the registered email address!");
 
         List<TaxReceipt> taxReceiptListPointer = seller.getStore().getSalesMenu().getTaxReceiptsList();
         List<TaxReceipt> taxReceiptListCopy = new ArrayList<>();
@@ -52,13 +32,13 @@ public final class SalesMenuRepository {
 
     public TaxReceipt findByEmailAndCnpjAndOrderId(String email, String cnpj, int orderId) {
 
-        if (!existsByEmail(email))
-            throw new IllegalArgumentException("The registered email address could not be found!");
+        if (!DataBase.existsSellerByEmail(email))
+            throw new NotFoundException("Logged-in user does not exist!");
 
-        Seller seller = findByEmail(email);
+        Seller seller = DataBase.findSellerByEmail(email);
 
         if (!seller.getStore().getCnpj().equals(cnpj))
-            throw new IllegalArgumentException("CNPJ does not match the registered email address!");
+            throw new NotFoundException("CNPJ does not match the registered email address!");
 
         List<TaxReceipt> taxReceiptListPointer = seller.getStore().getSalesMenu().getTaxReceiptsList();
 
@@ -66,6 +46,6 @@ public final class SalesMenuRepository {
             if (taxReceipt.getOrderId() == orderId)
                 return new TaxReceipt(taxReceipt);
 
-        throw new IllegalArgumentException("Order ID " + orderId + " not found!");
+        throw new NotFoundException("Order \"" + orderId + "\" not found!");
     }
 }

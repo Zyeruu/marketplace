@@ -2,19 +2,22 @@ package main.java.com.example.marketplace.buyer.controller;
 
 import main.java.com.example.marketplace.buyer.dto.BuyerResponse;
 import main.java.com.example.marketplace.buyer.repository.BuyerRepository;
+import main.java.com.example.marketplace.buyer.view.BuyerView;
+import main.java.com.example.marketplace.exceptions.NotFoundException;
 
 public final class BuyerController {
 
     private BuyerRepository repository;
+    private BuyerView view;
 
-    public BuyerResponse findByEmail(String email) {
+    public void printBuyer(String email) {
 
-        BuyerResponse buyerResponse = repository.findByEmail(email);
-
-        if (buyerResponse == null) {
-            System.out.println("Profile not found!");
-            return null;
+        try {
+            BuyerResponse buyerResponse = repository.findByEmail(email);
+            view.printBuyerProfile(buyerResponse);
         }
-        return buyerResponse;
+        catch (NotFoundException e) {
+            view.printException(e);
+        }
     }
 }

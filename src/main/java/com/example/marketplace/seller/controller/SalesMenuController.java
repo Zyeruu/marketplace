@@ -1,33 +1,40 @@
 package main.java.com.example.marketplace.seller.controller;
 
+import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.payment.model.TaxReceipt;
 import main.java.com.example.marketplace.seller.repository.SalesMenuRepository;
+import main.java.com.example.marketplace.seller.view.SalesMenuView;
 
 import java.util.List;
 
 public final class SalesMenuController {
 
     private SalesMenuRepository repository;
+    private SalesMenuView view;
 
-    public List<TaxReceipt> findByEmailAndCnpj(String email, String cnpj) {
+    public void printTaxReceiptList(String email, String cnpj) {
 
         try {
-            return repository.findByEmailAndCnpj(email, cnpj);
+            List<TaxReceipt> taxReceiptList = repository.findByEmailAndCnpj(email, cnpj);
+
+            if (taxReceiptList.isEmpty())
+                view.printMessage("No sales history.");
+
+            view.printSalesMenu(taxReceiptList);
         }
-        catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return null;
+        catch (NotFoundException e) {
+            view.printException(e);
         }
     }
 
-    public TaxReceipt findByEmailAndCnpjAndOrderId(String email, String cnpj, int orderId) {
+    public void printTaxReceipt(String email, String cnpj, int orderId) {
 
         try {
-            return repository.findByEmailAndCnpjAndOrderId(email, cnpj, orderId);
+            TaxReceipt taxReceipt = repository.findByEmailAndCnpjAndOrderId(email, cnpj, orderId);
+            view.printOrder(taxReceipt);
         }
-        catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return null;
+        catch (NotFoundException e) {
+            view.printException(e);
         }
     }
 }

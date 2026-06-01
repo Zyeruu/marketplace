@@ -1,20 +1,27 @@
 package main.java.com.example.marketplace.seller.controller;
 
+import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.seller.dto.CatalogResponse;
 import main.java.com.example.marketplace.seller.repository.CatalogRepository;
+import main.java.com.example.marketplace.seller.view.CatalogView;
 
 public final class CatalogController {
 
     CatalogRepository repository;
+    CatalogView view;
 
-    public CatalogResponse findByCnpj(String cnpj) {
+    public void findByCnpj(String cnpj) {
 
         try {
-            return repository.findByCnpj(cnpj);
+            CatalogResponse catalogResponse = repository.findByCnpj(cnpj);
+
+            if (catalogResponse.getProductList().isEmpty())
+                view.printMessage("Catalog is empty!");
+
+            view.printCatalog(catalogResponse);
         }
-        catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return null;
+        catch (NotFoundException e) {
+            view.printException(e);
         }
     }
 }

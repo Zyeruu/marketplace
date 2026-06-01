@@ -3,35 +3,19 @@ package main.java.com.example.marketplace.buyer.repository;
 import main.java.com.example.marketplace.buyer.dto.BuyerResponse;
 import main.java.com.example.marketplace.buyer.model.Buyer;
 import main.java.com.example.marketplace.database.DataBase;
-
-import java.util.List;
+import main.java.com.example.marketplace.exceptions.NotFoundException;
 
 public final class BuyerRepository {
 
-    public boolean existsByEmail(String email) {
-
-        List<Buyer> buyerList = DataBase.getBuyerList();
-
-        if (!buyerList.isEmpty())
-            for (Buyer buyer : buyerList)
-                if (buyer.getEmail().equals(email))
-                    return true;
-        return false;
-    }
-
     public BuyerResponse findByEmail(String email) {
 
-        List<Buyer> buyerList = DataBase.getBuyerList();
+        if (!DataBase.existsBuyerByEmail(email))
+            throw new NotFoundException("Logged-in user does not exist!");
 
-        if (!buyerList.isEmpty())
-            for (Buyer buyer : buyerList)
-                if (buyer.getEmail().equals(email)) {
+        Buyer buyer = DataBase.findBuyerByEmail(email);
+        String name = buyer.getName();
+        int passwordSize = buyer.getPassword().length();
 
-                    String name = buyer.getName();
-                    int passwordSize = buyer.getPassword().length();
-
-                    return new BuyerResponse(name, email, passwordSize);
-                }
-        return null;
+        return new BuyerResponse(name, email, passwordSize);
     }
 }
