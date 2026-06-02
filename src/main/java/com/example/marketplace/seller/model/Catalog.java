@@ -10,6 +10,13 @@ public final class Catalog {
     private int totalFood;
     private int totalMisc;
 
+    public Catalog() {
+        this.productList = new ArrayList<>();
+        this.totalItems = 0;
+        this.totalFood = 0;
+        this.totalMisc = 0;
+    }
+
     // Getters
     public List<Product> getProductList() {
         return productList;

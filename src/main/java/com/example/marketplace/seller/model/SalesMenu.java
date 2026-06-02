@@ -7,9 +7,15 @@ import java.util.List;
 
 public final class SalesMenu {
 
-    private List<TaxReceipt> taxReceiptsList = new ArrayList<>();
+    private List<TaxReceipt> taxReceiptsList;
     private int totalSales;
     private int totalItemsSold;
+
+    public SalesMenu() {
+        this.taxReceiptsList = new ArrayList<>();
+        this.totalSales = 0;
+        this.totalItemsSold = 0;
+    }
 
     // Getters
     public List<TaxReceipt> getTaxReceiptsList() {

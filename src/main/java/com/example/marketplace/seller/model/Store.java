@@ -4,16 +4,14 @@ public final class Store {
 
     private String name;
     private String cnpj;
-    private Address address;
     private Catalog catalog;
     private SalesMenu salesMenu;
 
-    public Store(String name, String cnpj, Address address, Catalog catalog, SalesMenu salesMenu) {
+    public Store(String name, String cnpj) {
         this.name = name;
         this.cnpj = cnpj;
-        this.address = address;
-        this.catalog = catalog;
-        this.salesMenu = salesMenu;
+        this.catalog = new Catalog();
+        this.salesMenu = new SalesMenu();
     }
 
     // Getters

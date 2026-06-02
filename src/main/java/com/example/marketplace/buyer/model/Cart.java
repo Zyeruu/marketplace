@@ -10,6 +10,13 @@ public final class Cart {
     private int totalFood;
     private int totalMisc;
 
+    public Cart() {
+        this.cartItemsList = new ArrayList<>();
+        this.totalItems = 0;
+        this.totalFood = 0;
+        this.totalMisc = 0;
+    }
+
     // Getters
     public List<CartItem> getCartItemsList() {
         return cartItemsList;

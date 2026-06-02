@@ -12,6 +12,8 @@ public final class Buyer {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.cart = new Cart();
+        this.ordersMenu = new OrdersMenu();
     }
 
     // Getters

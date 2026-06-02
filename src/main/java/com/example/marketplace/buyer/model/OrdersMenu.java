@@ -9,4 +9,9 @@ public final class OrdersMenu {
 
     private List<TaxReceipt> buyerTaxReceipts = new ArrayList<>();
     private int totalOrders;
+
+    public OrdersMenu() {
+        this.buyerTaxReceipts = new ArrayList<>();
+        this.totalOrders = 0;
+    }
 }
