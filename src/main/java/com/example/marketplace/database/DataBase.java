@@ -33,6 +33,18 @@ public final class DataBase {
         return null;
     }
 
+    public static boolean findBuyerByEmailAndPassword(String email, String password) {
+
+        for (Buyer buyer : buyerList)
+            if (buyer.getEmail().equals(email))
+                return buyer.getPassword().equals(password);
+        return false;
+    }
+
+    public static void saveBuyer(Buyer buyer) {
+        buyerList.add(buyer);
+    }
+
     public static boolean isSellerListEmpty() {
 
         return sellerList.isEmpty();
@@ -68,6 +80,23 @@ public final class DataBase {
             if (seller.getStore().getCnpj().equals(cnpj))
                 return seller;
         return null;
+    }
+
+    public static boolean findSellerByEmailAndPassword(String email, String password) {
+
+        for (Seller seller : sellerList)
+            if (seller.getEmail().equals(email))
+                return seller.getPassword().equals(password);
+        return false;
+    }
+
+    public static void saveSeller(Seller seller) {
+        sellerList.add(seller);
+    }
+
+    public static int findNumberOfSellers() {
+
+        return sellerList.size();
     }
 
     // Getters
