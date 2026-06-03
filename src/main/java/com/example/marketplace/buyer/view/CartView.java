@@ -1,14 +1,19 @@
 package main.java.com.example.marketplace.buyer.view;
 
 import main.java.com.example.marketplace.buyer.controller.CartController;
+import main.java.com.example.marketplace.buyer.dto.CartRequest;
 import main.java.com.example.marketplace.buyer.dto.CartResponse;
 import main.java.com.example.marketplace.buyer.model.CartItem;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.ItemType;
 
+import java.util.Scanner;
+
 public final class CartView {
 
     private CartController controller;
+
+    Scanner scanner = new Scanner(System.in);
 
     public void printBuyerCart(CartResponse cart) {
 
@@ -17,6 +22,8 @@ public final class CartView {
         for (CartItem cartItem : cart.getCartItems()) {
             if (cartItem.getType() == ItemType.FOOD) {
                 System.out.println("Name: " + cartItem.getName());
+                System.out.println("ID: " + cartItem.getId());
+                System.out.println("Seller: " + cartItem.getStoreName());
                 System.out.println("Type: " + cartItem.getType());
                 System.out.println("Quantity: " + cartItem.getQuantity());
                 System.out.printf("Unit Price: R$%.2f\n", cartItem.getUnitPrice());
@@ -27,6 +34,8 @@ public final class CartView {
         for (CartItem cartItem : cart.getCartItems()) {
             if (cartItem.getType() == ItemType.MISCELLANEOUS) {
                 System.out.println("Name: " + cartItem.getName());
+                System.out.println("ID: " + cartItem.getId());
+                System.out.println("Seller: " + cartItem.getStoreName());
                 System.out.println("Type: " + cartItem.getType());
                 System.out.println("Quantity: " + cartItem.getQuantity());
                 System.out.printf("Unit Price: R$%.2f\n", cartItem.getUnitPrice());
@@ -41,8 +50,15 @@ public final class CartView {
         System.out.println("\nTotal Items: " + cart.getTotalItems());
     }
 
-    public void printException(NotFoundException e) {
-        System.out.println(e.getMessage());
+    public CartRequest getItemData() {
+
+        System.out.print("Enter the item ID:\n>> ");
+        String itemId = scanner.nextLine();
+
+        System.out.print("Enter the quantity:\n>> ");
+        int quantity = scanner.nextInt();
+
+        return new CartRequest(itemId, quantity);
     }
 
     public void printMessage(String message) {

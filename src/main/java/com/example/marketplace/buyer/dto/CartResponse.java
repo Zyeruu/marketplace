@@ -4,7 +4,7 @@ import main.java.com.example.marketplace.buyer.model.CartItem;
 
 import java.util.List;
 
-public class CartResponse {
+public final class CartResponse {
 
     private List<CartItem> cartItems;
     private int totalItems;

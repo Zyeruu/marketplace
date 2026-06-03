@@ -18,7 +18,7 @@ public final class AuthRepository {
 
     public void login(AuthRequest user) {
 
-        if (!DataBase.findBuyerByEmailAndPassword(user.getEmail(), user.getPassword()))
+        if (!DataBase.existsBuyerByEmailAndPassword(user.getEmail(), user.getPassword()))
             throw new NotFoundException("Invalid email or password.");
     }
 }

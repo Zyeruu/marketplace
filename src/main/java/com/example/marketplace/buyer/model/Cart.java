@@ -33,4 +33,17 @@ public final class Cart {
     public int getTotalMisc() {
         return totalMisc;
     }
+
+    // Setters
+    public void setTotalItems() {
+        this.totalItems = this.totalFood + this.totalMisc;
+    }
+
+    public void setTotalFood(int totalFood) {
+        this.totalFood += totalFood;
+    }
+
+    public void setTotalMisc(int totalMisc) {
+        this.totalMisc = totalMisc;
+    }
 }
