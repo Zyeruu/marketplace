@@ -1,12 +1,12 @@
-package main.java.com.example.marketplace.buyer.dto;
+package main.java.com.example.marketplace.buyer.account.dto;
 
-public class BuyerResponse {
+public final class AccountResponse {
 
     private String name;
     private String email;
     private int passwordSize;
 
-    public BuyerResponse(String name, String email, int password) {
+    public AccountResponse(String name, String email, int password) {
         this.name = name;
         this.email = email;
         this.passwordSize = password;
