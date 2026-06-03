@@ -4,13 +4,17 @@ import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.payment.model.TaxReceipt;
 import main.java.com.example.marketplace.seller.model.Seller;
+import main.java.com.example.marketplace.shared.session.SellerSession;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class SalesMenuRepository {
 
-    public List<TaxReceipt> findByEmailAndCnpj(String email, String cnpj) {
+    String email = SellerSession.getEmail();
+    String cnpj = SellerSession.getCnpj();
+
+    public List<TaxReceipt> findByEmailAndCnpj() {
 
         if (!DataBase.existsSellerByEmail(email))
             throw new NotFoundException("Logged-in user does not exist!");
@@ -30,7 +34,7 @@ public final class SalesMenuRepository {
         return taxReceiptListCopy;
     }
 
-    public TaxReceipt findByEmailAndCnpjAndOrderId(String email, String cnpj, int orderId) {
+    public TaxReceipt findByEmailAndCnpjAndOrderId(String orderId) {
 
         if (!DataBase.existsSellerByEmail(email))
             throw new NotFoundException("Logged-in user does not exist!");
@@ -43,9 +47,9 @@ public final class SalesMenuRepository {
         List<TaxReceipt> taxReceiptListPointer = seller.getStore().getSalesMenu().getTaxReceiptsList();
 
         for (TaxReceipt taxReceipt : taxReceiptListPointer)
-            if (taxReceipt.getOrderId() == orderId)
+            if (taxReceipt.getOrderId().equals(orderId))
                 return new TaxReceipt(taxReceipt);
 
-        throw new NotFoundException("Order \"" + orderId + "\" not found!");
+        throw new NotFoundException("Order with ID \"" + orderId + "\" was not found!");
     }
 }

@@ -5,13 +5,16 @@ import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.seller.dto.CatalogResponse;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.seller.model.Seller;
+import main.java.com.example.marketplace.shared.session.SellerSession;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class CatalogRepository {
 
-    public CatalogResponse findByCnpj(String cnpj) {
+    public CatalogResponse findByCnpj() {
+
+        String cnpj = SellerSession.getCnpj();
 
         if (!DataBase.existsByCnpj(cnpj))
             throw new NotFoundException("Catalog not found.");

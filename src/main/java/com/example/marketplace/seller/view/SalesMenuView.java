@@ -7,10 +7,19 @@ import main.java.com.example.marketplace.seller.controller.SalesMenuController;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Scanner;
 
 public final class SalesMenuView {
 
     private SalesMenuController controller;
+
+    Scanner scanner = new Scanner(System.in);
+
+    public String getOrderId() {
+
+        System.out.println("Enter the order ID: ");
+        return scanner.nextLine();
+    }
 
     public void printSalesMenu(List<TaxReceipt> taxReceiptList) {
 

@@ -10,15 +10,15 @@ public final class CatalogController {
     CatalogRepository repository;
     CatalogView view;
 
-    public void findByCnpj(String cnpj) {
+    public void findByCnpj() {
 
         try {
-            CatalogResponse catalogResponse = repository.findByCnpj(cnpj);
+            CatalogResponse catalogResponse = repository.findByCnpj();
 
-            if (catalogResponse.getProductList().isEmpty())
+            if (!catalogResponse.getProductList().isEmpty())
+                view.printCatalog(catalogResponse);
+            else
                 view.printMessage("Catalog is empty!");
-
-            view.printCatalog(catalogResponse);
         }
         catch (NotFoundException e) {
             view.printException(e);

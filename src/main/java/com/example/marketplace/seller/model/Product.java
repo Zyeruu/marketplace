@@ -6,6 +6,7 @@ public final class Product {
 
     private String name;
     private String id;
+    private String storeName;
     private ItemType type;
     private String brand;
     private float unitPrice;
@@ -14,9 +15,10 @@ public final class Product {
     private int warranty;
 
     // Food type
-    public Product(String name, String id, float unitPrice, float weight, int stock) {
+    public Product(String name, String id, String storeName, float unitPrice, float weight, int stock) {
         this.name = name;
         this.id = id;
+        this.storeName = storeName;
         this.type = ItemType.FOOD;
         this.brand = null;
         this.unitPrice = unitPrice;
@@ -26,9 +28,10 @@ public final class Product {
     }
 
     // Miscellaneous type
-    public Product(String name, String id, String brand, float unitPrice, float weight, int stock, int warranty) {
+    public Product(String name, String id, String storeName, String brand, float unitPrice, float weight, int stock, int warranty) {
         this.name = name;
         this.id = id;
+        this.storeName = storeName;
         this.type = ItemType.MISCELLANEOUS;
         this.brand = brand;
         this.unitPrice = unitPrice;
@@ -41,6 +44,7 @@ public final class Product {
     public Product(Product product) {
         this.name = product.name;
         this.id = product.id;
+        this.storeName = product.storeName;
         this.type = product.type;
         this.brand = product.brand;
         this.unitPrice = product.unitPrice;
@@ -56,6 +60,10 @@ public final class Product {
 
     public String getId() {
         return id;
+    }
+
+    public String getStoreName() {
+        return storeName;
     }
 
     public ItemType getType() {

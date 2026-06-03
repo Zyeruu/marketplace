@@ -18,6 +18,7 @@ public final class CatalogView {
             if (p.getType() == ItemType.FOOD) {
                 System.out.println("Name: " + p.getName());
                 System.out.println("ID: " + p.getId());
+                System.out.println("Seller: " + p.getStoreName());
                 System.out.println("Type: " + p.getType().name());
                 System.out.printf("Unit Price: R$%.2f\n", p.getUnitPrice());
                 System.out.printf("Weight: %.1fKg\n", p.getWeight());
@@ -28,6 +29,7 @@ public final class CatalogView {
             if (p.getType() == ItemType.MISCELLANEOUS) {
                 System.out.println("Name: " + p.getName());
                 System.out.println("ID: " + p.getId());
+                System.out.println("Seller: " + p.getStoreName());
                 System.out.println("Type: " + p.getType().name());
                 System.out.println("Brand: " + p.getBrand());
                 System.out.printf("Unit Price: R$%.2f\n", p.getUnitPrice());

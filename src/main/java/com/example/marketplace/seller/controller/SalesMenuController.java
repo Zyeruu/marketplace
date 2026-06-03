@@ -12,10 +12,10 @@ public final class SalesMenuController {
     private SalesMenuRepository repository;
     private SalesMenuView view;
 
-    public void printTaxReceiptList(String email, String cnpj) {
+    public void printTaxReceiptList() {
 
         try {
-            List<TaxReceipt> taxReceiptList = repository.findByEmailAndCnpj(email, cnpj);
+            List<TaxReceipt> taxReceiptList = repository.findByEmailAndCnpj();
 
             if (taxReceiptList.isEmpty())
                 view.printMessage("No sales history.");
@@ -27,10 +27,12 @@ public final class SalesMenuController {
         }
     }
 
-    public void printTaxReceipt(String email, String cnpj, int orderId) {
+    public void printTaxReceipt() {
+
+        String orderId = view.getOrderId();
 
         try {
-            TaxReceipt taxReceipt = repository.findByEmailAndCnpjAndOrderId(email, cnpj, orderId);
+            TaxReceipt taxReceipt = repository.findByEmailAndCnpjAndOrderId(orderId);
             view.printOrder(taxReceipt);
         }
         catch (NotFoundException e) {
