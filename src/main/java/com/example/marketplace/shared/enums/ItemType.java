@@ -1,4 +1,4 @@
-package main.java.com.example.marketplace.shared;
+package main.java.com.example.marketplace.shared.enums;
 
 public enum ItemType {
     FOOD("Food"),

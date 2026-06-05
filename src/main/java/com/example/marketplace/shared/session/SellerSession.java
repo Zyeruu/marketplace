@@ -4,6 +4,7 @@ public final class SellerSession {
 
     private static String email;
     private static String cnpj;
+    private static String storeName;
     private static boolean logged;
 
     public static void login(String email) {
@@ -24,6 +25,10 @@ public final class SellerSession {
 
     public static String getEmail() {
         return email;
+    }
+
+    public static String getStoreName() {
+        return storeName;
     }
 
     public static boolean isLogged() {

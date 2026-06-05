@@ -1,4 +1,4 @@
-package main.java.com.example.marketplace.shared;
+package main.java.com.example.marketplace.shared.utils;
 
 import java.util.regex.Pattern;
 
