@@ -91,7 +91,11 @@ public final class Product {
     }
 
     // Setters
-    public void setStock(int stock) {
+    public void updateStock(int stock) {
         this.stock += stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 }

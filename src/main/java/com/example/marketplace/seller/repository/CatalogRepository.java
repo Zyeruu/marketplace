@@ -37,7 +37,7 @@ public final class CatalogRepository {
         return new CatalogResponse(productListCopy, totalItems, totalFood, totalMisc);
     }
 
-    public void addProduct(Product product) {
+    public void saveProduct(Product product) {
 
         String cnpj = SellerSession.getCnpj();
         String productName = product.getName();
@@ -48,21 +48,23 @@ public final class CatalogRepository {
         DataBase.addToCatalog(product, cnpj);
     }
 
-    public void increaseStock(Product product) {
+    public void removeProduct(String itemId) {
 
         String cnpj = SellerSession.getCnpj();
-
-        DataBase.addToCatalog(product, cnpj);
-    }
-
-    public void removeProduct(CatalogRequest catalogRequest) {
-
-        String cnpj = SellerSession.getCnpj();
-        String itemId = catalogRequest.getId();
 
         if (!DataBase.existsCatalogItemByIdAndCnpj(itemId, cnpj))
             throw new NotFoundException("Item with ID \"" + itemId + "\" was not found.");
 
-        DataBase.removeFromCatalog(catalogRequest, cnpj);
+        DataBase.removeCatalogItem(itemId, cnpj);
+    }
+
+    public void updateProductStock(CatalogRequest catalogRequest) {
+
+        String cnpj = SellerSession.getCnpj();
+
+        if (!DataBase.existsCatalogItemByIdAndCnpj(catalogRequest.getId(), cnpj))
+            throw new NotFoundException("Item with ID \"" + catalogRequest.getId() + "\" was not found.");
+
+        DataBase.updateStock(catalogRequest, cnpj);
     }
 }

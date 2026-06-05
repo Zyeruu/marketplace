@@ -158,43 +158,30 @@ public final class DataBase {
         return false;
     }
 
-    public static Product findCatalogItemByIdAndCnpj(String itemId, String cnpj) {
-
-        Seller seller = findSellerByCnpj(cnpj);
-
-        for (Product product : seller.getStore().getCatalog().getProductList())
-            if (product.getId().equals(itemId))
-                return product;
-        return null;
-    }
-
     public static void addToCatalog(Product product, String cnpj) {
 
         Seller seller = findSellerByCnpj(cnpj);
 
-        for (Product p : seller.getStore().getCatalog().getProductList())
-            if (p.getId().equals(product.getId())) {
-                p.setStock(product.getStock());
-                return;
-            }
         seller.getStore().getCatalog().getProductList().add(product);
         seller.getStore().getCatalog().updateCatalog();
     }
 
-    public static void removeFromCatalog(CatalogRequest catalogRequest, String cnpj) {
+    public static void removeCatalogItem(String itemId, String cnpj) {
 
         Seller seller = findSellerByCnpj(cnpj);
-        String itemId = catalogRequest.getId();
-        int quant = catalogRequest.getQuantity();
 
         for (Product product : seller.getStore().getCatalog().getProductList())
             if (product.getId().equals(itemId))
-                if (quant < product.getStock())
-                    product.setStock(product.getStock() - quant);
-                else {
-                    seller.getStore().getCatalog().getProductList().remove(product);
-                    seller.getStore().getCatalog().updateCatalog();
-                }
+                seller.getStore().getCatalog().getProductList().remove(product);
+    }
+
+    public static void updateStock(CatalogRequest catalogRequest, String cnpj) {
+
+        Seller seller = findSellerByCnpj(cnpj);
+
+        for (Product product : seller.getStore().getCatalog().getProductList())
+            if (product.getId().equals(catalogRequest.getId()))
+                product.setStock(catalogRequest.getQuantity());
     }
 
     // ---------------------------------------------| OTHERS METHODS |---------------------------------------------
@@ -295,44 +282,20 @@ public final class DataBase {
         return null;
     }
 
-    public static List<Product> findCatalogItemListByEmail(String email) {
-
-        Seller seller = findSellerByEmail(email);
-        return seller.getStore().getCatalog().getProductList();
-    }
-
     public static List<Product> findCatalogItemListByStoreName(String storeName) {
 
         Seller seller = findSellerByStoreName(storeName);
         return seller.getStore().getCatalog().getProductList();
     }
 
-    public static void removeItemFromCatalog(String storename, Product product, int quantity) {
+    public static void removeItemFromCatalog(String storeName, Product product, int quantity) {
 
-        Seller seller = findSellerByStoreName(storename);
+        Seller seller = findSellerByStoreName(storeName);
 
         if (quantity == product.getStock())
             seller.getStore().getCatalog().getProductList().remove(product);
         else
-            product.setStock(product.getStock() - quantity);
+            product.updateStock(product.getStock() - quantity);
         seller.getStore().getCatalog().updateCatalog();
-    }
-
-    // Getters
-    public static List<Buyer> getBuyerList() {
-        return buyerList;
-    }
-
-    public static List<Seller> getSellerList() {
-        return sellerList;
-    }
-
-    // Setters
-    public static void setBuyerList(List<Buyer> buyerList) {
-        DataBase.buyerList = buyerList;
-    }
-
-    public static void setSellerList(List<Seller> sellerList) {
-        DataBase.sellerList = sellerList;
     }
 }

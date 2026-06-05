@@ -28,33 +28,39 @@ public final class CatalogController {
         }
     }
 
-    public void addItemToCatalog() {
+    public void addProductToCatalog() {
 
         Product product = view.getProductData();
 
         try {
-            repository.addProduct(product);
+            repository.saveProduct(product);
             view.printMessage("Item added to catalog.");
         }
         catch (AlreadyExistsException e) {
             view.printMessage(e.getMessage());
-
-            if (view.getResponse()) {
-                repository.increaseStock(product);
-                view.printMessage("Stock increased.");
-            }
-            else
-                view.printMessage("Action canceled.");
         }
     }
 
-    public void removeItemFromCatalog() {
+    public void removeCatalogItem() {
 
-        CatalogRequest catalogRequest = view.getItemIdAndQuantity();
+        String itemId = view.getProducttId();
 
         try {
-            repository.removeProduct(catalogRequest);
+            repository.removeProduct(itemId);
             view.printMessage("Item removed.");
+        }
+        catch (NotFoundException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void updateCatalogItem() {
+
+        CatalogRequest catalogRequest = view.getProductIdAndStock();
+
+        try {
+            repository.updateProductStock(catalogRequest);
+            view.printMessage("Stock updated.");
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());

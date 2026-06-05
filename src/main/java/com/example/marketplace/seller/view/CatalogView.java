@@ -65,24 +65,10 @@ public final class CatalogView {
             }
     }
 
-    public CatalogRequest getItemIdAndQuantity() {
-
-        int choice;
+    public String getProducttId() {
 
         System.out.print("Enter the product ID: ");
-        String itemId = scanner.nextLine();
-        int quantity = 0;
-
-        System.out.println("|!| If you want to remove all of the item's stock, enter a number that is greater than or equal to the current stock.");
-        do {
-            System.out.println("Enter the quantity to be removed: ");
-            quantity = scanner.nextInt();
-
-            if (quantity <= 0)
-                System.out.println("Needs to be bigger than 0. Try again.");
-        } while (quantity <= 0);
-
-        return new CatalogRequest(itemId, quantity);
+        return scanner.nextLine();
     }
 
     public void printCatalog(CatalogResponse catalog) {
@@ -120,27 +106,21 @@ public final class CatalogView {
         System.out.println("Total Items: " + catalog.getTotalItems());
     }
 
-    public boolean getResponse() {
+    public CatalogRequest getProductIdAndStock() {
 
-        int choice;
-        boolean response = false;
+        System.out.println("---------- CATALOG ----------\n");
 
+        System.out.print("Enter the product ID: ");
+        String id = scanner.nextLine();
+        int stock;
         do {
-            System.out.print("[1] Increase stock\n[2] Cancel\n>> ");
-            choice = scanner.nextInt();
+            System.out.print("Enter the new stock: ");
+            stock = scanner.nextInt();
+            if (stock <= 0)
+                System.out.println("Needs to be bigger than 0. Try again.");
+        } while (stock <= 0);
 
-            switch (choice) {
-                case 1:
-                    response = true;
-                case 2:
-                    response = false;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-                    break;
-            }
-        } while (choice != 1 && choice != 2);
-
-        return response;
+        return new CatalogRequest(id, stock);
     }
 
     public void printMessage(String message) {
