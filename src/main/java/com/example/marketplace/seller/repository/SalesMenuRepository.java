@@ -2,7 +2,7 @@ package main.java.com.example.marketplace.seller.repository;
 
 import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
-import main.java.com.example.marketplace.payment.model.TaxReceipt;
+import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.seller.model.Seller;
 import main.java.com.example.marketplace.shared.session.SellerSession;
 

@@ -5,6 +5,7 @@ import main.java.com.example.marketplace.buyer.dto.CartResponse;
 import main.java.com.example.marketplace.buyer.model.Buyer;
 import main.java.com.example.marketplace.buyer.model.CartItem;
 import main.java.com.example.marketplace.database.DataBase;
+import main.java.com.example.marketplace.exceptions.EmptyCartException;
 import main.java.com.example.marketplace.exceptions.InsufficientStockException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
@@ -25,6 +26,10 @@ public final class CartRepository {
         Buyer buyer = DataBase.findBuyerByEmail(email);
 
         List<CartItem> cartItemsListPointer = buyer.getCart().getCartItemsList();
+
+        if (cartItemsListPointer.isEmpty())
+            throw new EmptyCartException("Your cart is empty.");
+
         List<CartItem> cartItemsListCopy = new ArrayList<>();
 
         // Copies the items from cartItemsListPointer to cartItemsListCopy
@@ -51,7 +56,7 @@ public final class CartRepository {
         if (!DataBase.existsItemByIdAndCnpj(itemId, cnpj))
             throw new NotFoundException("The item with ID \"" + itemId + "\" was not found.");
 
-        int catalogItemQuant = DataBase.findCatalogItemQuantityByIdAndCnpj(itemId, cnpj);
+        int catalogItemQuant = DataBase.getCatalogItemQuantityByIdAndCnpj(itemId, cnpj);
 
         if (DataBase.existsCartItemByEmailAndId(email, itemId)) {
 

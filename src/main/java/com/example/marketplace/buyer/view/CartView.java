@@ -4,8 +4,7 @@ import main.java.com.example.marketplace.buyer.controller.CartController;
 import main.java.com.example.marketplace.buyer.dto.CartRequest;
 import main.java.com.example.marketplace.buyer.dto.CartResponse;
 import main.java.com.example.marketplace.buyer.model.CartItem;
-import main.java.com.example.marketplace.exceptions.NotFoundException;
-import main.java.com.example.marketplace.shared.ItemType;
+import main.java.com.example.marketplace.shared.enums.ItemType;
 
 import java.util.Scanner;
 

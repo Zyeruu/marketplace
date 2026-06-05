@@ -18,11 +18,6 @@ public final class CartController {
 
         try {
             CartResponse cartResponse = repository.findByEmail();
-
-            if (!cartResponse.getCartItems().isEmpty())
-                view.printBuyerCart(cartResponse);
-            else
-                view.printMessage("Your cart is empty!");
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());

@@ -15,6 +15,10 @@ public final class Store {
     }
 
     // Getters
+    public String getName() {
+        return name;
+    }
+
     public String getCnpj() {
         return cnpj;
     }

@@ -1,7 +1,7 @@
 package main.java.com.example.marketplace.seller.controller;
 
 import main.java.com.example.marketplace.exceptions.NotFoundException;
-import main.java.com.example.marketplace.payment.model.TaxReceipt;
+import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.seller.repository.SalesMenuRepository;
 import main.java.com.example.marketplace.seller.view.SalesMenuView;
 
@@ -23,7 +23,7 @@ public final class SalesMenuController {
             view.printSalesMenu(taxReceiptList);
         }
         catch (NotFoundException e) {
-            view.printException(e);
+            view.printMessage(e.getMessage());
         }
     }
 
@@ -36,7 +36,7 @@ public final class SalesMenuController {
             view.printOrder(taxReceipt);
         }
         catch (NotFoundException e) {
-            view.printException(e);
+            view.printMessage(e.getMessage());
         }
     }
 }

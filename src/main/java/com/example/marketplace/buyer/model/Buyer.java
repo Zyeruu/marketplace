@@ -32,4 +32,8 @@ public final class Buyer {
     public Cart getCart() {
         return cart;
     }
+
+    public OrdersMenu getOrdersMenu() {
+        return ordersMenu;
+    }
 }

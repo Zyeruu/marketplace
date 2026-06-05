@@ -1,8 +1,7 @@
 package main.java.com.example.marketplace.seller.view;
 
-import main.java.com.example.marketplace.exceptions.NotFoundException;
-import main.java.com.example.marketplace.payment.model.OrderedItem;
-import main.java.com.example.marketplace.payment.model.TaxReceipt;
+import main.java.com.example.marketplace.checkout.model.OrderedItem;
+import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.seller.controller.SalesMenuController;
 
 import java.time.format.DateTimeFormatter;
@@ -57,10 +56,6 @@ public final class SalesMenuView {
             System.out.printf("Unit price: R$%.2f\n", orderedItem.getUnitPrice());
             System.out.printf("Total cost: R$%.2f\n", orderedItem.getTotalCost());
         }
-    }
-
-    public void printException(NotFoundException e) {
-        System.out.println(e.getMessage());
     }
 
     public void printMessage(String message) {

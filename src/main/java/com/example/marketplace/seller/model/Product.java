@@ -1,6 +1,6 @@
 package main.java.com.example.marketplace.seller.model;
 
-import main.java.com.example.marketplace.shared.ItemType;
+import main.java.com.example.marketplace.shared.enums.ItemType;
 
 public final class Product {
 
@@ -88,5 +88,10 @@ public final class Product {
 
     public int getWarranty() {
         return warranty;
+    }
+
+    // Setters
+    public void setStock(int stock) {
+        this.stock += stock;
     }
 }

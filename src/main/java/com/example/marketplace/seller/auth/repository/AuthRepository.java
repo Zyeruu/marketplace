@@ -24,6 +24,6 @@ public final class AuthRepository {
 
     public int searchNumberOfSellers() {
 
-        return DataBase.findNumberOfSellers();
+        return DataBase.getNumberOfSellers();
     }
 }

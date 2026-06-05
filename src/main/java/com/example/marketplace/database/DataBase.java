@@ -2,9 +2,9 @@ package main.java.com.example.marketplace.database;
 
 import main.java.com.example.marketplace.buyer.model.Buyer;
 import main.java.com.example.marketplace.buyer.model.CartItem;
+import main.java.com.example.marketplace.seller.dto.CatalogRequest;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.seller.model.Seller;
-import main.java.com.example.marketplace.shared.ItemType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,19 +38,14 @@ public final class DataBase {
     public static void addItemToCart(String itemId, int quantity, String email, String cnpj) {
 
         Buyer buyer = findBuyerByEmail(email);
-        Seller seller = findByCnpj(cnpj);
+        Seller seller = findSellerByCnpj(cnpj);
 
-        for (Product product : seller.getStore().getCatalog().getProductList())
-            if (product.getId().equals(itemId)) {
+        for (Product p : seller.getStore().getCatalog().getProductList())
+            if (p.getId().equals(itemId)) {
 
-                CartItem item = new CartItem(product.getName(), itemId, product.getStoreName(), product.getType(), product.getUnitPrice(), product.getWeight(), quantity);
+                CartItem item = new CartItem(p.getName(), itemId, p.getStoreName(), p.getType(), p.getUnitPrice(), p.getWeight(), quantity);
                 buyer.getCart().getCartItemsList().add(item);
-
-                if (item.getType() == ItemType.FOOD)
-                    buyer.getCart().setTotalFood(quantity);
-                else
-                    buyer.getCart().setTotalMisc(quantity);
-                buyer.getCart().setTotalItems();
+                buyer.getCart().updateCart();
             }
     }
 
@@ -59,16 +54,8 @@ public final class DataBase {
         Buyer buyer = findBuyerByEmail(email);
 
         for (CartItem item : buyer.getCart().getCartItemsList())
-            if (item.getId().equals(itemId)) {
-
+            if (item.getId().equals(itemId))
                 item.setQuantity(item.getQuantity() + quantity);
-
-                if (item.getType() == ItemType.FOOD)
-                    buyer.getCart().setTotalFood(quantity);
-                else
-                    buyer.getCart().setTotalMisc(quantity);
-            }
-        buyer.getCart().setTotalItems();
     }
 
     public static void removeItemFromCart(String buyerEmail, String itemId, int quantity) {
@@ -78,21 +65,11 @@ public final class DataBase {
         for (CartItem item : buyer.getCart().getCartItemsList())
             if (item.getId().equals(itemId))
                 if (quantity >= item.getQuantity()) {
-
                     buyer.getCart().getCartItemsList().remove(item);
-                    if (item.getType() == ItemType.FOOD)
-                        buyer.getCart().setTotalFood(item.getQuantity());
-                    else
-                        buyer.getCart().setTotalMisc(item.getQuantity());
+                    buyer.getCart().updateCart();
                 }
-                else {
+                else
                     item.setQuantity(item.getQuantity() - quantity);
-                    if (item.getType() == ItemType.FOOD)
-                        buyer.getCart().setTotalFood(quantity);
-                    else
-                        buyer.getCart().setTotalMisc(quantity);
-                }
-        buyer.getCart().setTotalItems();
     }
 
     public static boolean existsCartItemByEmailAndId(String buyerEmail, String id) {
@@ -159,6 +136,67 @@ public final class DataBase {
         sellerList.remove(seller);
     }
 
+    // ----------------------------------------------| CATALOG METHODS |-------------------------------------------
+
+    public static boolean existsCatalogItemByIdAndCnpj(String itemId, String cnpj) {
+
+        Seller seller = findSellerByCnpj(cnpj);
+
+        for (Product product : seller.getStore().getCatalog().getProductList())
+            if (product.getId().equals(itemId))
+                return true;
+        return false;
+    }
+
+    public static boolean existsCatalogItemByNameAndCnpj(String itemName, String cnpj) {
+
+        Seller seller = findSellerByCnpj(cnpj);
+
+        for (Product product : seller.getStore().getCatalog().getProductList())
+            if (product.getName().equalsIgnoreCase(itemName))
+                return true;
+        return false;
+    }
+
+    public static Product findCatalogItemByIdAndCnpj(String itemId, String cnpj) {
+
+        Seller seller = findSellerByCnpj(cnpj);
+
+        for (Product product : seller.getStore().getCatalog().getProductList())
+            if (product.getId().equals(itemId))
+                return product;
+        return null;
+    }
+
+    public static void addToCatalog(Product product, String cnpj) {
+
+        Seller seller = findSellerByCnpj(cnpj);
+
+        for (Product p : seller.getStore().getCatalog().getProductList())
+            if (p.getId().equals(product.getId())) {
+                p.setStock(product.getStock());
+                return;
+            }
+        seller.getStore().getCatalog().getProductList().add(product);
+        seller.getStore().getCatalog().updateCatalog();
+    }
+
+    public static void removeFromCatalog(CatalogRequest catalogRequest, String cnpj) {
+
+        Seller seller = findSellerByCnpj(cnpj);
+        String itemId = catalogRequest.getId();
+        int quant = catalogRequest.getQuantity();
+
+        for (Product product : seller.getStore().getCatalog().getProductList())
+            if (product.getId().equals(itemId))
+                if (quant < product.getStock())
+                    product.setStock(product.getStock() - quant);
+                else {
+                    seller.getStore().getCatalog().getProductList().remove(product);
+                    seller.getStore().getCatalog().updateCatalog();
+                }
+    }
+
     // ---------------------------------------------| OTHERS METHODS |---------------------------------------------
 
     public static boolean existsSellerByEmail(String email) {
@@ -185,7 +223,7 @@ public final class DataBase {
         return false;
     }
 
-    public static Seller findByCnpj(String cnpj) {
+    public static Seller findSellerByCnpj(String cnpj) {
 
         for (Seller seller : sellerList)
             if (seller.getStore().getCnpj().equals(cnpj))
@@ -201,28 +239,83 @@ public final class DataBase {
         return false;
     }
 
-    public static int findNumberOfSellers() {
+    public static int getNumberOfSellers() {
         return sellerList.size();
     }
 
     public static boolean existsItemByIdAndCnpj(String id, String cnpj) {
 
-        for (Seller seller : sellerList)
-            if (seller.getStore().getCnpj().equals(cnpj))
-                for (Product product : seller.getStore().getCatalog().getProductList())
-                    if (product.getId().equals(id))
-                        return true;
+        Seller seller = findSellerByCnpj(cnpj);
+
+        for (Product product : seller.getStore().getCatalog().getProductList())
+            if (product.getId().equals(id))
+                return true;
         return false;
     }
 
-    public static int findCatalogItemQuantityByIdAndCnpj(String id, String cnpj) {
+    public static int getCatalogItemQuantityByIdAndCnpj(String id, String cnpj) {
+
+        Seller seller = findSellerByCnpj(cnpj);
+
+        for (Product product : seller.getStore().getCatalog().getProductList())
+            if (product.getId().equals(id))
+                return product.getStock();
+        return -1;
+    }
+
+    // --------------------------------------------| CHECKOUT METHODS |--------------------------------------------
+
+    public static boolean isCartEmptyByEmail(String email) {
+
+        Buyer buyer = findBuyerByEmail(email);
+        return buyer.getCart().getCartItemsList().isEmpty();
+    }
+
+    public static List<CartItem> findCartItemListByEmail(String email) {
+
+        Buyer buyer = findBuyerByEmail(email);
+        return buyer.getCart().getCartItemsList();
+    }
+
+    public static Seller findSellerByStoreName(String storeName) {
 
         for (Seller seller : sellerList)
-            if (seller.getStore().getCnpj().equals(cnpj))
-                for (Product product : seller.getStore().getCatalog().getProductList())
-                    if (product.getId().equals(id))
-                        return product.getStock();
-        return 0;
+            if (seller.getStore().getName().equals(storeName))
+                return seller;
+        return null;
+    }
+
+    public static Product findCatalogItemByStoreNameAndId(String storeName, String itemId) {
+
+        Seller seller = findSellerByStoreName(storeName);
+
+        for (Product item : seller.getStore().getCatalog().getProductList())
+            if (item.getType().equals(itemId))
+                return item;
+        return null;
+    }
+
+    public static List<Product> findCatalogItemListByEmail(String email) {
+
+        Seller seller = findSellerByEmail(email);
+        return seller.getStore().getCatalog().getProductList();
+    }
+
+    public static List<Product> findCatalogItemListByStoreName(String storeName) {
+
+        Seller seller = findSellerByStoreName(storeName);
+        return seller.getStore().getCatalog().getProductList();
+    }
+
+    public static void removeItemFromCatalog(String storename, Product product, int quantity) {
+
+        Seller seller = findSellerByStoreName(storename);
+
+        if (quantity == product.getStock())
+            seller.getStore().getCatalog().getProductList().remove(product);
+        else
+            product.setStock(product.getStock() - quantity);
+        seller.getStore().getCatalog().updateCatalog();
     }
 
     // Getters

@@ -1,6 +1,6 @@
 package main.java.com.example.marketplace.buyer.model;
 
-import main.java.com.example.marketplace.shared.ItemType;
+import main.java.com.example.marketplace.shared.enums.ItemType;
 
 public final class CartItem {
 

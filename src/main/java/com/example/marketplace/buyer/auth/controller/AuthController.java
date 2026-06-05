@@ -5,7 +5,7 @@ import main.java.com.example.marketplace.buyer.auth.repository.AuthRepository;
 import main.java.com.example.marketplace.buyer.auth.view.AuthView;
 import main.java.com.example.marketplace.buyer.model.Buyer;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
-import main.java.com.example.marketplace.shared.Validator;
+import main.java.com.example.marketplace.shared.utils.Validator;
 import main.java.com.example.marketplace.shared.session.SellerSession;
 
 import java.text.Normalizer;
