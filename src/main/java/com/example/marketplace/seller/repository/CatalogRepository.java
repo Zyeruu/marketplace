@@ -1,7 +1,9 @@
 package main.java.com.example.marketplace.seller.repository;
 
 import main.java.com.example.marketplace.database.DataBase;
+import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
+import main.java.com.example.marketplace.seller.dto.CatalogRequest;
 import main.java.com.example.marketplace.seller.dto.CatalogResponse;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.seller.model.Seller;
@@ -19,7 +21,7 @@ public final class CatalogRepository {
         if (!DataBase.existsByCnpj(cnpj))
             throw new NotFoundException("Catalog not found.");
 
-        Seller seller = DataBase.findByCnpj(cnpj);
+        Seller seller = DataBase.findSellerByCnpj(cnpj);
 
         List<Product> productListPointer = seller.getStore().getCatalog().getProductList();
         List<Product> productListCopy = new ArrayList<>();
@@ -33,5 +35,34 @@ public final class CatalogRepository {
         int totalMisc = seller.getStore().getCatalog().getTotalMisc();
 
         return new CatalogResponse(productListCopy, totalItems, totalFood, totalMisc);
+    }
+
+    public void addProduct(Product product) {
+
+        String cnpj = SellerSession.getCnpj();
+        String productName = product.getName();
+
+        if (DataBase.existsCatalogItemByNameAndCnpj(productName, cnpj))
+            throw new AlreadyExistsException("The product you want to add already exists in your catalog.");
+
+        DataBase.addToCatalog(product, cnpj);
+    }
+
+    public void increaseStock(Product product) {
+
+        String cnpj = SellerSession.getCnpj();
+
+        DataBase.addToCatalog(product, cnpj);
+    }
+
+    public void removeProduct(CatalogRequest catalogRequest) {
+
+        String cnpj = SellerSession.getCnpj();
+        String itemId = catalogRequest.getId();
+
+        if (!DataBase.existsCatalogItemByIdAndCnpj(itemId, cnpj))
+            throw new NotFoundException("Item with ID \"" + itemId + "\" was not found.");
+
+        DataBase.removeFromCatalog(catalogRequest, cnpj);
     }
 }
