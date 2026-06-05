@@ -7,20 +7,23 @@ public final class SellerSession {
     private static String storeName;
     private static boolean logged;
 
-    public static void login(String email) {
+    public static void login(String email, String cnpj, String storeName) {
         SellerSession.email = email;
+        SellerSession.cnpj = cnpj;
+        SellerSession.storeName = storeName;
         SellerSession.logged = true;
     }
 
     public static void logout() {
         SellerSession.email = null;
         SellerSession.cnpj = null;
+        SellerSession.storeName = null;
         SellerSession.logged = false;
     }
 
     // Getters
     public static String getCnpj() {
-        return SellerSession.cnpj;
+        return cnpj;
     }
 
     public static String getEmail() {
@@ -33,9 +36,5 @@ public final class SellerSession {
 
     public static boolean isLogged() {
         return logged;
-    }
-
-    public static void setCurrent(String cnpj) {
-        SellerSession.cnpj = cnpj;
     }
 }

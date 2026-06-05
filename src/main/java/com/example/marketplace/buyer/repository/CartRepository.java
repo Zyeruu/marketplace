@@ -9,7 +9,7 @@ import main.java.com.example.marketplace.exceptions.EmptyCartException;
 import main.java.com.example.marketplace.exceptions.InsufficientStockException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
-import main.java.com.example.marketplace.shared.session.SellerSession;
+import main.java.com.example.marketplace.shared.session.StoreContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public final class CartRepository {
     public void addItem(CartRequest cartRequest) {
 
         String email = BuyerSession.getEmail();
-        String cnpj = SellerSession.getCnpj();
+        String cnpj = StoreContext.getCnpj();
         String itemId = cartRequest.getId();
         int quantToBeAdded = cartRequest.getQuantity();
 

@@ -226,6 +226,15 @@ public final class DataBase {
         return false;
     }
 
+    public static Seller findSellerByEmailAndPassword(String email, String password) {
+
+        for (Seller seller : sellerList)
+            if (seller.getEmail().equals(email))
+                if (seller.getPassword().equals(password))
+                    return seller;
+        return null;
+    }
+
     public static int getNumberOfSellers() {
         return sellerList.size();
     }
@@ -277,7 +286,7 @@ public final class DataBase {
         Seller seller = findSellerByStoreName(storeName);
 
         for (Product item : seller.getStore().getCatalog().getProductList())
-            if (item.getType().equals(itemId))
+            if (item.getId().equals(itemId))
                 return item;
         return null;
     }
