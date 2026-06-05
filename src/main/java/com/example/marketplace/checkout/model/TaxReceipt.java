@@ -1,6 +1,7 @@
 package main.java.com.example.marketplace.checkout.model;
 
 import main.java.com.example.marketplace.checkout.dto.CheckoutRequest;
+import main.java.com.example.marketplace.shared.utils.IdGenerator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,8 +17,8 @@ public final class TaxReceipt {
     private float shipping;
     private List<OrderedItem> orderedItemsList;
 
-    public TaxReceipt(String orderId, String buyerName, String sellerName, CheckoutRequest checkoutRequest, List<OrderedItem> orderedItemsList) {
-        this.orderId = orderId;
+    public TaxReceipt(String buyerName, String sellerName, CheckoutRequest checkoutRequest, List<OrderedItem> orderedItemsList) {
+        this.orderId = IdGenerator.generateOrderId();
         this.buyerName = buyerName;
         this.sellerName = sellerName;
         this.paymentMethod = checkoutRequest.getPaymentMethod();

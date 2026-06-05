@@ -8,7 +8,7 @@ import java.util.List;
 
 public final class SalesMenu {
 
-    private List<TaxReceipt> taxReceiptsList;
+    private final List<TaxReceipt> taxReceiptsList;
     private int totalSales;
     private float income;
 
@@ -27,6 +27,10 @@ public final class SalesMenu {
                 this.income += item.getTotalCost();
     }
 
+    public void updateTotalSales() {
+        this.totalSales++;
+    }
+
     // Getters
     public List<TaxReceipt> getTaxReceiptsList() {
         return taxReceiptsList;
@@ -40,10 +44,6 @@ public final class SalesMenu {
     public void setTaxReceiptsList(TaxReceipt taxReceipt) {
         this.taxReceiptsList.add(taxReceipt);
         updateIncome();
-        setTotalSales();
-    }
-
-    public void setTotalSales() {
-        this.totalSales++;
+        updateTotalSales();
     }
 }

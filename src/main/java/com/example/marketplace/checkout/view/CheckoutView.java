@@ -4,7 +4,7 @@ import main.java.com.example.marketplace.checkout.model.PaymentMethod;
 
 import java.util.Scanner;
 
-public class CheckoutView {
+public final class CheckoutView {
 
     Scanner scanner = new Scanner(System.in);
 

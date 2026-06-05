@@ -2,7 +2,7 @@ package main.java.com.example.marketplace.checkout.dto;
 
 import main.java.com.example.marketplace.checkout.model.PaymentMethod;
 
-public class CheckoutRequest {
+public final class CheckoutRequest {
 
     private PaymentMethod paymentMethod;
     private float totalCost;

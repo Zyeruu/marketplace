@@ -2,11 +2,11 @@ package main.java.com.example.marketplace.buyer.model;
 
 public final class Buyer {
 
-    private String name;
-    private String email;
-    private String password;
-    private Cart cart;
-    private OrdersMenu ordersMenu;
+    private final String name;
+    private final String email;
+    private final String password;
+    private final Cart cart;
+    private final OrdersMenu ordersMenu;
 
     public Buyer(String name, String email, String password) {
         this.name = name;

@@ -18,7 +18,7 @@ import main.java.com.example.marketplace.shared.utils.IdGenerator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckoutRepository {
+public final class CheckoutRepository {
 
     public void verifyCart() {
 
@@ -56,19 +56,16 @@ public class CheckoutRepository {
         Buyer buyer = DataBase.findBuyerByEmail(buyerEmail);
         Seller seller = DataBase.findSellerByEmail(sellerEmail);
 
-        String orderId = IdGenerator.generateOrderId();
-
         List<CartItem> cartItemList = DataBase.findCartItemListByEmail(buyerEmail);
         List<OrderedItem> orderedItemList = new ArrayList<>();
 
         for (CartItem item : cartItemList)
             orderedItemList.add(new OrderedItem(item.getName(), item.getId(), item.getType(), item.getQuantity(), item.getUnitPrice()));
 
-        TaxReceipt taxReceipt = new TaxReceipt(orderId, buyer.getName(), seller.getName(), checkoutRequest, orderedItemList);
+        TaxReceipt taxReceipt = new TaxReceipt(buyer.getName(), seller.getName(), checkoutRequest, orderedItemList);
 
         saveOrder(taxReceipt);
         updateBuyerCartAndSellerCatalog(buyerEmail);
-        buyer.getCart().updateCart();
     }
 
     public void saveOrder(TaxReceipt taxReceipt) {
@@ -94,6 +91,7 @@ public class CheckoutRepository {
 
     public void updateBuyerCartAndSellerCatalog(String buyerEmail) {
 
+        Buyer buyer = DataBase.findBuyerByEmail(buyerEmail);
         List<CartItem> items = DataBase.findCartItemListByEmail(buyerEmail);
 
         for (CartItem item : items) {
@@ -103,6 +101,7 @@ public class CheckoutRepository {
                     DataBase.removeItemFromCatalog(item.getStoreName(), product, item.getQuantity());
         }
         items.clear();
+        buyer.getCart().updateCart();
     }
 
     public void updateCart() {

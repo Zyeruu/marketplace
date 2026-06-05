@@ -8,7 +8,7 @@ import main.java.com.example.marketplace.checkout.model.PaymentMethod;
 import main.java.com.example.marketplace.checkout.repository.CheckoutRepository;
 import main.java.com.example.marketplace.checkout.view.CheckoutView;
 
-public class CheckoutController {
+public final class CheckoutController {
 
     CheckoutRepository repository;
     CheckoutView view;
@@ -23,6 +23,7 @@ public class CheckoutController {
             view.printMessage("Processing payment of R$" + checkoutRequest.getTotalCost() + "...");
             view.printMessage("Payment confirmed!");
             repository.confirmOrder(checkoutRequest);
+            view.printMessage("Purchase confirmed!");
         }
         catch (EmptyCartException | NotFoundException | InsufficientStockException e) {
             repository.updateCart();

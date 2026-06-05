@@ -2,10 +2,10 @@ package main.java.com.example.marketplace.seller.model;
 
 public final class Store {
 
-    private String name;
-    private String cnpj;
-    private Catalog catalog;
-    private SalesMenu salesMenu;
+    private final String name;
+    private final String cnpj;
+    private final Catalog catalog;
+    private final SalesMenu salesMenu;
 
     public Store(String name, String cnpj) {
         this.name = name;
