@@ -1,6 +1,7 @@
 package main.java.com.example.marketplace.seller.model;
 
-import main.java.com.example.marketplace.payment.model.TaxReceipt;
+import main.java.com.example.marketplace.checkout.model.OrderedItem;
+import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +10,21 @@ public final class SalesMenu {
 
     private List<TaxReceipt> taxReceiptsList;
     private int totalSales;
-    private int totalItemsSold;
+    private float income;
 
     public SalesMenu() {
         this.taxReceiptsList = new ArrayList<>();
         this.totalSales = 0;
-        this.totalItemsSold = 0;
+        this.income = 0;
+    }
+
+    public void updateIncome() {
+
+        this.income = 0;
+
+        for (TaxReceipt receipt : taxReceiptsList)
+            for (OrderedItem item : receipt.getOrderedItemsList())
+                this.income += item.getTotalCost();
     }
 
     // Getters
@@ -22,20 +32,18 @@ public final class SalesMenu {
         return taxReceiptsList;
     }
 
-    public int getTotalItemsSold() {
-        return totalItemsSold;
-    }
-
     public int getTotalSales() {
         return totalSales;
     }
 
     // Setters
-    public void setTotalItemsSold(int totalItemsSold) {
-        this.totalItemsSold = totalItemsSold;
+    public void setTaxReceiptsList(TaxReceipt taxReceipt) {
+        this.taxReceiptsList.add(taxReceipt);
+        updateIncome();
+        setTotalSales();
     }
 
-    public void setTotalSales(int totalSales) {
-        this.totalSales = totalSales;
+    public void setTotalSales() {
+        this.totalSales++;
     }
 }
