@@ -7,12 +7,21 @@ import java.util.List;
 
 public final class OrdersMenu {
 
-    private final List<TaxReceipt> buyerTaxReceipts = new ArrayList<>();
+    private final List<TaxReceipt> taxReceiptList = new ArrayList<>();
     private int totalOrders = 0;
 
+    // Getters
+    public List<TaxReceipt> getTaxReceiptList() {
+        return taxReceiptList;
+    }
+
+    public int getTotalOrders() {
+        return totalOrders;
+    }
+
     // Setters
-    public void setBuyerTaxReceipts(TaxReceipt taxReceipt) {
-        this.buyerTaxReceipts.add(taxReceipt);
+    public void setTaxReceiptList(TaxReceipt taxReceipt) {
+        this.taxReceiptList.add(taxReceipt);
         setTotalOrders();
     }
 
