@@ -67,4 +67,14 @@ public final class CatalogRepository {
 
         DataBase.updateStock(catalogRequest, cnpj);
     }
+
+    public void updateProductPrice(CatalogRequest catalogRequest) {
+
+        String cnpj = SellerSession.getCnpj();
+
+        if (!DataBase.existsCatalogItemByIdAndCnpj(catalogRequest.getId(), cnpj))
+            throw new NotFoundException("Item with ID \"" + catalogRequest.getId() + "\" was not found.");
+
+        DataBase.updatePrice(catalogRequest, cnpj);
+    }
 }

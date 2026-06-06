@@ -7,6 +7,7 @@ import main.java.com.example.marketplace.checkout.dto.CheckoutRequest;
 import main.java.com.example.marketplace.checkout.model.PaymentMethod;
 import main.java.com.example.marketplace.checkout.repository.CheckoutRepository;
 import main.java.com.example.marketplace.checkout.view.CheckoutView;
+import main.java.com.example.marketplace.exceptions.OutdatedPriceException;
 
 public final class CheckoutController {
 
@@ -25,7 +26,7 @@ public final class CheckoutController {
             repository.confirmOrder(checkoutRequest);
             view.printMessage("Purchase confirmed!");
         }
-        catch (EmptyCartException | NotFoundException | InsufficientStockException e) {
+        catch (EmptyCartException | NotFoundException | InsufficientStockException | OutdatedPriceException e) {
             repository.updateCart();
             view.printMessage(e.getMessage());
         }

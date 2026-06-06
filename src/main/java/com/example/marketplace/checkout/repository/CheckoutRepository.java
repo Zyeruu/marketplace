@@ -9,6 +9,7 @@ import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.checkout.dto.CheckoutRequest;
 import main.java.com.example.marketplace.checkout.model.OrderedItem;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
+import main.java.com.example.marketplace.exceptions.OutdatedPriceException;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.seller.model.Seller;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
@@ -22,7 +23,6 @@ public final class CheckoutRepository {
     public void verifyCart() {
 
         String email = BuyerSession.getEmail();
-        Buyer buyer = DataBase.findBuyerByEmail(email);
 
         if (DataBase.isCartEmptyByEmail(email))
             throw new EmptyCartException("Your cart is empty.");
@@ -44,6 +44,9 @@ public final class CheckoutRepository {
 
             if (item.getQuantity() > product.getStock())
                 throw new InsufficientStockException("Your cart contained more items than were available. Your cart has been updated.");
+
+            if (product.getUnitPrice() != item.getUnitPrice())
+                throw new OutdatedPriceException("Your cart contained item(s) with outdated prices. Your cart has been updated.");
         }
     }
 
@@ -75,7 +78,7 @@ public final class CheckoutRepository {
         Buyer buyer = DataBase.findBuyerByEmail(buyerEmail);
         Seller seller = DataBase.findSellerByEmail(sellerEmail);
 
-        buyer.getOrdersMenu().setBuyerTaxReceipts(taxReceipt);
+        buyer.getOrdersMenu().setTaxReceiptList(taxReceipt);
         seller.getStore().getSalesMenu().setTaxReceiptsList(taxReceipt);
     }
 
@@ -128,6 +131,9 @@ public final class CheckoutRepository {
 
             if (cartItemList.get(i).getQuantity() > product.getStock())
                 cartItemList.get(i).setQuantity(product.getStock());
+
+            if (cartItemList.get(i).getUnitPrice() != product.getUnitPrice())
+                cartItemList.get(i).setUnitPrice(product.getUnitPrice());
         }
     }
 }

@@ -56,11 +56,35 @@ public final class CatalogController {
 
     public void updateCatalogItem() {
 
+        view.printMessage("[1] Update stock\n[2] Update price");
+        int choice = view.readChoice();
+
+        switch (choice) {
+            case 1 -> updateCatalogItemStock();
+            case 2 -> updateCatalogItemPrice();
+        }
+    }
+
+    public void updateCatalogItemStock() {
+
         CatalogRequest catalogRequest = view.getProductIdAndStock();
 
         try {
             repository.updateProductStock(catalogRequest);
             view.printMessage("Stock updated.");
+        }
+        catch (NotFoundException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void updateCatalogItemPrice() {
+
+        CatalogRequest catalogRequest = view.getProductIdAndPrice();
+
+        try {
+            repository.updateProductPrice(catalogRequest);
+            view.printMessage("Price updated.");
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());

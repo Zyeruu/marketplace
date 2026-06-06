@@ -107,6 +107,17 @@ public final class CatalogView {
         return new CatalogRequest(id, stock);
     }
 
+    public CatalogRequest getProductIdAndPrice() {
+
+        System.out.println("---------- CATALOG ----------\n");
+
+        System.out.print("Enter the product ID: ");
+        String id = scanner.nextLine();
+        System.out.print("Enter the new price: ");
+        float price = readFloat();
+        return new CatalogRequest(id, price);
+    }
+
     public int readInt() {
 
         while (true) {

@@ -43,10 +43,10 @@ public final class DataBase {
 
         for (Product p : seller.getStore().getCatalog().getProductList())
             if (p.getId().equals(itemId)) {
-
                 CartItem item = new CartItem(p.getName(), itemId, p.getStoreName(), p.getType(), p.getUnitPrice(), p.getWeight(), quantity);
                 buyer.getCart().getCartItemsList().add(item);
                 buyer.getCart().updateCart();
+                break;
             }
     }
 
@@ -55,8 +55,10 @@ public final class DataBase {
         Buyer buyer = findBuyerByEmail(email);
 
         for (CartItem item : buyer.getCart().getCartItemsList())
-            if (item.getId().equals(itemId))
+            if (item.getId().equals(itemId)) {
                 item.setQuantity(item.getQuantity() + quantity);
+                break;
+            }
     }
 
     public static void removeItemFromCart(String buyerEmail, String itemId, int quantity) {
@@ -64,13 +66,14 @@ public final class DataBase {
         Buyer buyer = findBuyerByEmail(buyerEmail);
 
         for (CartItem item : buyer.getCart().getCartItemsList())
-            if (item.getId().equals(itemId))
+            if (item.getId().equals(itemId)) {
                 if (quantity >= item.getQuantity()) {
                     buyer.getCart().getCartItemsList().remove(item);
                     buyer.getCart().updateCart();
-                }
-                else
+                } else
                     item.setQuantity(item.getQuantity() - quantity);
+                break;
+            }
     }
 
     public static boolean existsCartItemByEmailAndId(String buyerEmail, String id) {
@@ -189,8 +192,10 @@ public final class DataBase {
         Seller seller = findSellerByCnpj(cnpj);
 
         for (Product product : seller.getStore().getCatalog().getProductList())
-            if (product.getId().equals(itemId))
+            if (product.getId().equals(itemId)) {
                 seller.getStore().getCatalog().getProductList().remove(product);
+                break;
+            }
     }
 
     public static void updateStock(CatalogRequest catalogRequest, String cnpj) {
@@ -198,8 +203,21 @@ public final class DataBase {
         Seller seller = findSellerByCnpj(cnpj);
 
         for (Product product : seller.getStore().getCatalog().getProductList())
-            if (product.getId().equals(catalogRequest.getId()))
+            if (product.getId().equals(catalogRequest.getId())) {
                 product.setStock(catalogRequest.getQuantity());
+                break;
+            }
+    }
+
+    public static void updatePrice(CatalogRequest catalogRequest, String cnpj) {
+
+        Seller seller = findSellerByCnpj(cnpj);
+
+        for (Product product : seller.getStore().getCatalog().getProductList())
+            if (product.getId().equals(catalogRequest.getId())) {
+                product.setPrice(catalogRequest.getPrice());
+                break;
+            }
     }
 
     // -------------------------------------------| SALES-MENU METHODS |-------------------------------------------

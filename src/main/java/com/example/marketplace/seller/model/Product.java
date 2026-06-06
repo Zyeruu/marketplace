@@ -98,4 +98,8 @@ public final class Product {
     public void setStock(int stock) {
         this.stock = stock;
     }
+
+    public void setPrice(float unitPrice) {
+        this.unitPrice = unitPrice;
+    }
 }
