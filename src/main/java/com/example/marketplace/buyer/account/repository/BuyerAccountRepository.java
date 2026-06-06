@@ -8,17 +8,6 @@ import main.java.com.example.marketplace.shared.session.BuyerSession;
 
 public final class BuyerAccountRepository {
 
-    public void deleteAccount(String password) {
-
-        String email = BuyerSession.getEmail();
-
-        if (!DataBase.existsBuyerByEmailAndPassword(email, password))
-            throw new NotFoundException("Incorrect password.");
-
-        Buyer buyer = DataBase.findBuyerByEmail(email);
-        DataBase.deleteBuyer(buyer);
-    }
-
     public BuyerAccountResponse findByEmail() {
 
         String email = BuyerSession.getEmail();
@@ -31,5 +20,16 @@ public final class BuyerAccountRepository {
         int passwordSize = buyer.getPassword().length();
 
         return new BuyerAccountResponse(name, email, passwordSize);
+    }
+
+    public void deleteAccount(String password) {
+
+        String email = BuyerSession.getEmail();
+
+        if (!DataBase.existsBuyerByEmailAndPassword(email, password))
+            throw new NotFoundException("Incorrect password.");
+
+        Buyer buyer = DataBase.findBuyerByEmail(email);
+        DataBase.deleteBuyer(buyer);
     }
 }
