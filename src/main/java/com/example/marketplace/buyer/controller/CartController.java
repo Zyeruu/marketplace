@@ -10,9 +10,8 @@ import main.java.com.example.marketplace.exceptions.NotFoundException;
 
 public final class CartController {
 
-    private Buyer buyer;
-    private CartRepository repository;
-    private CartView view;
+    private final CartRepository repository = new CartRepository();
+    private final CartView view = new CartView();
 
     public void printCart() {
 

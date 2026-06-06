@@ -1,8 +1,8 @@
 package main.java.com.example.marketplace.buyer.auth.controller;
 
-import main.java.com.example.marketplace.buyer.auth.dto.AuthRequest;
-import main.java.com.example.marketplace.buyer.auth.repository.AuthRepository;
-import main.java.com.example.marketplace.buyer.auth.view.AuthView;
+import main.java.com.example.marketplace.buyer.auth.dto.BuyerAuthRequest;
+import main.java.com.example.marketplace.buyer.auth.repository.BuyerAuthRepository;
+import main.java.com.example.marketplace.buyer.auth.view.BuyerAuthView;
 import main.java.com.example.marketplace.buyer.model.Buyer;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
@@ -10,14 +10,14 @@ import main.java.com.example.marketplace.shared.utils.Validator;
 
 import java.text.Normalizer;
 
-public final class AuthController {
+public final class BuyerAuthController {
 
-    private AuthRepository repository;
-    private AuthView view;
+    private final BuyerAuthRepository repository = new BuyerAuthRepository();
+    private final BuyerAuthView view = new BuyerAuthView();
 
     public void register() {
 
-        AuthRequest user = view.collectRegistrationData();
+        BuyerAuthRequest user = view.collectRegistrationData();
         user.setName(normalizeUserName(user.getName()));
 
         try {
@@ -36,7 +36,7 @@ public final class AuthController {
 
     public void login() {
 
-        AuthRequest user = view.collectEmailAndPassword();
+        BuyerAuthRequest user = view.collectEmailAndPassword();
 
         try {
             Validator.isValidEmail(user.getEmail());

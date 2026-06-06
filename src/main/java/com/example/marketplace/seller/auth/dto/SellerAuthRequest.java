@@ -1,13 +1,13 @@
 package main.java.com.example.marketplace.seller.auth.dto;
 
-public final class AuthRequest {
+public final class SellerAuthRequest {
 
     private String email;
     private String password;
     private String name;
     private String storeName;
 
-    public AuthRequest(String email, String password, String name, String storeName) {
+    public SellerAuthRequest(String email, String password, String name, String storeName) {
         this.email = email.toLowerCase();
         this.password = password;
         this.name = name;

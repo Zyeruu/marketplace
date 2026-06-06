@@ -1,20 +1,20 @@
 package main.java.com.example.marketplace.buyer.account.controller;
 
-import main.java.com.example.marketplace.buyer.account.dto.AccountResponse;
-import main.java.com.example.marketplace.buyer.account.repository.AccountRepository;
-import main.java.com.example.marketplace.buyer.account.view.AccountView;
+import main.java.com.example.marketplace.buyer.account.dto.BuyerAccountResponse;
+import main.java.com.example.marketplace.buyer.account.repository.BuyerAccountRepository;
+import main.java.com.example.marketplace.buyer.account.view.BuyerAccountView;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
 
-public final class AccountController {
+public final class BuyerAccountController {
 
-    private AccountRepository repository;
-    private AccountView view;
+    private final BuyerAccountRepository repository = new BuyerAccountRepository();
+    private final BuyerAccountView view = new BuyerAccountView();
 
     public void printBuyer() {
 
         try {
-            AccountResponse accountResponse = repository.findByEmail();
+            BuyerAccountResponse accountResponse = repository.findByEmail();
             view.printBuyerProfile(accountResponse);
         }
         catch (NotFoundException e) {

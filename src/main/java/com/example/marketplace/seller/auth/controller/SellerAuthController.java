@@ -1,27 +1,26 @@
 package main.java.com.example.marketplace.seller.auth.controller;
 
-import main.java.com.example.marketplace.seller.auth.dto.AuthRequest;
-import main.java.com.example.marketplace.seller.auth.dto.AuthResponse;
-import main.java.com.example.marketplace.seller.auth.repository.AuthRepository;
-import main.java.com.example.marketplace.seller.auth.view.AuthView;
+import main.java.com.example.marketplace.seller.auth.dto.SellerAuthRequest;
+import main.java.com.example.marketplace.seller.auth.dto.SellerAuthResponse;
+import main.java.com.example.marketplace.seller.auth.repository.SellerAuthRepository;
+import main.java.com.example.marketplace.seller.auth.view.SellerAuthView;
 import main.java.com.example.marketplace.seller.model.Seller;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.seller.model.Store;
 import main.java.com.example.marketplace.shared.utils.IdGenerator;
 import main.java.com.example.marketplace.shared.utils.Validator;
-import main.java.com.example.marketplace.shared.session.BuyerSession;
 import main.java.com.example.marketplace.shared.session.SellerSession;
 
 import java.text.Normalizer;
 
-public final class AuthController {
+public final class SellerAuthController {
 
-    private AuthRepository repository;
-    private AuthView view;
+    private final SellerAuthRepository repository = new SellerAuthRepository();
+    private final SellerAuthView view = new SellerAuthView();
 
     public void register() {
 
-        AuthRequest user = view.collectRegistrationData();
+        SellerAuthRequest user = view.collectRegistrationData();
         user.setName(normalizeUserName(user.getName()));
         user.setStoreName(normalizeUserName(user.getStoreName()));
 
@@ -45,12 +44,12 @@ public final class AuthController {
 
     public void login() {
 
-        AuthRequest user = view.collectEmailAndPassword();
+        SellerAuthRequest user = view.collectEmailAndPassword();
 
         try {
             Validator.isValidEmail(user.getEmail());
             Validator.isValidPassword(user.getPassword());
-            AuthResponse authResponse = repository.login(user);
+            SellerAuthResponse authResponse = repository.login(user);
             SellerSession.login(user.getEmail(), authResponse.getCnpj(), authResponse.getStoreName());
             view.printMessage("You are now logged in.");
         }

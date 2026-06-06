@@ -2,7 +2,7 @@ package main.java.com.example.marketplace.seller.account.view;
 
 import java.util.Scanner;
 
-public final class AccountView {
+public final class SellerAccountView {
 
     Scanner scanner = new Scanner(System.in);
 

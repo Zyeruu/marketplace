@@ -9,7 +9,7 @@ import main.java.com.example.marketplace.shared.session.BuyerSession;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrdersMenuRepository {
+public final class OrdersMenuRepository {
 
     public List<TaxReceipt> findByEmail() {
 

@@ -7,10 +7,10 @@ import main.java.com.example.marketplace.exceptions.NotFoundException;
 
 import java.util.List;
 
-public class OrdersMenuController {
+public final class OrdersMenuController {
 
-    OrdersMenuRepository repository;
-    OrdersMenuView view;
+    private final OrdersMenuRepository repository = new OrdersMenuRepository();
+    private final OrdersMenuView view = new OrdersMenuView();
 
     public void printOrders() {
 

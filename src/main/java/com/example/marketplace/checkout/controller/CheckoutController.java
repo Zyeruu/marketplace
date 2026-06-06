@@ -11,8 +11,8 @@ import main.java.com.example.marketplace.exceptions.OutdatedPriceException;
 
 public final class CheckoutController {
 
-    CheckoutRepository repository;
-    CheckoutView view;
+    private final CheckoutRepository repository = new CheckoutRepository();
+    private final CheckoutView view = new CheckoutView();
 
     public void checkout() {
 

@@ -5,7 +5,7 @@ import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.seller.model.Seller;
 import main.java.com.example.marketplace.shared.session.SellerSession;
 
-public final class AccountRepository {
+public final class SellerAccountRepository {
 
     public void deleteAccount(String password) {
 

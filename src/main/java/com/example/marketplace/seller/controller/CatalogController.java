@@ -10,8 +10,8 @@ import main.java.com.example.marketplace.seller.view.CatalogView;
 
 public final class CatalogController {
 
-    CatalogRepository repository;
-    CatalogView view;
+    private final CatalogRepository repository = new CatalogRepository();
+    private final CatalogView view = new CatalogView();
 
     public void printCatalog() {
 

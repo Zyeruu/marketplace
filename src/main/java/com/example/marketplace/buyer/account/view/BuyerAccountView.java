@@ -1,11 +1,10 @@
 package main.java.com.example.marketplace.buyer.account.view;
 
-import main.java.com.example.marketplace.buyer.account.dto.AccountResponse;
-import main.java.com.example.marketplace.exceptions.NotFoundException;
+import main.java.com.example.marketplace.buyer.account.dto.BuyerAccountResponse;
 
 import java.util.Scanner;
 
-public final class AccountView {
+public final class BuyerAccountView {
 
     Scanner scanner = new Scanner(System.in);
 
@@ -15,7 +14,7 @@ public final class AccountView {
         return scanner.nextLine();
     }
 
-    public void printBuyerProfile(AccountResponse buyerProfile) {
+    public void printBuyerProfile(BuyerAccountResponse buyerProfile) {
 
         System.out.println("Name: " + buyerProfile.getName());
         System.out.println("E-mail: " + buyerProfile.getEmail());

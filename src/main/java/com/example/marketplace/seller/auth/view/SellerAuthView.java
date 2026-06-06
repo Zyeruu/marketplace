@@ -1,14 +1,14 @@
 package main.java.com.example.marketplace.seller.auth.view;
 
-import main.java.com.example.marketplace.seller.auth.dto.AuthRequest;
+import main.java.com.example.marketplace.seller.auth.dto.SellerAuthRequest;
 
 import java.util.Scanner;
 
-public final class AuthView {
+public final class SellerAuthView {
 
     Scanner scanner = new Scanner(System.in);
 
-    public AuthRequest collectRegistrationData() {
+    public SellerAuthRequest collectRegistrationData() {
 
         System.out.println("--------| SELLER | REGISTER |--------\n");
 
@@ -24,10 +24,10 @@ public final class AuthView {
         System.out.print("Store name: ");
         String storeName = scanner.nextLine();
 
-        return new AuthRequest(email, password, name, storeName);
+        return new SellerAuthRequest(email, password, name, storeName);
     }
 
-    public AuthRequest collectEmailAndPassword() {
+    public SellerAuthRequest collectEmailAndPassword() {
 
         System.out.println("-------- LOGIN --------\n");
 
@@ -37,7 +37,7 @@ public final class AuthView {
         System.out.print("Password: ");
         String password = scanner.nextLine();
 
-        return new AuthRequest(email, password, "", "");
+        return new SellerAuthRequest(email, password, "", "");
     }
 
     public void printMessage(String message) {

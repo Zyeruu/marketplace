@@ -1,14 +1,14 @@
 package main.java.com.example.marketplace.seller.account.controller;
 
 import main.java.com.example.marketplace.exceptions.NotFoundException;
-import main.java.com.example.marketplace.seller.account.repository.AccountRepository;
-import main.java.com.example.marketplace.seller.account.view.AccountView;
+import main.java.com.example.marketplace.seller.account.repository.SellerAccountRepository;
+import main.java.com.example.marketplace.seller.account.view.SellerAccountView;
 import main.java.com.example.marketplace.shared.session.SellerSession;
 
-public final class AccountController {
+public final class SellerAccountController {
 
-    private AccountRepository repository;
-    private AccountView view;
+    private final SellerAccountRepository repository = new SellerAccountRepository();
+    private final SellerAccountView view = new SellerAccountView();
 
     public void deleteAccount() {
 

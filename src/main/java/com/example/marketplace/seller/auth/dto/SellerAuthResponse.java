@@ -1,11 +1,11 @@
 package main.java.com.example.marketplace.seller.auth.dto;
 
-public final class AuthResponse {
+public final class SellerAuthResponse {
 
     private final String cnpj;
     private final String storeName;
 
-    public AuthResponse(String cnpj, String storeName) {
+    public SellerAuthResponse(String cnpj, String storeName) {
         this.cnpj = cnpj;
         this.storeName = storeName;
     }

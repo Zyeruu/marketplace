@@ -1,12 +1,12 @@
 package main.java.com.example.marketplace.buyer.account.repository;
 
-import main.java.com.example.marketplace.buyer.account.dto.AccountResponse;
+import main.java.com.example.marketplace.buyer.account.dto.BuyerAccountResponse;
 import main.java.com.example.marketplace.buyer.model.Buyer;
 import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
 
-public final class AccountRepository {
+public final class BuyerAccountRepository {
 
     public void deleteAccount(String password) {
 
@@ -19,7 +19,7 @@ public final class AccountRepository {
         DataBase.deleteBuyer(buyer);
     }
 
-    public AccountResponse findByEmail() {
+    public BuyerAccountResponse findByEmail() {
 
         String email = BuyerSession.getEmail();
 
@@ -30,6 +30,6 @@ public final class AccountRepository {
         String name = buyer.getName();
         int passwordSize = buyer.getPassword().length();
 
-        return new AccountResponse(name, email, passwordSize);
+        return new BuyerAccountResponse(name, email, passwordSize);
     }
 }
