@@ -6,6 +6,7 @@ import main.java.com.example.marketplace.buyer.dto.CartResponse;
 import main.java.com.example.marketplace.buyer.model.CartItem;
 import main.java.com.example.marketplace.shared.enums.ItemType;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public final class CartView {
@@ -51,13 +52,33 @@ public final class CartView {
 
     public CartRequest getItemData() {
 
-        System.out.print("Enter the item ID:\n>> ");
+        System.out.print("Enter the item ID: ");
         String itemId = scanner.nextLine();
 
-        System.out.print("Enter the quantity:\n>> ");
-        int quantity = scanner.nextInt();
+        System.out.print("Enter the quantity: ");
+        int quantity = readInt();
 
         return new CartRequest(itemId, quantity);
+    }
+
+    public int readInt() {
+
+        while (true) {
+            try {
+                int value = scanner.nextInt();
+
+                if (value <= 0) {
+                    printMessage("Needs to be greater than 0. Try again.");
+                    continue;
+                }
+
+                return value;
+            }
+            catch (InputMismatchException e) {
+                scanner.nextLine();
+                printMessage("Invalid input. Please enter a number.");
+            }
+        }
     }
 
     public void printMessage(String message) {

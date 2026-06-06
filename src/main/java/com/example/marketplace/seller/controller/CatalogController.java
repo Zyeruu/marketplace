@@ -43,7 +43,7 @@ public final class CatalogController {
 
     public void removeCatalogItem() {
 
-        String itemId = view.getProducttId();
+        String itemId = view.getProductId();
 
         try {
             repository.removeProduct(itemId);

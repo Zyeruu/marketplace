@@ -2,6 +2,7 @@ package main.java.com.example.marketplace.checkout.view;
 
 import main.java.com.example.marketplace.checkout.model.PaymentMethod;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public final class CheckoutView {
@@ -10,31 +11,40 @@ public final class CheckoutView {
 
     public PaymentMethod selectPaymentMethod() {
 
-        int choice;
         PaymentMethod paymentMethod = null;
 
-        do {
-            System.out.println("Select payment method:");
-            System.out.print("[1] Credit Card\n[2] Debit Card\n[3] Pix\n>> ");
-            choice = scanner.nextInt();
+        System.out.println("Select payment method:");
+        System.out.print("[1] Credit Card\n[2] Debit Card\n[3] Pix\n>> ");
+        int choice = readChoice();
 
-            switch (choice) {
-                case 1:
-                    paymentMethod = PaymentMethod.CREDIT_CARD;
-                    break;
-                case 2:
-                    paymentMethod = PaymentMethod.DEBIT_CARD;
-                    break;
-                case 3:
-                    paymentMethod = PaymentMethod.PIX;
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-                    break;
-            }
-        } while (choice != 1 && choice != 2 && choice != 3);
+        paymentMethod = switch (choice) {
+            case 1 -> PaymentMethod.CREDIT_CARD;
+            case 2 -> PaymentMethod.DEBIT_CARD;
+            case 3 -> PaymentMethod.PIX;
+            default -> paymentMethod;
+        };
 
         return paymentMethod;
+    }
+
+    public int readChoice() {
+
+        while (true) {
+            try {
+                int choice = scanner.nextInt();
+
+                if (choice != 1 && choice != 2 && choice != 3) {
+                    System.out.println("Invalid option. Try again.");
+                    continue;
+                }
+
+                return choice;
+            }
+            catch (InputMismatchException e) {
+                scanner.nextLine();
+                printMessage("Invalid input. Please enter a number.");
+            }
+        }
     }
 
     public void printMessage(String message) {

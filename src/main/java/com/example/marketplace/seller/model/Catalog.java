@@ -7,17 +7,10 @@ import java.util.List;
 
 public final class Catalog {
 
-    private List<Product> productList = new ArrayList<>();
-    private int totalItems;
-    private int totalFood;
-    private int totalMisc;
-
-    public Catalog() {
-        this.productList = new ArrayList<>();
-        this.totalItems = 0;
-        this.totalFood = 0;
-        this.totalMisc = 0;
-    }
+    private final List<Product> productList = new ArrayList<>();
+    private int totalItems = 0;
+    private int totalFood = 0;
+    private int totalMisc = 0;
 
     public void updateCatalog() {
 

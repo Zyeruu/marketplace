@@ -16,7 +16,7 @@ public final class SalesMenuView {
 
     public String getOrderId() {
 
-        System.out.println("Enter the order ID: ");
+        System.out.print("Enter the order ID: ");
         return scanner.nextLine();
     }
 

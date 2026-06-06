@@ -7,21 +7,12 @@ import java.util.List;
 
 public final class Cart {
 
-    private List<CartItem> cartItemsList = new ArrayList<>();
-    private float totalCost;
-    private float shipping;
-    private int totalItems;
-    private int totalFood;
-    private int totalMisc;
-
-    public Cart() {
-        this.cartItemsList = new ArrayList<>();
-        this.totalCost = 0;
-        this.shipping = 0;
-        this.totalItems = 0;
-        this.totalFood = 0;
-        this.totalMisc = 0;
-    }
+    private final List<CartItem> cartItemsList = new ArrayList<>();
+    private float totalCost = 0;
+    private float shipping = 0;
+    private int totalItems = 0;
+    private int totalFood = 0;
+    private int totalMisc = 0;
 
     public void updateCart() {
 

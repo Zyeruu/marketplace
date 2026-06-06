@@ -8,6 +8,7 @@ import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.shared.session.SellerSession;
 import main.java.com.example.marketplace.shared.utils.IdGenerator;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public final class CatalogView {
@@ -23,20 +24,9 @@ public final class CatalogView {
 
         System.out.println("---------- CATALOG ----------\n");
 
-        do {
-            System.out.println("Select the product type:");
-            System.out.print("[1] Food\n[2] Miscellaneous\n>> ");
-            choice = scanner.nextInt();
-
-            switch (choice) {
-                case 1:
-                case 2:
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-                    break;
-            }
-        } while (choice != 1 && choice != 2);
+        System.out.println("Select the product type:");
+        System.out.print("[1] Food\n[2] Miscellaneous\n>> ");
+        choice = readChoice();
 
         System.out.print("Product name: ");
         String name = scanner.nextLine();
@@ -44,13 +34,13 @@ public final class CatalogView {
         String id = IdGenerator.generateProductId();
 
         System.out.print("Product unit price: ");
-        float unitPrice = scanner.nextFloat();
+        float unitPrice = readFloat();
 
         System.out.print("Product weight (Kg): ");
-        float weight = scanner.nextFloat();
+        float weight = readFloat();
 
         System.out.print("Product stock: ");
-        int stock = scanner.nextInt();
+        int stock = readInt();
 
         if (choice == 1)
             return new Product(name, id, storeName, unitPrice, weight, stock);
@@ -59,13 +49,13 @@ public final class CatalogView {
             String brand = scanner.nextLine();
 
             System.out.print("Product warranty: ");
-            int warranty = scanner.nextInt();
+            int warranty = readInt();
 
             return new Product(name, id, storeName, brand, unitPrice, weight, stock, warranty);
             }
     }
 
-    public String getProducttId() {
+    public String getProductId() {
 
         System.out.print("Enter the product ID: ");
         return scanner.nextLine();
@@ -112,15 +102,69 @@ public final class CatalogView {
 
         System.out.print("Enter the product ID: ");
         String id = scanner.nextLine();
-        int stock;
-        do {
-            System.out.print("Enter the new stock: ");
-            stock = scanner.nextInt();
-            if (stock <= 0)
-                System.out.println("Needs to be bigger than 0. Try again.");
-        } while (stock <= 0);
-
+        System.out.print("Enter the new stock: ");
+        int stock = readInt();
         return new CatalogRequest(id, stock);
+    }
+
+    public int readInt() {
+
+        while (true) {
+            try {
+                int value = scanner.nextInt();
+
+                if (value <= 0) {
+                    printMessage("Needs to be greater than 0. Try again.");
+                    continue;
+                }
+
+                return value;
+            }
+            catch (InputMismatchException e) {
+                scanner.nextLine();
+                printMessage("Invalid input. Please enter a number.");
+            }
+        }
+    }
+
+    public float readFloat() {
+
+        while (true) {
+            try {
+                float value = scanner.nextInt();
+
+                if (value <= 0) {
+                    printMessage("Needs to be greater than 0. Try again.");
+                    continue;
+                }
+
+                return value;
+            }
+            catch (InputMismatchException e) {
+                scanner.nextLine();
+                printMessage("Invalid input. Please enter a number.");
+            }
+        }
+    }
+
+    public int readChoice() {
+
+        while (true) {
+            try {
+                int choice = scanner.nextInt();
+
+                if (choice != 1 && choice != 2) {
+                    printMessage("Invalid option. Try again.");
+                    continue;
+                }
+
+                return choice;
+            }
+            catch (InputMismatchException e) {
+                scanner.nextLine();
+                printMessage("Invalid input. Please enter a number.");
+            }
+        }
     }
 
     public void printMessage(String message) {

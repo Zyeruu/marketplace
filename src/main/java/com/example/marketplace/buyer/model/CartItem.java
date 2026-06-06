@@ -4,10 +4,10 @@ import main.java.com.example.marketplace.shared.enums.ItemType;
 
 public final class CartItem {
 
-    private String name;
-    private String id;
-    private String storeName;
-    private ItemType type;
+    private final String name;
+    private final String id;
+    private final String storeName;
+    private final ItemType type;
     private float unitPrice;
     private float weight;
     private int quantity;
@@ -60,14 +60,6 @@ public final class CartItem {
 
     public int getQuantity() {
         return quantity;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setType(ItemType type) {
-        this.type = type;
     }
 
     public void setUnitPrice(float unitPrice) {

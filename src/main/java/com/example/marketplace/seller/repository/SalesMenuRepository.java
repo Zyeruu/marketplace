@@ -11,10 +11,10 @@ import java.util.List;
 
 public final class SalesMenuRepository {
 
-    String email = SellerSession.getEmail();
-    String cnpj = SellerSession.getCnpj();
-
     public List<TaxReceipt> findByEmailAndCnpj() {
+
+        String email = SellerSession.getEmail();
+        String cnpj = SellerSession.getCnpj();
 
         if (!DataBase.existsSellerByEmail(email))
             throw new NotFoundException("Logged-in user does not exist!");
@@ -35,6 +35,9 @@ public final class SalesMenuRepository {
     }
 
     public TaxReceipt findByEmailAndCnpjAndOrderId(String orderId) {
+
+        String email = SellerSession.getEmail();
+        String cnpj = SellerSession.getCnpj();
 
         if (!DataBase.existsSellerByEmail(email))
             throw new NotFoundException("Logged-in user does not exist!");

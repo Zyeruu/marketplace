@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class TaxReceipt {
-    private String orderId;
-    private String buyerName;
-    private String sellerName;
-    private PaymentMethod paymentMethod;
-    private LocalDateTime dateTime;
-    private float totalCost;
-    private float shipping;
-    private List<OrderedItem> orderedItemsList;
+    private final String orderId;
+    private final String buyerName;
+    private final String sellerName;
+    private final PaymentMethod paymentMethod;
+    private final LocalDateTime dateTime;
+    private final float totalCost;
+    private final float shipping;
+    private final List<OrderedItem> orderedItemsList;
 
     public TaxReceipt(String buyerName, String sellerName, CheckoutRequest checkoutRequest, List<OrderedItem> orderedItemsList) {
         this.orderId = IdGenerator.generateOrderId();
@@ -44,6 +44,7 @@ public final class TaxReceipt {
         // Copies the items of taxReceiptPointer's orderedItemsList to orderedItemsListCopy
         for (OrderedItem itemOrdered : taxReceiptPointer.getOrderedItemsList())
             orderedItemsListCopy.add(new OrderedItem(itemOrdered));
+        this.orderedItemsList = orderedItemsListCopy;
     }
 
     // Getters

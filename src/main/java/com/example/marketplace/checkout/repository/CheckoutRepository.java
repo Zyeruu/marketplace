@@ -13,7 +13,6 @@ import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.seller.model.Seller;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
 import main.java.com.example.marketplace.shared.session.SellerSession;
-import main.java.com.example.marketplace.shared.utils.IdGenerator;
 
 import java.util.ArrayList;
 import java.util.List;

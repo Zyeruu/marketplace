@@ -8,15 +8,9 @@ import java.util.List;
 
 public final class SalesMenu {
 
-    private final List<TaxReceipt> taxReceiptsList;
-    private int totalSales;
-    private float income;
-
-    public SalesMenu() {
-        this.taxReceiptsList = new ArrayList<>();
-        this.totalSales = 0;
-        this.income = 0;
-    }
+    private final List<TaxReceipt> taxReceiptsList = new ArrayList<>();
+    private int totalSales = 0;
+    private float income = 0;
 
     public void updateIncome() {
 

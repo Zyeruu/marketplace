@@ -11,28 +11,28 @@ public final class AccountController {
     private AccountRepository repository;
     private AccountView view;
 
-    public void deleteAccount(String email) {
+    public void printBuyer() {
+
+        try {
+            AccountResponse accountResponse = repository.findByEmail();
+            view.printBuyerProfile(accountResponse);
+        }
+        catch (NotFoundException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void deleteAccount() {
 
         String password = view.getPassword();
 
         try {
-            repository.deleteAccount(email, password);
+            repository.deleteAccount(password);
             BuyerSession.logout();
             view.printMessage("Your account has been successfully deleted!");
         }
         catch (NotFoundException e) {
-            view.printException(e);
-        }
-    }
-
-    public void printBuyer(String email) {
-
-        try {
-            AccountResponse accountResponse = repository.findByEmail(email);
-            view.printBuyerProfile(accountResponse);
-        }
-        catch (NotFoundException e) {
-            view.printException(e);
+            view.printMessage(e.getMessage());
         }
     }
 }

@@ -10,17 +10,17 @@ public final class AccountController {
     private AccountRepository repository;
     private AccountView view;
 
-    public void deleteAccount(String email) {
+    public void deleteAccount() {
 
         String password = view.getPassword();
 
         try {
-            repository.deleteAccount(email, password);
+            repository.deleteAccount(password);
             SellerSession.logout();
             view.printMessage("Your account has been successfully deleted!");
         }
         catch (NotFoundException e) {
-            view.printException(e);
+            view.printMessage(e.getMessage());
         }
     }
 }

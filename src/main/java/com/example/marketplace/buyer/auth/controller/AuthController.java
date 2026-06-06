@@ -30,7 +30,7 @@ public final class AuthController {
             view.printMessage("Account created successfully!");
         }
         catch (IllegalArgumentException e) {
-            view.printException(e.getMessage());
+            view.printMessage(e.getMessage());
         }
     }
 
@@ -46,7 +46,7 @@ public final class AuthController {
             view.printMessage("You are now logged in.");
         }
         catch (IllegalArgumentException | NotFoundException e) {
-            view.printException(e.getMessage());
+            view.printMessage(e.getMessage());
         }
     }
 

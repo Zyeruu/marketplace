@@ -1,7 +1,5 @@
 package main.java.com.example.marketplace.seller.account.view;
 
-import main.java.com.example.marketplace.exceptions.NotFoundException;
-
 import java.util.Scanner;
 
 public final class AccountView {
@@ -10,12 +8,8 @@ public final class AccountView {
 
     public String getPassword() {
 
-        System.out.print("Confirm with your password:\n>> ");
+        System.out.println("Confirm with your password: ");
         return scanner.nextLine();
-    }
-
-    public void printException(NotFoundException e) {
-        System.out.println(e.getMessage());
     }
 
     public void printMessage(String message) {

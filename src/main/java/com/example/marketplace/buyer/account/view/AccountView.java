@@ -11,7 +11,7 @@ public final class AccountView {
 
     public String getPassword() {
 
-        System.out.print("Confirm with your password:\n>> ");
+        System.out.println("Confirm with your password: ");
         return scanner.nextLine();
     }
 
@@ -22,10 +22,6 @@ public final class AccountView {
         System.out.print("Password: ");
         for (int i = 0; i < buyerProfile.getPasswordSize(); i++)
             System.out.print("*");
-    }
-
-    public void printException(NotFoundException e) {
-        System.out.println(e.getMessage());
     }
 
     public void printMessage(String message) {
