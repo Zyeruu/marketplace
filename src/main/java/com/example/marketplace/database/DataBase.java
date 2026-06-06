@@ -2,6 +2,7 @@ package main.java.com.example.marketplace.database;
 
 import main.java.com.example.marketplace.buyer.model.Buyer;
 import main.java.com.example.marketplace.buyer.model.CartItem;
+import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.seller.dto.CatalogRequest;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.seller.model.Seller;
@@ -92,6 +93,23 @@ public final class DataBase {
         return 0;
     }
 
+    // ------------------------------------------| ORDERS-MENU METHODS |-------------------------------------------
+
+    public static List<TaxReceipt> findBuyerTaxReceiptListByEmail(String email) {
+
+        Buyer buyer = findBuyerByEmail(email);
+        return buyer.getOrdersMenu().getTaxReceiptList();
+    }
+
+    public static TaxReceipt findBuyerTaxReceiptByEmailAndOrderId(String email, String orderId) {
+
+        List<TaxReceipt> taxReceiptList = findBuyerTaxReceiptListByEmail(email);
+
+        for (TaxReceipt taxReceipt : taxReceiptList)
+            if (taxReceipt.getOrderId().equals(orderId))
+                return taxReceipt;
+        return null;
+    }
 
     // ---------------------------------------------| OTHERS METHODS |---------------------------------------------
 
@@ -182,6 +200,24 @@ public final class DataBase {
         for (Product product : seller.getStore().getCatalog().getProductList())
             if (product.getId().equals(catalogRequest.getId()))
                 product.setStock(catalogRequest.getQuantity());
+    }
+
+    // -------------------------------------------| SALES-MENU METHODS |-------------------------------------------
+
+    public static List<TaxReceipt> findSellerTaxReceiptListByEmail(String email) {
+
+        Seller seller = findSellerByEmail(email);
+        return seller.getStore().getSalesMenu().getTaxReceiptsList();
+    }
+
+    public static TaxReceipt findSellerTaxReceiptByEmailAndOrderId(String email, String orderId) {
+
+        List<TaxReceipt> taxReceiptList = findSellerTaxReceiptListByEmail(email);
+
+        for (TaxReceipt taxReceipt : taxReceiptList)
+            if (taxReceipt.getOrderId().equals(orderId))
+                return taxReceipt;
+        return null;
     }
 
     // ---------------------------------------------| OTHERS METHODS |---------------------------------------------

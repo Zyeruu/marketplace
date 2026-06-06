@@ -14,17 +14,11 @@ public final class SalesMenuRepository {
     public List<TaxReceipt> findByEmailAndCnpj() {
 
         String email = SellerSession.getEmail();
-        String cnpj = SellerSession.getCnpj();
 
         if (!DataBase.existsSellerByEmail(email))
-            throw new NotFoundException("Logged-in user does not exist!");
+            throw new NotFoundException("Logged-in user does not exist.");
 
-        Seller seller = DataBase.findSellerByEmail(email);
-
-        if (!seller.getStore().getCnpj().equals(cnpj))
-            throw new NotFoundException("CNPJ does not match the registered email address!");
-
-        List<TaxReceipt> taxReceiptListPointer = seller.getStore().getSalesMenu().getTaxReceiptsList();
+        List<TaxReceipt> taxReceiptListPointer = DataBase.findBuyerTaxReceiptListByEmail(email);
         List<TaxReceipt> taxReceiptListCopy = new ArrayList<>();
 
         // Copies the items from taxReceiptListPointer to taxReceiptListCopy
@@ -37,22 +31,15 @@ public final class SalesMenuRepository {
     public TaxReceipt findByEmailAndCnpjAndOrderId(String orderId) {
 
         String email = SellerSession.getEmail();
-        String cnpj = SellerSession.getCnpj();
 
         if (!DataBase.existsSellerByEmail(email))
-            throw new NotFoundException("Logged-in user does not exist!");
+            throw new NotFoundException("Logged-in user does not exist.");
 
-        Seller seller = DataBase.findSellerByEmail(email);
+        TaxReceipt taxReceipt = DataBase.findSellerTaxReceiptByEmailAndOrderId(email, orderId);
 
-        if (!seller.getStore().getCnpj().equals(cnpj))
-            throw new NotFoundException("CNPJ does not match the registered email address!");
+        if (taxReceipt == null)
+            throw new NotFoundException("The order with ID \"" + orderId + "\" was not found.");
 
-        List<TaxReceipt> taxReceiptListPointer = seller.getStore().getSalesMenu().getTaxReceiptsList();
-
-        for (TaxReceipt taxReceipt : taxReceiptListPointer)
-            if (taxReceipt.getOrderId().equals(orderId))
-                return new TaxReceipt(taxReceipt);
-
-        throw new NotFoundException("Order with ID \"" + orderId + "\" was not found!");
+        return new TaxReceipt(taxReceipt);
     }
 }

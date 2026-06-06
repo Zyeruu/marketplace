@@ -20,7 +20,7 @@ public final class SalesMenuView {
         return scanner.nextLine();
     }
 
-    public void printSalesMenu(List<TaxReceipt> taxReceiptList) {
+    public void printSales(List<TaxReceipt> taxReceiptList) {
 
         System.out.println("\n-------- SALES MENU --------\n");
 
@@ -33,12 +33,12 @@ public final class SalesMenuView {
     public void printOrder(TaxReceipt taxReceipt) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String formattedDate = taxReceipt.getDateTime().format(formatter);
 
         System.out.println("\n-------- TAX RECEIPT --------\n");
         System.out.println("Order ID: " + taxReceipt.getOrderId());
         System.out.println("Buyer name: " + taxReceipt.getBuyerName());
         System.out.println("Seller name: " + taxReceipt.getSellerName());
-        String formattedDate = taxReceipt.getDateTime().format(formatter);
         System.out.println("Date: " + formattedDate);
         System.out.printf("Total cost: R$%.2f\n", taxReceipt.getTotalCost());
         if (taxReceipt.getShipping() == 0)

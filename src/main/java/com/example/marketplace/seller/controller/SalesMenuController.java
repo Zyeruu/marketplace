@@ -19,8 +19,8 @@ public final class SalesMenuController {
 
             if (taxReceiptList.isEmpty())
                 view.printMessage("No sales history.");
-
-            view.printSalesMenu(taxReceiptList);
+            else
+                view.printSales(taxReceiptList);
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());
