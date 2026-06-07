@@ -35,7 +35,7 @@ public final class SellerAuthController {
             Seller seller = new Seller(user.getName(), user.getEmail(), user.getPassword(), store);
             repository.save(seller);
             SellerSession.login(user.getEmail(), cnpj, store.getName());
-            view.printMessage("Account created successfully!");
+            view.printMessage("Account successfully created!");
         }
         catch (IllegalArgumentException e) {
             view.printMessage(e.getMessage());
@@ -56,11 +56,6 @@ public final class SellerAuthController {
         catch (IllegalArgumentException | NotFoundException e) {
             view.printMessage(e.getMessage());
         }
-    }
-
-    public void logout() {
-        SellerSession.logout();
-        view.printMessage("You are now logged out.");
     }
 
     public String normalizeUserName(String userName) {

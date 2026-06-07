@@ -1,19 +1,18 @@
 package main.java.com.example.marketplace.checkout.repository;
 
 import main.java.com.example.marketplace.buyer.model.Buyer;
-import main.java.com.example.marketplace.buyer.model.CartItem;
+import main.java.com.example.marketplace.buyer.model.CartProduct;
+import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.exceptions.EmptyCartException;
 import main.java.com.example.marketplace.exceptions.InsufficientStockException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.checkout.dto.CheckoutRequest;
-import main.java.com.example.marketplace.checkout.model.OrderedItem;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.exceptions.OutdatedPriceException;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.seller.model.Seller;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
-import main.java.com.example.marketplace.shared.session.SellerSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,59 +26,51 @@ public final class CheckoutRepository {
         if (DataBase.isCartEmptyByEmail(email))
             throw new EmptyCartException("Your cart is empty.");
 
-        List<CartItem> cartItemList = DataBase.findCartItemListByEmail(email);
+        List<CartProduct> cartProductList = DataBase.findCartProductListByEmail(email);
 
-        for (CartItem item : cartItemList) {
+        for (CartProduct item : cartProductList) {
 
-            Seller seller = DataBase.findSellerByStoreName(item.getStoreName());
+            if (!DataBase.existsProductById(item.getId()))
+                throw new NotFoundException("Your cart contained product(s) that were unavailable. Your cart has been updated.");
 
-            if (seller == null)
-                throw new NotFoundException("Your cart contained item(s) from a seller who is no longer registered. " +
-                        "The item(s) has/have been removed from your cart.");
-
-            Product product = DataBase.findCatalogItemByStoreNameAndId(item.getStoreName(), item.getId());
-
-            if (product == null)
-                throw new NotFoundException("Your cart contained item(s) that are out of stock. Your cart has been updated.");
+            Product product = DataBase.findProductById(item.getId());
 
             if (item.getQuantity() > product.getStock())
-                throw new InsufficientStockException("Your cart contained more items than were available. Your cart has been updated.");
+                throw new InsufficientStockException("Your cart contained more product(s) than were available. Your cart has been updated.");
 
             if (product.getUnitPrice() != item.getUnitPrice())
-                throw new OutdatedPriceException("Your cart contained item(s) with outdated prices. Your cart has been updated.");
+                throw new OutdatedPriceException("Your cart contained product(s) with outdated prices. Your cart has been updated.");
         }
     }
 
-    public void confirmOrder(CheckoutRequest checkoutRequest) {
+    public void saveOrder(CheckoutRequest checkoutRequest) {
 
         String buyerEmail = BuyerSession.getEmail();
-        String sellerEmail = SellerSession.getEmail();
-
         Buyer buyer = DataBase.findBuyerByEmail(buyerEmail);
-        Seller seller = DataBase.findSellerByEmail(sellerEmail);
 
-        List<CartItem> cartItemList = DataBase.findCartItemListByEmail(buyerEmail);
-        List<OrderedItem> orderedItemList = new ArrayList<>();
+        List<CartProduct> cartProductList = DataBase.findCartProductListByEmail(buyerEmail);
+        List<String> storeNames = getStoreNames(cartProductList);
 
-        for (CartItem item : cartItemList)
-            orderedItemList.add(new OrderedItem(item.getName(), item.getId(), item.getType(), item.getQuantity(), item.getUnitPrice()));
+        for (String name : storeNames) {
 
-        TaxReceipt taxReceipt = new TaxReceipt(buyer.getName(), seller.getName(), checkoutRequest, orderedItemList);
+            Seller seller = DataBase.findSellerByStoreName(name);
 
-        saveOrder(taxReceipt);
-        updateBuyerCartAndSellerCatalog(buyerEmail);
-    }
+            List<OrderedProduct> buyerOrderedProductList = new ArrayList<>();
+            List<OrderedProduct> sellerOrderedProductList = new ArrayList<>();
 
-    public void saveOrder(TaxReceipt taxReceipt) {
+            for (CartProduct item : cartProductList)
+                if (item.getStoreName().equals(name)) {
+                    buyerOrderedProductList.add(new OrderedProduct(item.getName(), item.getId(), item.getType(), item.getQuantity(), item.getUnitPrice()));
+                    sellerOrderedProductList.add(new OrderedProduct(item.getName(), item.getId(), item.getType(), item.getQuantity(), item.getUnitPrice()));
+                }
 
-        String buyerEmail = BuyerSession.getEmail();
-        String sellerEmail = SellerSession.getEmail();
+            TaxReceipt buyerTaxReceipt = new TaxReceipt(name, buyer.getName(), checkoutRequest, sellerOrderedProductList);
+            TaxReceipt sellerTaxReceipt = new TaxReceipt(name, buyer.getName(), checkoutRequest, sellerOrderedProductList);
+            buyer.getOrdersMenu().setTaxReceiptList(buyerTaxReceipt);
+            seller.getStore().getSalesMenu().setTaxReceiptsList(sellerTaxReceipt);
+        }
 
-        Buyer buyer = DataBase.findBuyerByEmail(buyerEmail);
-        Seller seller = DataBase.findSellerByEmail(sellerEmail);
-
-        buyer.getOrdersMenu().setTaxReceiptList(taxReceipt);
-        seller.getStore().getSalesMenu().setTaxReceiptsList(taxReceipt);
+        updateBuyerCartAndSellerCatalog();
     }
 
     public CheckoutRequest getTotalCostAndShipping() {
@@ -91,49 +82,53 @@ public final class CheckoutRepository {
         return new CheckoutRequest(buyer.getCart().getTotalCost(), buyer.getCart().getShipping());
     }
 
-    public void updateBuyerCartAndSellerCatalog(String buyerEmail) {
+    public void updateBuyerCartAndSellerCatalog() {
 
-        Buyer buyer = DataBase.findBuyerByEmail(buyerEmail);
-        List<CartItem> items = DataBase.findCartItemListByEmail(buyerEmail);
+        String email = BuyerSession.getEmail();
+        Buyer buyer = DataBase.findBuyerByEmail(email);
+        List<CartProduct> cart = DataBase.findCartProductListByEmail(email);
 
-        for (CartItem item : items) {
-            List<Product> products = DataBase.findCatalogItemListByStoreName(item.getStoreName());
+        for (CartProduct item : cart) {
+            List<Product> products = DataBase.findCatalogProductListByStoreName(item.getStoreName());
             for (Product product : products)
                 if (product.getId().equals(item.getId()))
-                    DataBase.removeItemFromCatalog(item.getStoreName(), product, item.getQuantity());
+                    DataBase.removeProductFromCatalog(item.getStoreName(), product, item.getQuantity());
         }
-        items.clear();
+
+        cart.clear();
         buyer.getCart().updateCart();
     }
 
     public void updateCart() {
 
         String email = BuyerSession.getEmail();
-        List<CartItem> cartItemList = DataBase.findCartItemListByEmail(email);
+        List<CartProduct> cartProductList = DataBase.findCartProductListByEmail(email);
 
-        for (int i = 0; i < cartItemList.size(); i++) {
+        for (int i = 0; i < cartProductList.size(); i++) {
 
-            Seller seller = DataBase.findSellerByStoreName(cartItemList.get(i).getStoreName());
-
-            if (seller == null) {
-                cartItemList.remove(i);
+            if (!DataBase.existsProductById(cartProductList.get(i).getId())) {
+                cartProductList.remove(i);
                 i--;
                 continue;
             }
 
-            Product product = DataBase.findCatalogItemByStoreNameAndId(cartItemList.get(i).getStoreName(), cartItemList.get(i).getId());
+            Product product = DataBase.findProductById(cartProductList.get(i).getId());
 
-            if (product == null) {
-                cartItemList.remove(i);
-                i--;
-                continue;
-            }
+            if (cartProductList.get(i).getQuantity() > product.getStock())
+                cartProductList.get(i).setQuantity(product.getStock());
 
-            if (cartItemList.get(i).getQuantity() > product.getStock())
-                cartItemList.get(i).setQuantity(product.getStock());
-
-            if (cartItemList.get(i).getUnitPrice() != product.getUnitPrice())
-                cartItemList.get(i).setUnitPrice(product.getUnitPrice());
+            if (cartProductList.get(i).getUnitPrice() != product.getUnitPrice())
+                cartProductList.get(i).setUnitPrice(product.getUnitPrice());
         }
+    }
+
+    public List<String> getStoreNames(List<CartProduct> cartProductList) {
+
+        List<String> storeNames = new ArrayList<>();
+
+        for (CartProduct product : cartProductList)
+            if (!storeNames.contains(product.getStoreName()))
+                storeNames.add(product.getStoreName());
+        return storeNames;
     }
 }

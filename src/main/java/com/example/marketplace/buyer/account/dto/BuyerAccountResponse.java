@@ -1,27 +1,5 @@
 package main.java.com.example.marketplace.buyer.account.dto;
 
-public final class BuyerAccountResponse {
+public record BuyerAccountResponse(String name, String email, int passwordSize) {
 
-    private final String name;
-    private final String email;
-    private final int passwordSize;
-
-    public BuyerAccountResponse(String name, String email, int password) {
-        this.name = name;
-        this.email = email;
-        this.passwordSize = password;
-    }
-
-    // Getters
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public int getPasswordSize() {
-        return passwordSize;
-    }
 }

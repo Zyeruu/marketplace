@@ -10,22 +10,18 @@ public final class OrdersMenu {
     private final List<TaxReceipt> taxReceiptList = new ArrayList<>();
     private int totalOrders = 0;
 
+    public void updateTotalOrders() {
+        this.totalOrders = taxReceiptList.size();
+    }
+
     // Getters
     public List<TaxReceipt> getTaxReceiptList() {
         return taxReceiptList;
     }
 
-    public int getTotalOrders() {
-        return totalOrders;
-    }
-
     // Setters
     public void setTaxReceiptList(TaxReceipt taxReceipt) {
         this.taxReceiptList.add(taxReceipt);
-        setTotalOrders();
-    }
-
-    public void setTotalOrders() {
-        this.totalOrders++;
+        updateTotalOrders();
     }
 }

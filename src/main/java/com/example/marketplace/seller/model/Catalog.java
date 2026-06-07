@@ -1,6 +1,6 @@
 package main.java.com.example.marketplace.seller.model;
 
-import main.java.com.example.marketplace.shared.enums.ItemType;
+import main.java.com.example.marketplace.shared.enums.ProductType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,22 +8,22 @@ import java.util.List;
 public final class Catalog {
 
     private final List<Product> productList = new ArrayList<>();
-    private int totalItems = 0;
+    private int totalProducts = 0;
     private int totalFood = 0;
     private int totalMisc = 0;
 
     public void updateCatalog() {
 
         this.totalFood = 0;
-        this.totalItems = 0;
+        this.totalProducts = 0;
 
         for (Product product : productList) {
-            if (product.getType() == ItemType.FOOD)
+            if (product.getType() == ProductType.FOOD)
                 this.totalFood++;
             else
                 this.totalMisc++;
         }
-        setTotalItems();
+        setTotalProducts();
     }
 
     // Getters
@@ -31,8 +31,8 @@ public final class Catalog {
         return productList;
     }
 
-    public int getTotalItems() {
-        return totalItems;
+    public int getTotalProducts() {
+        return totalProducts;
     }
 
     public int getTotalFood() {
@@ -44,18 +44,17 @@ public final class Catalog {
     }
 
     // Setters
-
-    public void setTotalItems() {
-        this.totalItems += this.totalFood + this.totalMisc;
+    public void setTotalProducts() {
+        this.totalProducts += this.totalFood + this.totalMisc;
     }
 
     public void setTotalFood(int totalFood) {
         this.totalFood += totalFood;
-        setTotalItems();
+        setTotalProducts();
     }
 
     public void setTotalMisc(int totalMisc) {
         this.totalMisc += totalMisc;
-        setTotalItems();
+        setTotalProducts();
     }
 }

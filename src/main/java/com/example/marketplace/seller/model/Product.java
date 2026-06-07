@@ -1,13 +1,13 @@
 package main.java.com.example.marketplace.seller.model;
 
-import main.java.com.example.marketplace.shared.enums.ItemType;
+import main.java.com.example.marketplace.shared.enums.ProductType;
 
 public final class Product {
 
     private final String name;
     private final String id;
     private final String storeName;
-    private final ItemType type;
+    private final ProductType type;
     private final String brand;
     private float unitPrice;
     private final float weight;
@@ -19,7 +19,7 @@ public final class Product {
         this.name = name;
         this.id = id;
         this.storeName = storeName;
-        this.type = ItemType.FOOD;
+        this.type = ProductType.FOOD;
         this.brand = null;
         this.unitPrice = unitPrice;
         this.weight = weight;
@@ -32,7 +32,7 @@ public final class Product {
         this.name = name;
         this.id = id;
         this.storeName = storeName;
-        this.type = ItemType.MISCELLANEOUS;
+        this.type = ProductType.MISCELLANEOUS;
         this.brand = brand;
         this.unitPrice = unitPrice;
         this.weight = weight;
@@ -66,7 +66,7 @@ public final class Product {
         return storeName;
     }
 
-    public ItemType getType() {
+    public ProductType getType() {
         return type;
     }
 

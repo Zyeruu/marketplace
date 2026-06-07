@@ -2,11 +2,12 @@ package main.java.com.example.marketplace.buyer.controller;
 
 import main.java.com.example.marketplace.buyer.dto.CartRequest;
 import main.java.com.example.marketplace.buyer.dto.CartResponse;
-import main.java.com.example.marketplace.buyer.model.Buyer;
 import main.java.com.example.marketplace.buyer.repository.CartRepository;
 import main.java.com.example.marketplace.buyer.view.CartView;
+import main.java.com.example.marketplace.exceptions.EmptyCartException;
 import main.java.com.example.marketplace.exceptions.InsufficientStockException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
+import main.java.com.example.marketplace.shared.enums.ProductType;
 
 public final class CartController {
 
@@ -17,32 +18,59 @@ public final class CartController {
 
         try {
             CartResponse cartResponse = repository.findByEmail();
+            view.printBuyerCart(cartResponse);
         }
-        catch (NotFoundException e) {
+        catch (NotFoundException | EmptyCartException e) {
             view.printMessage(e.getMessage());
         }
     }
 
-    public void addItem() {
+    public void printCartByProductType() {
 
-        CartRequest cartRequest = view.getItemData();
+        ProductType productType = view.getProductType();
 
         try {
-            repository.addItem(cartRequest);
-            view.printMessage("Item added.");
+            CartResponse cartResponse = repository.findByEmailAndProductType(productType);
+            view.printBuyerCart(cartResponse);
+        }
+        catch (NotFoundException | EmptyCartException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void printCartByProductName() {
+
+        String productName = view.getProductName();
+
+        try {
+            CartResponse cartResponse = repository.findByEmailAndProductName(productName);
+            view.printBuyerCart(cartResponse);
+        }
+        catch (NotFoundException | EmptyCartException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void addProduct() {
+
+        CartRequest cartRequest = view.getProductData();
+
+        try {
+            repository.addProduct(cartRequest);
+            view.printMessage("Product added.");
         }
         catch (NotFoundException | InsufficientStockException e) {
             view.printMessage(e.getMessage());
         }
     }
 
-    public void removeItem() {
+    public void removeProduct() {
 
-        CartRequest cartRequest = view.getItemData();
+        CartRequest cartRequest = view.getProductData();
 
         try {
-            repository.removeItem(cartRequest);
-            view.printMessage("Item removed.");
+            repository.removeProduct(cartRequest);
+            view.printMessage("Product removed.");
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());

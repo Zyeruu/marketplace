@@ -1,16 +1,16 @@
 package main.java.com.example.marketplace.buyer.model;
 
-import main.java.com.example.marketplace.shared.enums.ItemType;
+import main.java.com.example.marketplace.shared.enums.ProductType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class Cart {
 
-    private final List<CartItem> cartItemsList = new ArrayList<>();
+    private final List<CartProduct> cartProductList = new ArrayList<>();
     private float totalCost = 0;
     private float shipping = 0;
-    private int totalItems = 0;
+    private int totalProducts = 0;
     private int totalFood = 0;
     private int totalMisc = 0;
 
@@ -19,13 +19,13 @@ public final class Cart {
         this.totalFood = 0;
         this.totalMisc = 0;
 
-        for (CartItem item : cartItemsList) {
-            if (item.getType() == ItemType.FOOD)
+        for (CartProduct product : cartProductList) {
+            if (product.getType() == ProductType.FOOD)
                 this.totalFood++;
             else
                 this.totalMisc++;
         }
-        setTotalItems();
+        setTotalProducts();
         updateTotalCost();
     }
 
@@ -35,11 +35,11 @@ public final class Cart {
         float totalCostMisc = 0;
         this.shipping = 0;
 
-        for (CartItem item : cartItemsList) {
-            if (item.getType() == ItemType.FOOD)
-                totalCostFood = item.getQuantity() * item.getUnitPrice();
+        for (CartProduct product : cartProductList) {
+            if (product.getType() == ProductType.FOOD)
+                totalCostFood = product.getQuantity() * product.getUnitPrice();
             else
-                totalCostMisc = item.getQuantity() * item.getUnitPrice();
+                totalCostMisc = product.getQuantity() * product.getUnitPrice();
         }
 
         if (totalCostFood < 249.9)
@@ -50,12 +50,12 @@ public final class Cart {
     }
 
     // Getters
-    public List<CartItem> getCartItemsList() {
-        return cartItemsList;
+    public List<CartProduct> getCartProductList() {
+        return cartProductList;
     }
 
-    public int getTotalItems() {
-        return totalItems;
+    public int getTotalProducts() {
+        return totalProducts;
     }
 
     public int getTotalFood() {
@@ -75,17 +75,7 @@ public final class Cart {
     }
 
     // Setters
-    public void setTotalItems() {
-        this.totalItems = this.totalFood + this.totalMisc;
-    }
-
-    public void setTotalFood(int totalFood) {
-        this.totalFood += totalFood;
-        setTotalItems();
-    }
-
-    public void setTotalMisc(int totalMisc) {
-        this.totalMisc = totalMisc;
-        setTotalItems();
+    public void setTotalProducts() {
+        this.totalProducts = this.totalFood + this.totalMisc;
     }
 }

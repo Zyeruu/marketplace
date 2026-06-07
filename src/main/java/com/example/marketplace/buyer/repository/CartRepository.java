@@ -3,13 +3,13 @@ package main.java.com.example.marketplace.buyer.repository;
 import main.java.com.example.marketplace.buyer.dto.CartRequest;
 import main.java.com.example.marketplace.buyer.dto.CartResponse;
 import main.java.com.example.marketplace.buyer.model.Buyer;
-import main.java.com.example.marketplace.buyer.model.CartItem;
+import main.java.com.example.marketplace.buyer.model.CartProduct;
 import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.exceptions.EmptyCartException;
 import main.java.com.example.marketplace.exceptions.InsufficientStockException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
+import main.java.com.example.marketplace.shared.enums.ProductType;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
-import main.java.com.example.marketplace.shared.session.StoreContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,71 +19,135 @@ public final class CartRepository {
     public CartResponse findByEmail() {
 
         String email = BuyerSession.getEmail();
-
-        if (!DataBase.existsBuyerByEmail(email))
-            throw new NotFoundException("Logged-in user does not exist!");
-
         Buyer buyer = DataBase.findBuyerByEmail(email);
 
-        List<CartItem> cartItemsListPointer = buyer.getCart().getCartItemsList();
+        if (buyer == null)
+            throw new NotFoundException("Logged-in user does not exist!");
 
-        if (cartItemsListPointer.isEmpty())
+        List<CartProduct> cartProductListPointer = DataBase.findCartProductListByEmail(email);
+
+        if (cartProductListPointer.isEmpty())
             throw new EmptyCartException("Your cart is empty.");
 
-        List<CartItem> cartItemsListCopy = new ArrayList<>();
+        List<CartProduct> cartProductListCopy = new ArrayList<>();
 
-        // Copies the items from cartItemsListPointer to cartItemsListCopy
-        for (CartItem cartItem : cartItemsListPointer)
-            cartItemsListCopy.add(new CartItem(cartItem));
+        for (CartProduct product : cartProductListPointer)
+            cartProductListCopy.add(new CartProduct(product));
 
-        int totalItems = buyer.getCart().getTotalItems();
+        int totalProducts = buyer.getCart().getTotalProducts();
         int totalFood = buyer.getCart().getTotalFood();
         int totalMisc = buyer.getCart().getTotalMisc();
 
-        return new CartResponse(cartItemsListCopy, totalItems, totalFood, totalMisc);
+        return new CartResponse(cartProductListCopy, totalProducts, totalFood, totalMisc);
     }
 
-    public void addItem(CartRequest cartRequest) {
+    public CartResponse findByEmailAndProductType(ProductType productType) {
 
         String email = BuyerSession.getEmail();
-        String cnpj = StoreContext.getCnpj();
-        String itemId = cartRequest.getId();
+        Buyer buyer = DataBase.findBuyerByEmail(email);
+
+        if (buyer == null)
+            throw new NotFoundException("Logged-in user does not exist.");
+
+        List<CartProduct> cartProductListPointer = DataBase.findCartProductListByEmail(email);
+
+        if (cartProductListPointer.isEmpty())
+            throw new EmptyCartException("Your cart is empty.");
+
+        List<CartProduct> cartProductListCopy = new ArrayList<>();
+
+        for (CartProduct product : cartProductListPointer)
+            if (product.getType() == productType)
+                cartProductListCopy.add(new CartProduct(product));
+
+        if (cartProductListCopy.isEmpty())
+            throw new NotFoundException("No results were found.");
+
+        if (productType == ProductType.FOOD) {
+            int totalFood = buyer.getCart().getTotalFood();
+            return new CartResponse(cartProductListCopy, 0, totalFood, 0);
+        }
+        else {
+            int totalMisc = buyer.getCart().getTotalMisc();
+            return new CartResponse(cartProductListCopy, 0, 0, totalMisc);
+        }
+    }
+
+    public CartResponse findByEmailAndProductName(String productName) {
+
+        String email = BuyerSession.getEmail();
+        Buyer buyer = DataBase.findBuyerByEmail(email);
+
+        if (buyer == null)
+            throw new NotFoundException("Logged-in user does not exist!");
+
+        List<CartProduct> cartProductListPointer = DataBase.findCartProductListByEmail(email);
+
+        if (cartProductListPointer.isEmpty())
+            throw new EmptyCartException("Your cart is empty.");
+
+        List<CartProduct> cartProductListCopy = new ArrayList<>();
+
+        int totalProducts;
+        int totalFood = 0;
+        int totalMisc = 0;
+
+        for (CartProduct product : cartProductListPointer) {
+            if (product.getName().equalsIgnoreCase(productName)) {
+                cartProductListCopy.add(new CartProduct(product));
+
+                if (product.getType() == ProductType.FOOD)
+                    totalFood++;
+                else
+                    totalMisc++;
+            }
+        }
+
+        totalProducts = totalFood + totalMisc;
+
+        if (cartProductListCopy.isEmpty())
+            throw new NotFoundException("No results were found.");
+
+        return new CartResponse(cartProductListCopy, totalProducts, totalFood, totalMisc);
+    }
+
+    public void addProduct(CartRequest cartRequest) {
+
+        String email = BuyerSession.getEmail();
+        String productId = cartRequest.getId();
         int quantToBeAdded = cartRequest.getQuantity();
 
-        if (!DataBase.existsByCnpj(cnpj))
-            throw new NotFoundException("Seller catalog not found.");
+        if (!DataBase.existsProductById(productId))
+            throw new NotFoundException("The product with ID \"" + productId + "\" was not found.");
 
-        if (!DataBase.existsItemByIdAndCnpj(itemId, cnpj))
-            throw new NotFoundException("The item with ID \"" + itemId + "\" was not found.");
+        int productStock = DataBase.getProductStockById(productId);
 
-        int catalogItemQuant = DataBase.getCatalogItemQuantityByIdAndCnpj(itemId, cnpj);
+        if (DataBase.existsCartProductByEmailAndId(email, productId)) {
 
-        if (DataBase.existsCartItemByEmailAndId(email, itemId)) {
+            int cartProductQuant = DataBase.findCartProductQuantityByEmailAndId(email, productId);
 
-            int cartItemQuant = DataBase.findCartItemQuantityByEmailAndId(email, itemId);
-
-            if (cartItemQuant + quantToBeAdded > catalogItemQuant)
+            if (cartProductQuant + quantToBeAdded > productStock)
                 throw new InsufficientStockException("Insufficient stock for this quantity.");
 
-            DataBase.addItemToCart(itemId, quantToBeAdded, email);
+            DataBase.updateProductQuantity(email, productId, quantToBeAdded);
             return;
         }
 
-        if (quantToBeAdded > catalogItemQuant)
+        if (quantToBeAdded > productStock)
             throw new InsufficientStockException("There is not enough stock to meet the requested quantity.");
 
-        DataBase.addItemToCart(itemId, quantToBeAdded, email, cnpj);
+        DataBase.addProductToCart(email, productId, quantToBeAdded);
     }
 
-    public void removeItem(CartRequest cartRequest) {
+    public void removeProduct(CartRequest cartRequest) {
 
         String email = BuyerSession.getEmail();
-        String itemId = cartRequest.getId();
+        String productId = cartRequest.getId();
         int quantToBeRemoved = cartRequest.getQuantity();
 
-        if (!DataBase.existsCartItemByEmailAndId(email, itemId))
-            throw new NotFoundException("The item with ID \"" + itemId + "\" was not found.");
+        if (!DataBase.existsCartProductByEmailAndId(email, productId))
+            throw new NotFoundException("The product with ID \"" + productId + "\" was not found.");
 
-        DataBase.removeItemFromCart(email, itemId, quantToBeRemoved);
+        DataBase.removeProductFromCart(email, productId, quantToBeRemoved);
     }
 }

@@ -10,16 +10,16 @@ public final class BuyerAccountView {
 
     public String getPassword() {
 
-        System.out.println("Confirm with your password: ");
+        System.out.print("Confirm with your password: ");
         return scanner.nextLine();
     }
 
     public void printBuyerProfile(BuyerAccountResponse buyerProfile) {
 
-        System.out.println("Name: " + buyerProfile.getName());
-        System.out.println("E-mail: " + buyerProfile.getEmail());
+        System.out.println("Name: " + buyerProfile.name());
+        System.out.println("E-mail: " + buyerProfile.email());
         System.out.print("Password: ");
-        for (int i = 0; i < buyerProfile.getPasswordSize(); i++)
+        for (int i = 0; i < buyerProfile.passwordSize(); i++)
             System.out.print("*");
     }
 

@@ -2,8 +2,8 @@ package main.java.com.example.marketplace.seller.auth.dto;
 
 public final class SellerAuthRequest {
 
-    private String email;
-    private String password;
+    private final String email;
+    private final String password;
     private String name;
     private String storeName;
 

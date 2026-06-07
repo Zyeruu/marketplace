@@ -9,23 +9,23 @@ import java.util.List;
 
 public final class TaxReceipt {
     private final String orderId;
-    private final String buyerName;
     private final String sellerName;
+    private final String buyerName;
     private final PaymentMethod paymentMethod;
     private final LocalDateTime dateTime;
     private final float totalCost;
     private final float shipping;
-    private final List<OrderedItem> orderedItemsList;
+    private final List<OrderedProduct> orderedProductList;
 
-    public TaxReceipt(String buyerName, String sellerName, CheckoutRequest checkoutRequest, List<OrderedItem> orderedItemsList) {
+    public TaxReceipt(String sellerName, String buyerName, CheckoutRequest checkoutRequest, List<OrderedProduct> orderedProductList) {
         this.orderId = IdGenerator.generateOrderId();
-        this.buyerName = buyerName;
         this.sellerName = sellerName;
+        this.buyerName = buyerName;
         this.paymentMethod = checkoutRequest.getPaymentMethod();
         this.dateTime = LocalDateTime.now();
         this.totalCost = checkoutRequest.getTotalCost();
         this.shipping = checkoutRequest.getShipping();
-        this.orderedItemsList = orderedItemsList;
+        this.orderedProductList = orderedProductList;
     }
 
     // Creates a copy of taxReceiptPointer
@@ -39,17 +39,17 @@ public final class TaxReceipt {
         this.totalCost = taxReceiptPointer.totalCost;
         this.shipping = taxReceiptPointer.shipping;
 
-        List<OrderedItem> orderedItemsListCopy = new ArrayList<>();
+        List<OrderedProduct> orderedProductListCopy = new ArrayList<>();
 
-        // Copies the items of taxReceiptPointer's orderedItemsList to orderedItemsListCopy
-        for (OrderedItem itemOrdered : taxReceiptPointer.getOrderedItemsList())
-            orderedItemsListCopy.add(new OrderedItem(itemOrdered));
-        this.orderedItemsList = orderedItemsListCopy;
+        // Copies the products of taxReceiptPointer's orderedProductList to orderedProductListCopy
+        for (OrderedProduct orderedProduct : taxReceiptPointer.getOrderedProductList())
+            orderedProductListCopy.add(new OrderedProduct(orderedProduct));
+        this.orderedProductList = orderedProductListCopy;
     }
 
     // Getters
-    public List<OrderedItem> getOrderedItemsList() {
-        return orderedItemsList;
+    public List<OrderedProduct> getOrderedProductList() {
+        return orderedProductList;
     }
 
     public String getOrderId() {

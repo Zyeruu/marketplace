@@ -23,7 +23,7 @@ public final class CheckoutController {
             checkoutRequest.setPaymentMethod(paymentMethod);
             view.printMessage("Processing payment of R$" + checkoutRequest.getTotalCost() + "...");
             view.printMessage("Payment confirmed!");
-            repository.confirmOrder(checkoutRequest);
+            repository.saveOrder(checkoutRequest);
             view.printMessage("Purchase confirmed!");
         }
         catch (EmptyCartException | NotFoundException | InsufficientStockException | OutdatedPriceException e) {

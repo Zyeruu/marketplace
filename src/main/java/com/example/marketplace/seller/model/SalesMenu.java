@@ -1,6 +1,6 @@
 package main.java.com.example.marketplace.seller.model;
 
-import main.java.com.example.marketplace.checkout.model.OrderedItem;
+import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 
 import java.util.ArrayList;
@@ -17,8 +17,8 @@ public final class SalesMenu {
         this.income = 0;
 
         for (TaxReceipt receipt : taxReceiptsList)
-            for (OrderedItem item : receipt.getOrderedItemsList())
-                this.income += item.getTotalCost();
+            for (OrderedProduct product : receipt.getOrderedProductList())
+                this.income += product.getTotalCost();
     }
 
     public void updateTotalSales() {

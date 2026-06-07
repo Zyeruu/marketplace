@@ -1,12 +1,14 @@
 package main.java.com.example.marketplace.seller.controller;
 
 import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
+import main.java.com.example.marketplace.exceptions.EmptyCatalogException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.seller.dto.CatalogRequest;
 import main.java.com.example.marketplace.seller.dto.CatalogResponse;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.seller.repository.CatalogRepository;
 import main.java.com.example.marketplace.seller.view.CatalogView;
+import main.java.com.example.marketplace.shared.enums.ProductType;
 
 public final class CatalogController {
 
@@ -16,14 +18,36 @@ public final class CatalogController {
     public void printCatalog() {
 
         try {
-            CatalogResponse catalogResponse = repository.findByCnpj();
-
-            if (!catalogResponse.getProductList().isEmpty())
-                view.printCatalog(catalogResponse);
-            else
-                view.printMessage("Catalog is empty!");
+            CatalogResponse catalogResponse = repository.findByEmail();
+            view.printCatalog(catalogResponse);
         }
-        catch (NotFoundException e) {
+        catch (NotFoundException | EmptyCatalogException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void printCatalogByProductType() {
+
+        ProductType productType = view.getProductType();
+
+        try {
+            CatalogResponse catalogResponse = repository.findByEmailAndProductType(productType);
+            view.printCatalog(catalogResponse);
+        }
+        catch (NotFoundException | EmptyCatalogException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void printCatalogByProductName() {
+
+        String productName = view.getProductName();
+
+        try {
+            CatalogResponse catalogResponse = repository.findByEmailAndProductName(productName);
+            view.printCatalog(catalogResponse);
+        }
+        catch (NotFoundException | EmptyCatalogException e) {
             view.printMessage(e.getMessage());
         }
     }
@@ -34,38 +58,38 @@ public final class CatalogController {
 
         try {
             repository.saveProduct(product);
-            view.printMessage("Item added to catalog.");
+            view.printMessage("Product added to catalog.");
         }
         catch (AlreadyExistsException e) {
             view.printMessage(e.getMessage());
         }
     }
 
-    public void removeCatalogItem() {
+    public void removeCatalogProduct() {
 
-        String itemId = view.getProductId();
+        String productId = view.getProductId();
 
         try {
-            repository.removeProduct(itemId);
-            view.printMessage("Item removed.");
+            repository.removeProduct(productId);
+            view.printMessage("Product removed.");
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());
         }
     }
 
-    public void updateCatalogItem() {
+    public void updateCatalogProduct() {
 
         view.printMessage("[1] Update stock\n[2] Update price");
         int choice = view.readChoice();
 
         switch (choice) {
-            case 1 -> updateCatalogItemStock();
-            case 2 -> updateCatalogItemPrice();
+            case 1 -> updateCatalogProductStock();
+            case 2 -> updateCatalogProductPrice();
         }
     }
 
-    public void updateCatalogItemStock() {
+    public void updateCatalogProductStock() {
 
         CatalogRequest catalogRequest = view.getProductIdAndStock();
 
@@ -78,7 +102,7 @@ public final class CatalogController {
         }
     }
 
-    public void updateCatalogItemPrice() {
+    public void updateCatalogProductPrice() {
 
         CatalogRequest catalogRequest = view.getProductIdAndPrice();
 

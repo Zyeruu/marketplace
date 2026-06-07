@@ -10,10 +10,10 @@ public final class SellerAccountView {
 
     public void printSellerProfile(SellerAccountResponse sellerProfile) {
 
-        System.out.println("Name: " + sellerProfile.getName());
-        System.out.println("E-mail: " + sellerProfile.getEmail());
+        System.out.println("Name: " + sellerProfile.name());
+        System.out.println("E-mail: " + sellerProfile.email());
         System.out.print("Password: ");
-        for (int i = 0; i < sellerProfile.getPasswordSize(); i++)
+        for (int i = 0; i < sellerProfile.passwordSize(); i++)
             System.out.print("*");
     }
     public String getPassword() {

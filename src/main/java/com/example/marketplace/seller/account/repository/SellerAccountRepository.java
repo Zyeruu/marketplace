@@ -3,6 +3,7 @@ package main.java.com.example.marketplace.seller.account.repository;
 import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.seller.account.dto.SellerAccountResponse;
+import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.seller.model.Seller;
 import main.java.com.example.marketplace.shared.session.SellerSession;
 
@@ -30,6 +31,10 @@ public final class SellerAccountRepository {
             throw new NotFoundException("Incorrect password.");
 
         Seller seller = DataBase.findSellerByEmail(email);
+
+        for (Product product : seller.getStore().getCatalog().getProductList())
+            DataBase.removeFromProductList(product);
+
         DataBase.deleteSeller(seller);
     }
 }

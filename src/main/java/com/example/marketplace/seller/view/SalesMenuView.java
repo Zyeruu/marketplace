@@ -1,6 +1,6 @@
 package main.java.com.example.marketplace.seller.view;
 
-import main.java.com.example.marketplace.checkout.model.OrderedItem;
+import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.seller.controller.SalesMenuController;
 
@@ -46,15 +46,15 @@ public final class SalesMenuView {
         else
             System.out.printf("Shipping: R$%.2f\n", taxReceipt.getShipping());
 
-        for (OrderedItem orderedItem : taxReceipt.getOrderedItemsList()) {
+        for (OrderedProduct orderedProduct : taxReceipt.getOrderedProductList()) {
 
-            System.out.println("\n-------- ITEMS --------\n");
-            System.out.println("Name: " + orderedItem.getName());
-            System.out.println("ID: " + orderedItem.getId());
-            System.out.println("Type: " + orderedItem.getType().name());
-            System.out.println("Quantity: " + orderedItem.getQuantity());
-            System.out.printf("Unit price: R$%.2f\n", orderedItem.getUnitPrice());
-            System.out.printf("Total cost: R$%.2f\n", orderedItem.getTotalCost());
+            System.out.println("\n-------- PRODUCTS --------\n");
+            System.out.println("Name: " + orderedProduct.getName());
+            System.out.println("ID: " + orderedProduct.getId());
+            System.out.println("Type: " + orderedProduct.getType().name());
+            System.out.println("Quantity: " + orderedProduct.getQuantity());
+            System.out.printf("Unit price: R$%.2f\n", orderedProduct.getUnitPrice());
+            System.out.printf("Total cost: R$%.2f\n", orderedProduct.getTotalCost());
         }
     }
 

@@ -27,7 +27,7 @@ public final class BuyerAuthController {
             Buyer buyer = new Buyer(user.getName(), user.getEmail(), user.getPassword());
             repository.save(buyer);
             BuyerSession.login(user.getEmail());
-            view.printMessage("Account created successfully!");
+            view.printMessage("Account successfully created!");
         }
         catch (IllegalArgumentException e) {
             view.printMessage(e.getMessage());
@@ -48,11 +48,6 @@ public final class BuyerAuthController {
         catch (IllegalArgumentException | NotFoundException e) {
             view.printMessage(e.getMessage());
         }
-    }
-
-    public void logout() {
-        BuyerSession.logout();
-        view.printMessage("You are now logged out.");
     }
 
     public String normalizeUserName(String userName) {

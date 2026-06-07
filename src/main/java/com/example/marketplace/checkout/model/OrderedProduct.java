@@ -1,17 +1,17 @@
 package main.java.com.example.marketplace.checkout.model;
 
-import main.java.com.example.marketplace.shared.enums.ItemType;
+import main.java.com.example.marketplace.shared.enums.ProductType;
 
-public final class OrderedItem {
+public final class OrderedProduct {
 
     private String name;
     private String id;
-    private ItemType type;
+    private ProductType type;
     private int quantity;
     private float unitPrice;
     private float totalCost;
 
-    public OrderedItem(String name, String id, ItemType type, int quantity, float unitPrice) {
+    public OrderedProduct(String name, String id, ProductType type, int quantity, float unitPrice) {
         this.name = name;
         this.id = id;
         this.type = type;
@@ -20,15 +20,15 @@ public final class OrderedItem {
         this.totalCost = quantity * unitPrice;
     }
 
-    // Creates a copy of orderedItemPointer
-    public OrderedItem(OrderedItem orderedItemPointer) {
+    // Creates a copy of orderedProductPointer
+    public OrderedProduct(OrderedProduct orderedProductPointer) {
 
-        this.name = orderedItemPointer.name;
-        this.id = orderedItemPointer.id;
-        this.type = orderedItemPointer.type;
-        this.quantity = orderedItemPointer.quantity;
-        this.unitPrice = orderedItemPointer.unitPrice;
-        this.totalCost = orderedItemPointer.totalCost;
+        this.name = orderedProductPointer.name;
+        this.id = orderedProductPointer.id;
+        this.type = orderedProductPointer.type;
+        this.quantity = orderedProductPointer.quantity;
+        this.unitPrice = orderedProductPointer.unitPrice;
+        this.totalCost = orderedProductPointer.totalCost;
     }
 
     // Getters
@@ -40,7 +40,7 @@ public final class OrderedItem {
         return id;
     }
 
-    public ItemType getType() {
+    public ProductType getType() {
         return type;
     }
 

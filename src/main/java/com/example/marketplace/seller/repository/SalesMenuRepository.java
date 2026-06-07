@@ -21,7 +21,7 @@ public final class SalesMenuRepository {
         List<TaxReceipt> taxReceiptListPointer = DataBase.findBuyerTaxReceiptListByEmail(email);
         List<TaxReceipt> taxReceiptListCopy = new ArrayList<>();
 
-        // Copies the items from taxReceiptListPointer to taxReceiptListCopy
+        // Copies the products from taxReceiptListPointer to taxReceiptListCopy
         for (TaxReceipt taxReceipt : taxReceiptListPointer)
             taxReceiptListCopy.add(new TaxReceipt(taxReceipt));
 

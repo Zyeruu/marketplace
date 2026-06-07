@@ -1,18 +1,18 @@
 package main.java.com.example.marketplace.buyer.model;
 
-import main.java.com.example.marketplace.shared.enums.ItemType;
+import main.java.com.example.marketplace.shared.enums.ProductType;
 
-public final class CartItem {
+public final class CartProduct {
 
     private final String name;
     private final String id;
     private final String storeName;
-    private final ItemType type;
+    private final ProductType type;
     private float unitPrice;
     private float weight;
     private int quantity;
 
-    public CartItem(String name, String id, String storeName, ItemType type, float unitPrice, float weight, int quantity) {
+    public CartProduct(String name, String id, String storeName, ProductType type, float unitPrice, float weight, int quantity) {
         this.name = name;
         this.id = id;
         this.storeName = storeName;
@@ -22,15 +22,15 @@ public final class CartItem {
         this.quantity = quantity;
     }
 
-    // Create a CartItem copy
-    public CartItem(CartItem cartItemPointer) {
-        this.name = cartItemPointer.name;
-        this.id = cartItemPointer.id;
-        this.storeName = cartItemPointer.storeName;
-        this.type = cartItemPointer.type;
-        this.unitPrice = cartItemPointer.unitPrice;
-        this.weight = cartItemPointer.weight;
-        this.quantity = cartItemPointer.quantity;
+    // Create a CartProduct copy
+    public CartProduct(CartProduct cartProductPointer) {
+        this.name = cartProductPointer.name;
+        this.id = cartProductPointer.id;
+        this.storeName = cartProductPointer.storeName;
+        this.type = cartProductPointer.type;
+        this.unitPrice = cartProductPointer.unitPrice;
+        this.weight = cartProductPointer.weight;
+        this.quantity = cartProductPointer.quantity;
     }
 
     // Getters
@@ -46,7 +46,7 @@ public final class CartItem {
         return storeName;
     }
 
-    public ItemType getType() {
+    public ProductType getType() {
         return type;
     }
 
@@ -64,10 +64,6 @@ public final class CartItem {
 
     public void setUnitPrice(float unitPrice) {
         this.unitPrice = unitPrice;
-    }
-
-    public void setWeight(float weight) {
-        this.weight = weight;
     }
 
     public void setQuantity(int quantity) {
