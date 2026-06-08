@@ -1,6 +1,5 @@
 package main.java.com.example.marketplace.seller.view;
 
-import main.java.com.example.marketplace.seller.controller.CatalogController;
 import main.java.com.example.marketplace.seller.dto.CatalogRequest;
 import main.java.com.example.marketplace.seller.dto.CatalogResponse;
 import main.java.com.example.marketplace.shared.enums.ProductType;
@@ -8,42 +7,22 @@ import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.shared.session.SellerSession;
 import main.java.com.example.marketplace.shared.utils.IdGenerator;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public final class CatalogView {
-
-    CatalogController controller;
 
     Scanner scanner = new Scanner(System.in);
 
     public void printCatalog(CatalogResponse catalog) {
 
-        System.out.println("-------- PRODUCTS --------\n\n");
+        System.out.println("-------- PRODUCTS --------\n");
 
-        for (Product p : catalog.getProductList())
-            if (p.getType() == ProductType.FOOD) {
-                System.out.println("Name: " + p.getName());
-                System.out.println("ID: " + p.getId());
-                System.out.println("Seller: " + p.getStoreName());
-                System.out.println("Type: " + p.getType().name());
-                System.out.printf("Unit Price: R$%.2f\n", p.getUnitPrice());
-                System.out.printf("Weight: %.1fKg\n", p.getWeight());
-                System.out.println("Stock: " + p.getStock());
-            }
-
-        for (Product p : catalog.getProductList())
-            if (p.getType() == ProductType.MISCELLANEOUS) {
-                System.out.println("Name: " + p.getName());
-                System.out.println("ID: " + p.getId());
-                System.out.println("Seller: " + p.getStoreName());
-                System.out.println("Type: " + p.getType().name());
-                System.out.println("Brand: " + p.getBrand());
-                System.out.printf("Unit Price: R$%.2f\n", p.getUnitPrice());
-                System.out.printf("Weight: %.1fKg\n", p.getWeight());
-                System.out.println("Stock: " + p.getStock());
-                System.out.println("Warranty: " + p.getWarranty());
-            }
+        for (Product p : catalog.getProductList()) {
+            System.out.println("\nName: " + p.getName());
+            System.out.println("ID: " + p.getId());
+            System.out.printf("Unit Price: R$%.2f\n", p.getUnitPrice());
+            System.out.println("Stock: " + p.getStock());
+        }
 
         if (catalog.getTotalFood() > 0)
             System.out.println("Total Food: " + catalog.getTotalFood());
@@ -51,6 +30,20 @@ public final class CatalogView {
             System.out.println("Total Miscellaneous: " + catalog.getTotalMisc());
         if (catalog.getTotalProduct() > 0)
             System.out.println("Total Products: " + catalog.getTotalProduct());
+    }
+
+    public void printCatalogProduct(Product product) {
+
+        System.out.println("Name: " + product.getName());
+        System.out.println("ID: " + product.getId());
+        System.out.println("Type: " + product.getType().name());
+        if (product.getBrand() != null)
+            System.out.println("Brand: " + product.getBrand());
+        System.out.printf("Unit Price: R$%.2f\n", product.getUnitPrice());
+        System.out.printf("Weight: %.1fKg\n", product.getWeight());
+        System.out.println("Stock: " + product.getStock());
+        if (product.getWarranty() > 0)
+            System.out.println("Warranty: " + product.getWarranty());
     }
 
     public Product getProductData() {

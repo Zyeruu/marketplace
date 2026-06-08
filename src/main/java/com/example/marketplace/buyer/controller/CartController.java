@@ -2,6 +2,7 @@ package main.java.com.example.marketplace.buyer.controller;
 
 import main.java.com.example.marketplace.buyer.dto.CartRequest;
 import main.java.com.example.marketplace.buyer.dto.CartResponse;
+import main.java.com.example.marketplace.buyer.model.CartProduct;
 import main.java.com.example.marketplace.buyer.repository.CartRepository;
 import main.java.com.example.marketplace.buyer.view.CartView;
 import main.java.com.example.marketplace.exceptions.EmptyCartException;
@@ -45,6 +46,19 @@ public final class CartController {
         try {
             CartResponse cartResponse = repository.findByEmailAndProductName(productName);
             view.printBuyerCart(cartResponse);
+        }
+        catch (NotFoundException | EmptyCartException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void printAllProductDetails() {
+
+        String productId = view.getProductId();
+
+        try {
+            CartProduct cartProduct = repository.findByEmailAndProductId(productId);
+            view.printCartProduct(cartProduct);
         }
         catch (NotFoundException | EmptyCartException e) {
             view.printMessage(e.getMessage());

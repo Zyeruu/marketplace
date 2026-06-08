@@ -6,7 +6,6 @@ import main.java.com.example.marketplace.buyer.dto.CartResponse;
 import main.java.com.example.marketplace.buyer.model.CartProduct;
 import main.java.com.example.marketplace.shared.enums.ProductType;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public final class CartView {
@@ -24,10 +23,8 @@ public final class CartView {
                 System.out.println("Name: " + cartProduct.getName());
                 System.out.println("ID: " + cartProduct.getId());
                 System.out.println("Seller: " + cartProduct.getStoreName());
-                System.out.println("Type: " + cartProduct.getType());
                 System.out.println("Quantity: " + cartProduct.getQuantity());
                 System.out.printf("Unit Price: R$%.2f\n", cartProduct.getUnitPrice());
-                System.out.printf("Weight: %.1fKg", cartProduct.getWeight());
             }
         }
 
@@ -36,10 +33,8 @@ public final class CartView {
                 System.out.println("Name: " + cartProduct.getName());
                 System.out.println("ID: " + cartProduct.getId());
                 System.out.println("Seller: " + cartProduct.getStoreName());
-                System.out.println("Type: " + cartProduct.getType());
                 System.out.println("Quantity: " + cartProduct.getQuantity());
                 System.out.printf("Unit Price: R$%.2f\n", cartProduct.getUnitPrice());
-                System.out.printf("Weight: %.1fKg", cartProduct.getWeight());
             }
         }
 
@@ -49,6 +44,21 @@ public final class CartView {
             System.out.println("Total Miscellaneous: " + cart.getTotalMisc());
         if (cart.getTotalProducts() > 0)
             System.out.println("\nTotal Products: " + cart.getTotalProducts());
+    }
+
+    public void printCartProduct(CartProduct cartProduct) {
+
+        System.out.println("Name: " + cartProduct.getName());
+        System.out.println("ID: " + cartProduct.getId());
+        System.out.println("Seller: " + cartProduct.getStoreName());
+        if (cartProduct.getType() != null)
+            System.out.println("Brand: " + cartProduct.getBrand());
+        System.out.println("Type: " + cartProduct.getType());
+        System.out.println("Quantity: " + cartProduct.getQuantity());
+        System.out.printf("Unit Price: R$%.2f\n", cartProduct.getUnitPrice());
+        System.out.printf("Weight: %.1fKg", cartProduct.getWeight());
+        if (cartProduct.getWarranty() > 0)
+            System.out.println("Warranty: " + cartProduct.getWarranty() + " months");
     }
 
     public CartRequest getProductData() {
@@ -89,6 +99,13 @@ public final class CartView {
     public String getProductName() {
 
         System.out.print("Enter the product name: ");
+        System.out.flush();
+        return scanner.nextLine();
+    }
+
+    public String getProductId() {
+
+        System.out.print("Enter the product ID: ");
         System.out.flush();
         return scanner.nextLine();
     }

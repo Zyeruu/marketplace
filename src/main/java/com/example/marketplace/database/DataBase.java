@@ -39,7 +39,7 @@ public final class DataBase {
         Buyer buyer = findBuyerByEmail(email);
         Product product = findProductById(productId);
 
-        CartProduct item = new CartProduct(product.getName(), productId, product.getStoreName(), product.getType(), product.getUnitPrice(), product.getWeight(), quantity);
+        CartProduct item = new CartProduct(product.getName(), productId, product.getStoreName(), product.getType(), product.getBrand(), product.getUnitPrice(), product.getWeight(), quantity, product.getWarranty());
         buyer.getCart().getCartProductList().add(item);
 
         buyer.getCart().updateCart();
@@ -149,6 +149,12 @@ public final class DataBase {
     }
 
     // -----------------------------------------------| CATALOG METHODS |--------------------------------------------
+
+    public static List<Product> findCatalogProductListByEmail(String email) {
+
+        Seller seller = findSellerByEmail(email);
+        return seller.getStore().getCatalog().getProductList();
+    }
 
     public static boolean existsCatalogProductByIdAndCnpj(String productId, String cnpj) {
 

@@ -1,6 +1,5 @@
 package main.java.com.example.marketplace.buyer.repository;
 
-import main.java.com.example.marketplace.buyer.model.Buyer;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.exceptions.NotFoundException;

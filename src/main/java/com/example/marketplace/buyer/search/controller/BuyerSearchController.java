@@ -18,7 +18,7 @@ public final class BuyerSearchController {
 
         try {
             List<Product> productList = repository.findProducts();
-            view.printProductList(productList);
+            view.printProductListCompacted(productList);
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());
@@ -31,7 +31,7 @@ public final class BuyerSearchController {
 
         try {
             List<Product> productList = repository.findByName(productName);
-            view.printProductList(productList);
+            view.printProductListCompacted(productList);
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());
@@ -44,7 +44,7 @@ public final class BuyerSearchController {
 
         try {
             List<Product> productList = repository.findByType(productType);
-            view.printProductList(productList);
+            view.printProductListCompacted(productList);
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());
@@ -57,7 +57,20 @@ public final class BuyerSearchController {
 
         try {
             List<Product> productList = repository.findByNameAndType(searchRequest);
-            view.printProductList(productList);
+            view.printProductListCompacted(productList);
+        }
+        catch (NotFoundException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void printAllProductDetails() {
+
+        String productId = view.getProductId();
+
+        try {
+            Product product = repository.findById(productId);
+            view.printProduct(product);
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());

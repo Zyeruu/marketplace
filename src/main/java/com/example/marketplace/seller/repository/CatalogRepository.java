@@ -21,7 +21,7 @@ public final class CatalogRepository {
         String email = SellerSession.getEmail();
         Seller seller = DataBase.findSellerByEmail(email);
 
-        if (seller == null)
+        if (!DataBase.existsSellerByEmail(email))
             throw new NotFoundException("[!] Logged-in user does not exist.");
 
         List<Product> productListPointer = seller.getStore().getCatalog().getProductList();
@@ -109,6 +109,32 @@ public final class CatalogRepository {
             throw new NotFoundException("[!] No results were found.");
 
         return new CatalogResponse(productListCopy, totalProducts, totalFood, totalMisc);
+    }
+
+    public Product findByEmailAndProductId(String productId) {
+
+        String email = SellerSession.getEmail();
+
+        if (!DataBase.existsSellerByEmail(email))
+            throw new NotFoundException("[!] Logged-in user does not exist.");
+
+        List<Product> productListPointer = DataBase.findCatalogProductListByEmail(email);
+
+        if (productListPointer.isEmpty())
+            throw new EmptyCatalogException("[!] Your catalog is empty.");
+
+        Product catalogProduct = null;
+
+        for (Product product : productListPointer)
+            if (product.getId().equals(productId)) {
+                catalogProduct = new Product(product);
+                break;
+            }
+
+        if (catalogProduct == null)
+            throw new NotFoundException("The product with ID \"" + productId + "\" was not found.");
+
+        return catalogProduct;
     }
 
     public void saveProduct(Product product) {

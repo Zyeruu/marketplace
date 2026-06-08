@@ -52,6 +52,19 @@ public final class CatalogController {
         }
     }
 
+    public void printAllProductDetails() {
+
+        String productId = view.getProductId();
+
+        try {
+            Product product = repository.findByEmailAndProductId(productId);
+            view.printCatalogProduct(product);
+        }
+        catch (NotFoundException | EmptyCatalogException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
     public void addProductToCatalog() {
 
         Product product = view.getProductData();

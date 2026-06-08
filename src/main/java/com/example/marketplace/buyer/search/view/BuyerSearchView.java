@@ -4,7 +4,6 @@ import main.java.com.example.marketplace.buyer.search.dto.BuyerSearchRequest;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.shared.enums.ProductType;
 
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,23 +11,35 @@ public final class BuyerSearchView {
 
     Scanner scanner = new Scanner(System.in);
 
-    public void printProductList(List<Product> productList) {
+    public void printProduct(Product product) {
 
         System.out.println("-------- PRODUCTS --------\n");
-        System.out.println("Total products found: " + productList.size());
+
+        System.out.println("Name: " + product.getName());
+        System.out.println("ID: " + product.getId());
+        System.out.println("Seller: " + product.getStoreName());
+        System.out.println("Type: " + product.getType().name());
+        if (product.getBrand() != null)
+            System.out.println("Brand: " + product.getBrand());
+        System.out.printf("Unit Price: R$%.2f\n", product.getUnitPrice());
+        System.out.printf("Weight: %.1fKg\n", product.getWeight());
+        System.out.println("Stock: " + product.getStock());
+        if (product.getWarranty() != 0)
+            System.out.println("Warranty: " + product.getWarranty());
+    }
+
+    public void printProductListCompacted(List<Product> productList) {
+
+        System.out.println("-------- PRODUCTS --------\n");
+        System.out.println("\nTotal products found: " + productList.size() + "\n");
+
         for (Product product : productList) {
 
             System.out.println("Name: " + product.getName());
             System.out.println("ID: " + product.getId());
             System.out.println("Seller: " + product.getStoreName());
-            System.out.println("Type: " + product.getType().name());
-            if (product.getBrand() != null)
-                System.out.println("Brand: " + product.getBrand());
             System.out.printf("Unit Price: R$%.2f\n", product.getUnitPrice());
-            System.out.printf("Weight: %.1fKg\n", product.getWeight());
             System.out.println("Stock: " + product.getStock());
-            if (product.getWarranty() != 0)
-                System.out.println("Warranty: " + product.getWarranty());
         }
     }
 
@@ -66,6 +77,13 @@ public final class BuyerSearchView {
         String productName = getProductName();
         ProductType productType = getProductType();
         return new BuyerSearchRequest(productName, productType);
+    }
+
+    public String getProductId() {
+
+        System.out.print("Enter the product ID: ");
+        System.out.flush();
+        return scanner.nextLine();
     }
 
     public void printMessage(String message) {

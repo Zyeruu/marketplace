@@ -111,6 +111,33 @@ public final class CartRepository {
         return new CartResponse(cartProductListCopy, totalProducts, totalFood, totalMisc);
     }
 
+    public CartProduct findByEmailAndProductId(String productId) {
+
+        String email = BuyerSession.getEmail();
+        Buyer buyer = DataBase.findBuyerByEmail(email);
+
+        if (buyer == null)
+            throw new NotFoundException("[!] Logged-in user does not exist!");
+
+        List<CartProduct> cartProductListPointer = DataBase.findCartProductListByEmail(email);
+
+        if (cartProductListPointer.isEmpty())
+            throw new EmptyCartException("[!] Your cart is empty.");
+
+        CartProduct cartProduct = null;
+
+        for (CartProduct product : cartProductListPointer)
+            if (product.getId().equals(productId)) {
+                cartProduct = new CartProduct(product);
+                break;
+            }
+
+        if (cartProduct == null)
+            throw new NotFoundException("[!] The product with ID \"" + productId + "\" was not found.");
+
+        return cartProduct;
+    }
+
     public void addProduct(CartRequest cartRequest) {
 
         String email = BuyerSession.getEmail();

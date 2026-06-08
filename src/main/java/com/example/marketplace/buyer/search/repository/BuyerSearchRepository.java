@@ -70,4 +70,15 @@ public final class BuyerSearchRepository {
 
         return productList;
     }
+
+    public Product findById(String productId) {
+
+        if (!DataBase.existsProductById(productId))
+            throw new NotFoundException("The product with ID \"" + productId + "\" was not found.");
+
+        for (Product product : DataBase.getProductList())
+            if (product.getId().equals(productId))
+                return new Product(product);
+        return null;
+    }
 }
