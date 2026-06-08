@@ -10,16 +10,35 @@ public final class SellerAccountView {
 
     public void printSellerProfile(SellerAccountResponse sellerProfile) {
 
-        System.out.println("Name: " + sellerProfile.name());
-        System.out.println("E-mail: " + sellerProfile.email());
+        System.out.println("----------| PROFILE |----------");
+        System.out.println("Name: " + sellerProfile.getName());
+        System.out.println("E-mail: " + sellerProfile.getEmail());
         System.out.print("Password: ");
-        for (int i = 0; i < sellerProfile.passwordSize(); i++)
+        for (int i = 0; i < sellerProfile.getPasswordSize(); i++)
             System.out.print("*");
-        System.out.println();
+
+        System.out.println("----------| STORE |----------");
+        System.out.println("Name: " + sellerProfile.getStoreName());
+        System.out.println("CNPJ: " + sellerProfile.getCnpj());
     }
+
     public String getPassword() {
 
         System.out.print("Confirm with your password: ");
+        System.out.flush();
+        return scanner.nextLine();
+    }
+
+    public String getNewPassword() {
+
+        System.out.print("Enter your new password: ");
+        System.out.flush();
+        return scanner.nextLine();
+    }
+
+    public String getEmail() {
+
+        System.out.print("Enter the new e-mail: ");
         System.out.flush();
         return scanner.nextLine();
     }

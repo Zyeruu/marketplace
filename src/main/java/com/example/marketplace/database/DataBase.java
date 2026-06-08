@@ -31,6 +31,17 @@ public final class DataBase {
         buyerList.remove(buyer);
     }
 
+    public static void updateBuyerEmail(String currentEmail, String newEmail) {
+
+        Buyer buyer = findBuyerByEmail(currentEmail);
+        buyer.setEmail(newEmail);
+    }
+
+    public static void updateBuyerPassword(String email, String newPassword) {
+
+        Buyer buyer = findBuyerByEmail(email);
+        buyer.setPassword(newPassword);
+    }
 
     // ---------------------------------------------| CART METHODS |---------------------------------------------
 
@@ -148,6 +159,18 @@ public final class DataBase {
         sellerList.remove(seller);
     }
 
+    public static void updateSellerEmail(String currentEmail, String newEmail) {
+
+        Seller seller = findSellerByEmail(currentEmail);
+        seller.setEmail(newEmail);
+    }
+
+    public static void updateSellerPassword(String email, String newPassword) {
+
+        Seller seller = findSellerByEmail(email);
+        seller.setPassword(newPassword);
+    }
+
     // -----------------------------------------------| CATALOG METHODS |--------------------------------------------
 
     public static List<Product> findCatalogProductListByEmail(String email) {
@@ -191,8 +214,9 @@ public final class DataBase {
 
         for (Product product : seller.getStore().getCatalog().getProductList())
             if (product.getId().equals(productId)) {
-                productList.remove(product);
+                removeFromProductList(product);
                 seller.getStore().getCatalog().getProductList().remove(product);
+                seller.getStore().getCatalog().updateCatalog();
                 break;
             }
     }
@@ -329,13 +353,8 @@ public final class DataBase {
 
         Seller seller = findSellerByStoreName(storeName);
 
-        if (quantity == product.getStock()) {
-            removeFromProductList(product);
-            seller.getStore().getCatalog().getProductList().remove(product);
-        }
-        else
-            product.updateStock(product.getStock() - quantity);
-
+        removeFromProductList(product);
+        seller.getStore().getCatalog().getProductList().remove(product);
         seller.getStore().getCatalog().updateCatalog();
     }
 

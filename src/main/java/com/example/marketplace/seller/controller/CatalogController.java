@@ -84,7 +84,7 @@ public final class CatalogController {
 
         try {
             repository.removeProduct(productId);
-            view.printMessage("Product removed.");
+            view.printMessage("Product deleted.");
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());

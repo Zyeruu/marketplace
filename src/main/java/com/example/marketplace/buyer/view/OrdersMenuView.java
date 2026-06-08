@@ -13,12 +13,14 @@ public final class OrdersMenuView {
 
     public void printOrders(List<TaxReceipt> taxReceiptList) {
 
-        System.out.println("\n-------- ORDERS MENU --------\n");
+        System.out.println("\n--------| ORDERS MENU |--------");
 
         for (TaxReceipt taxReceipt : taxReceiptList)
             printOrder(taxReceipt);
 
+        System.out.println("--------------------------------");
         System.out.println("Total Orders: " + taxReceiptList.size());
+        System.out.println("--------------------------------");
     }
 
     public void printOrder(TaxReceipt taxReceipt) {
@@ -26,26 +28,23 @@ public final class OrdersMenuView {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String formattedDate = taxReceipt.getDateTime().format(formatter);
 
-        System.out.println("\n-------- TAX RECEIPT --------\n");
+        System.out.println("\n--------| TAX RECEIPT |--------\n");
         System.out.println("Order ID: " + taxReceipt.getOrderId());
         System.out.println("Seller name: " + taxReceipt.getSellerName());
         System.out.println("Buyer name: " + taxReceipt.getBuyerName());
         System.out.println("Date: " + formattedDate);
-        System.out.printf("Total cost: R$%.2f\n", taxReceipt.getTotalCost());
-        if (taxReceipt.getShipping() == 0)
-            System.out.println("Shipping: Free");
-        else
-            System.out.printf("Shipping: R$%.2f\n", taxReceipt.getShipping());
+        System.out.printf("Total: R$%.2f\n", taxReceipt.getTotalCost());
+
+        System.out.println("\n--------| PRODUCTS |--------\n");
 
         for (OrderedProduct orderedProduct : taxReceipt.getOrderedProductList()) {
 
-            System.out.println("\n-------- PRODUCTS --------\n");
             System.out.println("Name: " + orderedProduct.getName());
             System.out.println("ID: " + orderedProduct.getId());
             System.out.println("Type: " + orderedProduct.getType().name());
             System.out.println("Quantity: " + orderedProduct.getQuantity());
             System.out.printf("Unit price: R$%.2f\n", orderedProduct.getUnitPrice());
-            System.out.printf("Total cost: R$%.2f\n", orderedProduct.getTotalCost());
+            System.out.printf("Total: R$%.2f\n\n", orderedProduct.getTotalCost());
         }
     }
 

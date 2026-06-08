@@ -27,7 +27,7 @@ public final class BuyerAuthView {
     }
 
     public BuyerAuthRequest collectEmailAndPassword() {
-        System.out.println("-------- LOGIN --------\n");
+        System.out.println("--------| LOGIN |--------\n");
 
         System.out.print("E-mail: ");
         System.out.flush();

@@ -5,6 +5,7 @@ import main.java.com.example.marketplace.seller.account.dto.SellerAccountRespons
 import main.java.com.example.marketplace.seller.account.repository.SellerAccountRepository;
 import main.java.com.example.marketplace.seller.account.view.SellerAccountView;
 import main.java.com.example.marketplace.shared.session.SellerSession;
+import main.java.com.example.marketplace.shared.utils.Validator;
 
 public final class SellerAccountController {
 
@@ -18,6 +19,36 @@ public final class SellerAccountController {
             view.printSellerProfile(accountResponse);
         }
         catch (NotFoundException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void changeEmail() {
+
+        String password = view.getPassword();
+
+        try {
+            repository.verifyPassword(password);
+            String newEmail = view.getEmail();
+            Validator.isValidEmail(newEmail);
+            repository.updateEmail(newEmail);
+        }
+        catch (NotFoundException | IllegalArgumentException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void changePassword() {
+
+        String password = view.getPassword();
+
+        try {
+            repository.verifyPassword(password);
+            String newPassword = view.getNewPassword();
+            Validator.isValidPassword(newPassword);
+            repository.updatePassword(newPassword);
+        }
+        catch (NotFoundException | IllegalArgumentException e) {
             view.printMessage(e.getMessage());
         }
     }

@@ -22,6 +22,20 @@ public final class BuyerAccountRepository {
         return new BuyerAccountResponse(name, email, passwordSize);
     }
 
+    public void updateEmail(String newEmail) {
+
+        String currentEmail = BuyerSession.getEmail();
+
+        DataBase.updateBuyerEmail(currentEmail, newEmail);
+    }
+
+    public void updatePassword(String newPassword) {
+
+        String email = BuyerSession.getEmail();
+
+        DataBase.updateBuyerPassword(email, newPassword);
+    }
+
     public void deleteAccount(String password) {
 
         String email = BuyerSession.getEmail();
@@ -31,5 +45,13 @@ public final class BuyerAccountRepository {
 
         Buyer buyer = DataBase.findBuyerByEmail(email);
         DataBase.deleteBuyer(buyer);
+    }
+
+    public void verifyPassword(String password) {
+
+        String email = BuyerSession.getEmail();
+
+        if (!DataBase.existsBuyerByEmailAndPassword(email, password))
+            throw new NotFoundException("Incorrect password.");
     }
 }

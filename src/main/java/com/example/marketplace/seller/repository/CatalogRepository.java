@@ -21,7 +21,7 @@ public final class CatalogRepository {
         String email = SellerSession.getEmail();
         Seller seller = DataBase.findSellerByEmail(email);
 
-        if (!DataBase.existsSellerByEmail(email))
+        if (seller == null)
             throw new NotFoundException("[!] Logged-in user does not exist.");
 
         List<Product> productListPointer = seller.getStore().getCatalog().getProductList();

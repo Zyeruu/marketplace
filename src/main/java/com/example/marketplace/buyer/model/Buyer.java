@@ -3,8 +3,8 @@ package main.java.com.example.marketplace.buyer.model;
 public final class Buyer {
 
     private final String name;
-    private final String email;
-    private final String password;
+    private String email;
+    private String password;
     private final Cart cart;
     private final OrdersMenu ordersMenu;
 
@@ -35,5 +35,14 @@ public final class Buyer {
 
     public OrdersMenu getOrdersMenu() {
         return ordersMenu;
+    }
+
+    // Setters
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

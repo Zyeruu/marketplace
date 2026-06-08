@@ -8,13 +8,6 @@ public final class BuyerAccountView {
 
     Scanner scanner = new Scanner(System.in);
 
-    public String getPassword() {
-
-        System.out.print("Confirm with your password: ");
-        System.out.flush();
-        return scanner.nextLine();
-    }
-
     public void printBuyerProfile(BuyerAccountResponse buyerProfile) {
 
         System.out.println("Name: " + buyerProfile.name());
@@ -23,6 +16,27 @@ public final class BuyerAccountView {
         for (int i = 0; i < buyerProfile.passwordSize(); i++)
             System.out.print("*");
         System.out.println();
+    }
+
+    public String getPassword() {
+
+        System.out.print("Confirm with your password: ");
+        System.out.flush();
+        return scanner.nextLine();
+    }
+
+    public String getNewPassword() {
+
+        System.out.print("Enter your new password: ");
+        System.out.flush();
+        return scanner.nextLine();
+    }
+
+    public String getEmail() {
+
+        System.out.print("Enter the new e-mail: ");
+        System.out.flush();
+        return scanner.nextLine();
     }
 
     public void printMessage(String message) {

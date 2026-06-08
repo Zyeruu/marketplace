@@ -15,13 +15,14 @@ public final class CatalogView {
 
     public void printCatalog(CatalogResponse catalog) {
 
-        System.out.println("-------- PRODUCTS --------\n");
+        System.out.println("\n--------| PRODUCTS |--------\n");
 
         for (Product p : catalog.getProductList()) {
-            System.out.println("\nName: " + p.getName());
+            System.out.println("Name: " + p.getName());
             System.out.println("ID: " + p.getId());
             System.out.printf("Unit Price: R$%.2f\n", p.getUnitPrice());
             System.out.println("Stock: " + p.getStock());
+            System.out.println();
         }
 
         if (catalog.getTotalFood() > 0)
@@ -34,7 +35,9 @@ public final class CatalogView {
 
     public void printCatalogProduct(Product product) {
 
-        System.out.println("Name: " + product.getName());
+        System.out.println("\n--------| PRODUCT |--------\n");
+
+        System.out.println("\nName: " + product.getName());
         System.out.println("ID: " + product.getId());
         System.out.println("Type: " + product.getType().name());
         if (product.getBrand() != null)
@@ -44,6 +47,7 @@ public final class CatalogView {
         System.out.println("Stock: " + product.getStock());
         if (product.getWarranty() > 0)
             System.out.println("Warranty: " + product.getWarranty());
+        System.out.println();
     }
 
     public Product getProductData() {
@@ -51,10 +55,10 @@ public final class CatalogView {
         int choice;
         String storeName = SellerSession.getStoreName();
 
-        System.out.println("---------- CATALOG ----------\n");
+        System.out.println("----------| CATALOG |----------\n");
 
         System.out.println("Select the product type:");
-        System.out.print("[1] Food\n[2] Miscellaneous\n>> ");
+        System.out.println("[1] Food\n[2] Miscellaneous");
         System.out.flush();
         choice = readChoice();
 
@@ -94,7 +98,7 @@ public final class CatalogView {
     public ProductType getProductType() {
 
         ProductType productType = null;
-        int choice = 0;
+        int choice;
 
         System.out.println("Select the product type:");
 
@@ -203,12 +207,12 @@ public final class CatalogView {
 
         while (true) {
             try {
+                System.out.print(">> ");
+                System.out.flush();
                 int choice = Integer.parseInt(scanner.nextLine());
 
                 if (choice != 1 && choice != 2) {
                     printMessage("Invalid option. Try again.");
-                    System.out.print(">> ");
-                    System.out.flush();
                     continue;
                 }
 
@@ -216,8 +220,6 @@ public final class CatalogView {
             }
             catch (NumberFormatException e) {
                 printMessage("Invalid input. Please enter a number.");
-                System.out.print(">> ");
-                System.out.flush();
             }
         }
     }

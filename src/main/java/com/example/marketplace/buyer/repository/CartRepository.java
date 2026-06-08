@@ -34,11 +34,12 @@ public final class CartRepository {
         for (CartProduct product : cartProductListPointer)
             cartProductListCopy.add(new CartProduct(product));
 
+        float totalCost = buyer.getCart().getTotalCost();
         int totalProducts = buyer.getCart().getTotalProducts();
         int totalFood = buyer.getCart().getTotalFood();
         int totalMisc = buyer.getCart().getTotalMisc();
 
-        return new CartResponse(cartProductListCopy, totalProducts, totalFood, totalMisc);
+        return new CartResponse(cartProductListCopy, totalCost,totalProducts, totalFood, totalMisc);
     }
 
     public CartResponse findByEmailAndProductType(ProductType productType) {
@@ -56,20 +57,25 @@ public final class CartRepository {
 
         List<CartProduct> cartProductListCopy = new ArrayList<>();
 
-        for (CartProduct product : cartProductListPointer)
-            if (product.getType() == productType)
+        float totalCost = 0;
+
+        for (CartProduct product : cartProductListPointer) {
+            if (product.getType() == productType) {
                 cartProductListCopy.add(new CartProduct(product));
+                totalCost += product.getUnitPrice() * product.getQuantity();
+            }
+        }
 
         if (cartProductListCopy.isEmpty())
             throw new NotFoundException("[!] No results were found.");
 
         if (productType == ProductType.FOOD) {
             int totalFood = buyer.getCart().getTotalFood();
-            return new CartResponse(cartProductListCopy, 0, totalFood, 0);
+            return new CartResponse(cartProductListCopy, totalCost, 0, totalFood, 0);
         }
         else {
             int totalMisc = buyer.getCart().getTotalMisc();
-            return new CartResponse(cartProductListCopy, 0, 0, totalMisc);
+            return new CartResponse(cartProductListCopy, totalCost, 0, 0, totalMisc);
         }
     }
 
@@ -88,6 +94,7 @@ public final class CartRepository {
 
         List<CartProduct> cartProductListCopy = new ArrayList<>();
 
+        float totalCost = 0;
         int totalProducts;
         int totalFood = 0;
         int totalMisc = 0;
@@ -95,6 +102,8 @@ public final class CartRepository {
         for (CartProduct product : cartProductListPointer) {
             if (product.getName().equalsIgnoreCase(productName)) {
                 cartProductListCopy.add(new CartProduct(product));
+
+                totalCost += product.getUnitPrice() * product.getQuantity();
 
                 if (product.getType() == ProductType.FOOD)
                     totalFood++;
@@ -108,7 +117,7 @@ public final class CartRepository {
         if (cartProductListCopy.isEmpty())
             throw new NotFoundException("[!] No results were found.");
 
-        return new CartResponse(cartProductListCopy, totalProducts, totalFood, totalMisc);
+        return new CartResponse(cartProductListCopy, totalCost, totalProducts, totalFood, totalMisc);
     }
 
     public CartProduct findByEmailAndProductId(String productId) {

@@ -5,9 +5,9 @@ public final class SellerAuthResponse {
     private final String cnpj;
     private final String storeName;
 
-    public SellerAuthResponse(String cnpj, String storeName) {
-        this.cnpj = cnpj;
+    public SellerAuthResponse(String storeName, String cnpj) {
         this.storeName = storeName;
+        this.cnpj = cnpj;
     }
 
     // Getters

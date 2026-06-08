@@ -15,7 +15,7 @@ public final class Catalog {
     public void updateCatalog() {
 
         this.totalFood = 0;
-        this.totalProducts = 0;
+        this.totalMisc = 0;
 
         for (Product product : productList) {
             if (product.getType() == ProductType.FOOD)
@@ -23,7 +23,8 @@ public final class Catalog {
             else
                 this.totalMisc++;
         }
-        setTotalProducts();
+
+        this.totalProducts = this.totalFood + this.totalMisc;
     }
 
     // Getters
@@ -44,17 +45,15 @@ public final class Catalog {
     }
 
     // Setters
-    public void setTotalProducts() {
-        this.totalProducts += this.totalFood + this.totalMisc;
+    public void setTotalProducts(int totalProducts) {
+        this.totalProducts = totalProducts;
     }
 
     public void setTotalFood(int totalFood) {
-        this.totalFood += totalFood;
-        setTotalProducts();
+        this.totalFood = totalFood;
     }
 
     public void setTotalMisc(int totalMisc) {
-        this.totalMisc += totalMisc;
-        setTotalProducts();
+        this.totalMisc = totalMisc;
     }
 }

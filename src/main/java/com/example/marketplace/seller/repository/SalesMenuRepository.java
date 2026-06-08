@@ -1,6 +1,7 @@
 package main.java.com.example.marketplace.seller.repository;
 
 import main.java.com.example.marketplace.database.DataBase;
+import main.java.com.example.marketplace.exceptions.EmptySalesException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.shared.session.SellerSession;
@@ -17,7 +18,11 @@ public final class SalesMenuRepository {
         if (!DataBase.existsSellerByEmail(email))
             throw new NotFoundException("[!] Logged-in user does not exist.");
 
-        List<TaxReceipt> taxReceiptListPointer = DataBase.findBuyerTaxReceiptListByEmail(email);
+        List<TaxReceipt> taxReceiptListPointer = DataBase.findSellerTaxReceiptListByEmail(email);
+
+        if (taxReceiptListPointer.isEmpty())
+            throw new EmptySalesException("[!] No sales history.");
+
         List<TaxReceipt> taxReceiptListCopy = new ArrayList<>();
 
         // Copies the products from taxReceiptListPointer to taxReceiptListCopy

@@ -1,5 +1,6 @@
 package main.java.com.example.marketplace.seller.controller;
 
+import main.java.com.example.marketplace.exceptions.EmptySalesException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.seller.repository.SalesMenuRepository;
@@ -9,20 +10,16 @@ import java.util.List;
 
 public final class SalesMenuController {
 
-    private SalesMenuRepository repository;
-    private SalesMenuView view;
+    private final SalesMenuRepository repository = new SalesMenuRepository();
+    private final SalesMenuView view = new SalesMenuView();
 
     public void printTaxReceiptList() {
 
         try {
             List<TaxReceipt> taxReceiptList = repository.findByEmailAndCnpj();
-
-            if (taxReceiptList.isEmpty())
-                view.printMessage("No sales history.");
-            else
-                view.printSales(taxReceiptList);
+            view.printSales(taxReceiptList);
         }
-        catch (NotFoundException e) {
+        catch (NotFoundException | EmptySalesException e) {
             view.printMessage(e.getMessage());
         }
     }

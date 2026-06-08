@@ -13,7 +13,7 @@ public final class BuyerSearchView {
 
     public void printProduct(Product product) {
 
-        System.out.println("-------- PRODUCTS --------\n");
+        System.out.println("--------| PRODUCTS |--------\n");
 
         System.out.println("Name: " + product.getName());
         System.out.println("ID: " + product.getId());
@@ -30,7 +30,7 @@ public final class BuyerSearchView {
 
     public void printProductListCompacted(List<Product> productList) {
 
-        System.out.println("-------- PRODUCTS --------\n");
+        System.out.println("--------| PRODUCTS |--------");
         System.out.println("\nTotal products found: " + productList.size() + "\n");
 
         for (Product product : productList) {
@@ -40,6 +40,7 @@ public final class BuyerSearchView {
             System.out.println("Seller: " + product.getStoreName());
             System.out.printf("Unit Price: R$%.2f\n", product.getUnitPrice());
             System.out.println("Stock: " + product.getStock());
+            System.out.println();
         }
     }
 

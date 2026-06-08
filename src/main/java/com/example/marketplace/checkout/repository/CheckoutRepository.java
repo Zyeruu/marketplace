@@ -3,16 +3,17 @@ package main.java.com.example.marketplace.checkout.repository;
 import main.java.com.example.marketplace.buyer.model.Buyer;
 import main.java.com.example.marketplace.buyer.model.CartProduct;
 import main.java.com.example.marketplace.checkout.model.OrderedProduct;
+import main.java.com.example.marketplace.checkout.model.PaymentMethod;
 import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.exceptions.EmptyCartException;
 import main.java.com.example.marketplace.exceptions.InsufficientStockException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
-import main.java.com.example.marketplace.checkout.dto.CheckoutRequest;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.exceptions.OutdatedPriceException;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.seller.model.Seller;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
+import main.java.com.example.marketplace.shared.utils.IdGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public final class CheckoutRepository {
         }
     }
 
-    public void saveOrder(CheckoutRequest checkoutRequest) {
+    public void saveOrder(PaymentMethod paymentMethod) {
 
         String buyerEmail = BuyerSession.getEmail();
         Buyer buyer = DataBase.findBuyerByEmail(buyerEmail);
@@ -58,14 +59,18 @@ public final class CheckoutRepository {
             List<OrderedProduct> buyerOrderedProductList = new ArrayList<>();
             List<OrderedProduct> sellerOrderedProductList = new ArrayList<>();
 
+            float totalCost = 0;
+
             for (CartProduct item : cartProductList)
                 if (item.getStoreName().equals(name)) {
+                    totalCost += item.getUnitPrice() * item.getQuantity();
                     buyerOrderedProductList.add(new OrderedProduct(item.getName(), item.getId(), item.getType(), item.getQuantity(), item.getUnitPrice()));
                     sellerOrderedProductList.add(new OrderedProduct(item.getName(), item.getId(), item.getType(), item.getQuantity(), item.getUnitPrice()));
                 }
 
-            TaxReceipt buyerTaxReceipt = new TaxReceipt(name, buyer.getName(), checkoutRequest, sellerOrderedProductList);
-            TaxReceipt sellerTaxReceipt = new TaxReceipt(name, buyer.getName(), checkoutRequest, sellerOrderedProductList);
+            String orderId = IdGenerator.generateOrderId();
+            TaxReceipt buyerTaxReceipt = new TaxReceipt(orderId, name, buyer.getName(), paymentMethod, totalCost, buyerOrderedProductList);
+            TaxReceipt sellerTaxReceipt = new TaxReceipt(orderId, name, buyer.getName(), paymentMethod, totalCost, sellerOrderedProductList);
             buyer.getOrdersMenu().setTaxReceiptList(buyerTaxReceipt);
             seller.getStore().getSalesMenu().setTaxReceiptsList(sellerTaxReceipt);
         }
@@ -73,13 +78,13 @@ public final class CheckoutRepository {
         updateBuyerCartAndSellerCatalog();
     }
 
-    public CheckoutRequest getTotalCostAndShipping() {
+    public float getTotalCost() {
 
         String email = BuyerSession.getEmail();
         Buyer buyer = DataBase.findBuyerByEmail(email);
 
         buyer.getCart().updateCart();
-        return new CheckoutRequest(buyer.getCart().getTotalCost(), buyer.getCart().getShipping());
+        return buyer.getCart().getTotalCost();
     }
 
     public void updateBuyerCartAndSellerCatalog() {
@@ -88,11 +93,21 @@ public final class CheckoutRepository {
         Buyer buyer = DataBase.findBuyerByEmail(email);
         List<CartProduct> cart = DataBase.findCartProductListByEmail(email);
 
-        for (CartProduct item : cart) {
-            List<Product> products = DataBase.findCatalogProductListByStoreName(item.getStoreName());
-            for (Product product : products)
-                if (product.getId().equals(item.getId()))
-                    DataBase.removeProductFromCatalog(item.getStoreName(), product, item.getQuantity());
+        for (int i = 0; i < cart.size(); i++) {
+
+            List<Product> products = DataBase.findCatalogProductListByStoreName(cart.get(i).getStoreName());
+
+            for (int j = 0; j < products.size(); j++) {
+                if (products.get(j).getId().equals(cart.get(i).getId())) {
+
+                    if (cart.get(i).getQuantity() == products.get(j).getStock()) {
+                        DataBase.removeProductFromCatalog(cart.get(i).getStoreName(), products.get(j), cart.get(i).getQuantity());
+                        j--;
+                    }
+                    else
+                        products.get(j).setStock(products.get(j).getStock() - cart.get(i).getQuantity());
+                }
+            }
         }
 
         cart.clear();

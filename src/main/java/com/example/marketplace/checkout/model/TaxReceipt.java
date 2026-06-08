@@ -1,8 +1,5 @@
 package main.java.com.example.marketplace.checkout.model;
 
-import main.java.com.example.marketplace.checkout.dto.CheckoutRequest;
-import main.java.com.example.marketplace.shared.utils.IdGenerator;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,17 +11,15 @@ public final class TaxReceipt {
     private final PaymentMethod paymentMethod;
     private final LocalDateTime dateTime;
     private final float totalCost;
-    private final float shipping;
     private final List<OrderedProduct> orderedProductList;
 
-    public TaxReceipt(String sellerName, String buyerName, CheckoutRequest checkoutRequest, List<OrderedProduct> orderedProductList) {
-        this.orderId = IdGenerator.generateOrderId();
+    public TaxReceipt(String orderId, String sellerName, String buyerName, PaymentMethod paymentMethod, float totalCost, List<OrderedProduct> orderedProductList) {
+        this.orderId = orderId;
         this.sellerName = sellerName;
         this.buyerName = buyerName;
-        this.paymentMethod = checkoutRequest.getPaymentMethod();
+        this.paymentMethod = paymentMethod;
         this.dateTime = LocalDateTime.now();
-        this.totalCost = checkoutRequest.getTotalCost();
-        this.shipping = checkoutRequest.getShipping();
+        this.totalCost = totalCost;
         this.orderedProductList = orderedProductList;
     }
 
@@ -37,7 +32,6 @@ public final class TaxReceipt {
         this.paymentMethod = taxReceiptPointer.paymentMethod;
         this.dateTime = taxReceiptPointer.dateTime;
         this.totalCost = taxReceiptPointer.totalCost;
-        this.shipping = taxReceiptPointer.shipping;
 
         List<OrderedProduct> orderedProductListCopy = new ArrayList<>();
 
@@ -70,9 +64,5 @@ public final class TaxReceipt {
 
     public float getTotalCost() {
         return totalCost;
-    }
-
-    public float getShipping() {
-        return shipping;
     }
 }

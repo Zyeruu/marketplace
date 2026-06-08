@@ -25,7 +25,8 @@ public final class Cart {
             else
                 this.totalMisc++;
         }
-        setTotalProducts();
+
+        this.totalProducts = this.totalFood + this.totalMisc;
         updateTotalCost();
     }
 
@@ -37,15 +38,16 @@ public final class Cart {
 
         for (CartProduct product : cartProductList) {
             if (product.getType() == ProductType.FOOD)
-                totalCostFood = product.getQuantity() * product.getUnitPrice();
+                totalCostFood += product.getQuantity() * product.getUnitPrice();
             else
-                totalCostMisc = product.getQuantity() * product.getUnitPrice();
+                totalCostMisc += product.getQuantity() * product.getUnitPrice();
         }
 
-        if (totalCostFood < 249.9)
+        if (totalCostFood > 0 && totalCostFood < 249.9)
             this.shipping += 19.9F;
-        if (totalCostMisc < 79.9)
+        if (totalCostMisc > 0 && totalCostMisc < 79.9)
             this.shipping += 19.9F;
+
         this.totalCost = totalCostFood + totalCostMisc + this.shipping;
     }
 
@@ -72,10 +74,5 @@ public final class Cart {
 
     public float getShipping() {
         return shipping;
-    }
-
-    // Setters
-    public void setTotalProducts() {
-        this.totalProducts = this.totalFood + this.totalMisc;
     }
 }

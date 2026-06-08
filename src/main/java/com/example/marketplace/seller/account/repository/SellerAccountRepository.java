@@ -17,10 +17,27 @@ public final class SellerAccountRepository {
             throw new NotFoundException("[!] Logged-in user does not exist.");
 
         Seller seller = DataBase.findSellerByEmail(email);
+
         String name = seller.getName();
         int passwordSize = seller.getPassword().length();
+        String storeName = seller.getStore().getName();
+        String cnpj = seller.getStore().getCnpj();
 
-        return new SellerAccountResponse(name, email, passwordSize);
+        return new SellerAccountResponse(name, email, passwordSize, storeName, cnpj);
+    }
+
+    public void updateEmail(String newEmail) {
+
+        String currentEmail = SellerSession.getEmail();
+
+        DataBase.updateSellerEmail(currentEmail, newEmail);
+    }
+
+    public void updatePassword(String newPassword) {
+
+        String email = SellerSession.getEmail();
+
+        DataBase.updateSellerPassword(email, newPassword);
     }
 
     public void deleteAccount(String password) {
@@ -36,5 +53,13 @@ public final class SellerAccountRepository {
             DataBase.removeFromProductList(product);
 
         DataBase.deleteSeller(seller);
+    }
+
+    public void verifyPassword(String password) {
+
+        String email = SellerSession.getEmail();
+
+        if (!DataBase.existsSellerByEmailAndPassword(email, password))
+            throw new NotFoundException("Incorrect password.");
     }
 }

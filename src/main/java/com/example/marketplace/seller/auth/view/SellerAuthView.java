@@ -33,7 +33,7 @@ public final class SellerAuthView {
 
     public SellerAuthRequest collectEmailAndPassword() {
 
-        System.out.println("-------- LOGIN --------\n");
+        System.out.println("--------| LOGIN |--------\n");
 
         System.out.print("E-mail: ");
         System.out.flush();
