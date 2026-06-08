@@ -62,29 +62,36 @@ public final class CatalogView {
 
         System.out.println("Select the product type:");
         System.out.print("[1] Food\n[2] Miscellaneous\n>> ");
+        System.out.flush();
         choice = readChoice();
 
         System.out.print("Product name: ");
+        System.out.flush();
         String name = scanner.nextLine();
 
         String id = IdGenerator.generateProductId();
 
         System.out.print("Product unit price: ");
+        System.out.flush();
         float unitPrice = readFloat();
 
         System.out.print("Product weight (Kg): ");
+        System.out.flush();
         float weight = readFloat();
 
         System.out.print("Product stock: ");
+        System.out.flush();
         int stock = readInt();
 
         if (choice == 1)
             return new Product(name, id, storeName, unitPrice, weight, stock);
         else {
             System.out.print("Product brand: ");
+            System.out.flush();
             String brand = scanner.nextLine();
 
             System.out.print("Product warranty: ");
+            System.out.flush();
             int warranty = readInt();
 
             return new Product(name, id, storeName, brand, unitPrice, weight, stock, warranty);
@@ -100,6 +107,7 @@ public final class CatalogView {
 
         do {
             System.out.print("[1] Food\n[2] Miscellaneous\n>> ");
+            System.out.flush();
             choice = readInt();
 
             switch (choice){
@@ -115,30 +123,40 @@ public final class CatalogView {
     public String getProductName() {
 
         System.out.print("Enter the product name: ");
+        System.out.flush();
         return scanner.nextLine();
     }
 
     public String getProductId() {
 
         System.out.print("Enter the product ID: ");
+        System.out.flush();
         return scanner.nextLine();
     }
 
     public CatalogRequest getProductIdAndStock() {
 
         System.out.print("Enter the product ID: ");
+        System.out.flush();
         String id = scanner.nextLine();
+
         System.out.print("Enter the new stock: ");
+        System.out.flush();
         int stock = readInt();
+
         return new CatalogRequest(id, stock);
     }
 
     public CatalogRequest getProductIdAndPrice() {
 
         System.out.print("Enter the product ID: ");
+        System.out.flush();
         String id = scanner.nextLine();
+
         System.out.print("Enter the new price: ");
+        System.out.flush();
         float price = readFloat();
+
         return new CatalogRequest(id, price);
     }
 
@@ -150,14 +168,17 @@ public final class CatalogView {
 
                 if (value <= 0) {
                     printMessage("Needs to be greater than 0. Try again.");
+                    System.out.print(">> ");
+                    System.out.flush();
                     continue;
                 }
 
                 return value;
             }
             catch (NumberFormatException e) {
-                scanner.nextLine();
                 printMessage("Invalid input. Please enter a number.");
+                System.out.print(">> ");
+                System.out.flush();
             }
         }
     }
@@ -170,14 +191,17 @@ public final class CatalogView {
 
                 if (value <= 0) {
                     printMessage("Needs to be greater than 0. Try again.");
+                    System.out.print(">> ");
+                    System.out.flush();
                     continue;
                 }
 
                 return value;
             }
             catch (NumberFormatException e) {
-                scanner.nextLine();
                 printMessage("Invalid input. Please enter a number.");
+                System.out.print(">> ");
+                System.out.flush();
             }
         }
     }
@@ -190,14 +214,17 @@ public final class CatalogView {
 
                 if (choice != 1 && choice != 2) {
                     printMessage("Invalid option. Try again.");
+                    System.out.print(">> ");
+                    System.out.flush();
                     continue;
                 }
 
                 return choice;
             }
             catch (NumberFormatException e) {
-                scanner.nextLine();
                 printMessage("Invalid input. Please enter a number.");
+                System.out.print(">> ");
+                System.out.flush();
             }
         }
     }

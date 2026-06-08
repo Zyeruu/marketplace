@@ -8,7 +8,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-public class BuyerSearchView {
+public final class BuyerSearchView {
 
     Scanner scanner = new Scanner(System.in);
 
@@ -35,6 +35,7 @@ public class BuyerSearchView {
     public String getProductName() {
 
         System.out.print("Enter the product name: ");
+        System.out.flush();
         return scanner.nextLine();
     }
 
@@ -47,6 +48,7 @@ public class BuyerSearchView {
 
         do {
             System.out.print("[1] Food\n[2] Miscellaneous\n>> ");
+            System.out.flush();
             choice = readInt();
 
             switch (choice){
@@ -80,6 +82,8 @@ public class BuyerSearchView {
             }
             catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a number.");
+                System.out.print(">> ");
+                System.out.flush();
             }
         }
     }

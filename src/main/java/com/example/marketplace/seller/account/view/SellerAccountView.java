@@ -15,10 +15,12 @@ public final class SellerAccountView {
         System.out.print("Password: ");
         for (int i = 0; i < sellerProfile.passwordSize(); i++)
             System.out.print("*");
+        System.out.println();
     }
     public String getPassword() {
 
         System.out.print("Confirm with your password: ");
+        System.out.flush();
         return scanner.nextLine();
     }
 

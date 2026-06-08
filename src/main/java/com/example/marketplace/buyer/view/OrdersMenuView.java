@@ -52,6 +52,7 @@ public final class OrdersMenuView {
     public String getOrderId() {
 
         System.out.print("Enter the order ID: ");
+        System.out.flush();
         return scanner.nextLine();
     }
 

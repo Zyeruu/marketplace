@@ -1,6 +1,6 @@
 package main.java.com.example.marketplace.seller.dto;
 
-public class CatalogRequest {
+public final class CatalogRequest {
 
     private final String id;
     private final int quantity;

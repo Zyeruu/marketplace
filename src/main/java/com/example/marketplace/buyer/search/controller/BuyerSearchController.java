@@ -9,7 +9,7 @@ import main.java.com.example.marketplace.shared.enums.ProductType;
 
 import java.util.List;
 
-public class BuyerSearchController {
+public final class BuyerSearchController {
 
     private final BuyerSearchRepository repository = new BuyerSearchRepository();
     private final BuyerSearchView view = new BuyerSearchView();

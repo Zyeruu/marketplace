@@ -261,6 +261,14 @@ public final class DataBase {
         return null;
     }
 
+    public static boolean existsSellerByStoreName(String storeName) {
+
+        for (Seller seller : sellerList)
+            if (seller.getStore().getName().equals(storeName))
+                return true;
+        return false;
+    }
+
     public static boolean existsSellerByEmailAndPassword(String email, String password) {
 
         for (Seller seller : sellerList)

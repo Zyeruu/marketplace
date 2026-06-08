@@ -12,12 +12,15 @@ public final class BuyerAuthView {
         System.out.println("--------| CUSTOMER | REGISTER |--------\n");
 
         System.out.print("E-mail: ");
+        System.out.flush();
         String email = scanner.nextLine();
 
         System.out.print("Password: ");
+        System.out.flush();
         String password = scanner.nextLine();
 
         System.out.print("Your name: ");
+        System.out.flush();
         String name = scanner.nextLine();
 
         return new BuyerAuthRequest(email, password, name);
@@ -27,9 +30,11 @@ public final class BuyerAuthView {
         System.out.println("-------- LOGIN --------\n");
 
         System.out.print("E-mail: ");
+        System.out.flush();
         String email = scanner.nextLine();
 
         System.out.print("Password: ");
+        System.out.flush();
         String password = scanner.nextLine();
 
         return new BuyerAuthRequest(email, password, "");

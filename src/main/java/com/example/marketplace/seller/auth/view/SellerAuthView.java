@@ -13,15 +13,19 @@ public final class SellerAuthView {
         System.out.println("--------| SELLER | REGISTER |--------\n");
 
         System.out.print("E-mail: ");
+        System.out.flush();
         String email = scanner.nextLine();
 
         System.out.print("Password: ");
+        System.out.flush();
         String password = scanner.nextLine();
 
         System.out.print("Your name: ");
+        System.out.flush();
         String name = scanner.nextLine();
 
         System.out.print("Store name: ");
+        System.out.flush();
         String storeName = scanner.nextLine();
 
         return new SellerAuthRequest(email, password, name, storeName);
@@ -32,9 +36,11 @@ public final class SellerAuthView {
         System.out.println("-------- LOGIN --------\n");
 
         System.out.print("E-mail: ");
+        System.out.flush();
         String email = scanner.nextLine();
 
         System.out.print("Password: ");
+        System.out.flush();
         String password = scanner.nextLine();
 
         return new SellerAuthRequest(email, password, "", "");

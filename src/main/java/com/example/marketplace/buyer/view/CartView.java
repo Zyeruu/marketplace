@@ -54,9 +54,11 @@ public final class CartView {
     public CartRequest getProductData() {
 
         System.out.print("Enter the product ID: ");
+        System.out.flush();
         String productId = scanner.nextLine();
 
         System.out.print("Enter the quantity: ");
+        System.out.flush();
         int quantity = readInt();
 
         return new CartRequest(productId, quantity);
@@ -65,12 +67,13 @@ public final class CartView {
     public ProductType getProductType() {
 
         ProductType productType = null;
-        int choice = 0;
+        int choice;
 
         System.out.println("Select the product type:");
 
         do {
             System.out.print("[1] Food\n[2] Miscellaneous\n>> ");
+            System.out.flush();
             choice = readInt();
 
             switch (choice){
@@ -86,6 +89,7 @@ public final class CartView {
     public String getProductName() {
 
         System.out.print("Enter the product name: ");
+        System.out.flush();
         return scanner.nextLine();
     }
 
@@ -97,14 +101,17 @@ public final class CartView {
 
                 if (value <= 0) {
                     printMessage("Needs to be greater than 0. Try again.");
+                    System.out.print(">> ");
+                    System.out.flush();
                     continue;
                 }
 
                 return value;
             }
             catch (NumberFormatException e) {
-                scanner.nextLine();
                 printMessage("Invalid input. Please enter a number.");
+                System.out.print(">> ");
+                System.out.flush();
             }
         }
     }

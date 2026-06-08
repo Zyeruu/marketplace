@@ -14,6 +14,7 @@ public final class CheckoutView {
 
         System.out.println("Select payment method:");
         System.out.print("[1] Credit Card\n[2] Debit Card\n[3] Pix\n>> ");
+        System.out.flush();
         int choice = readChoice();
 
         paymentMethod = switch (choice) {
@@ -34,14 +35,17 @@ public final class CheckoutView {
 
                 if (choice != 1 && choice != 2 && choice != 3) {
                     System.out.println("Invalid option. Try again.");
+                    System.out.print(">> ");
+                    System.out.flush();
                     continue;
                 }
 
                 return choice;
             }
             catch (NumberFormatException e) {
-                scanner.nextLine();
                 printMessage("Invalid input. Please enter a number.");
+                System.out.print(">> ");
+                System.out.flush();
             }
         }
     }

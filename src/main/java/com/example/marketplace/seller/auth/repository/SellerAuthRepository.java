@@ -14,6 +14,9 @@ public final class SellerAuthRepository {
         if (DataBase.existsSellerByEmail(seller.getEmail()))
             throw new AlreadyExistsException("[!] The email address entered is already registered.");
 
+        if (DataBase.existsSellerByStoreName(seller.getStore().getName()))
+            throw new AlreadyExistsException("[!] The store name entered is already in use.");
+
         DataBase.saveSeller(seller);
     }
 

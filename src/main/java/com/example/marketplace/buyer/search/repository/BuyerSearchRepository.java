@@ -9,7 +9,7 @@ import main.java.com.example.marketplace.shared.enums.ProductType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BuyerSearchRepository {
+public final class BuyerSearchRepository {
 
     public List<Product> findProducts() {
 

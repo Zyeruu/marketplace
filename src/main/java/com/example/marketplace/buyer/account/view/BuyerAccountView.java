@@ -11,6 +11,7 @@ public final class BuyerAccountView {
     public String getPassword() {
 
         System.out.print("Confirm with your password: ");
+        System.out.flush();
         return scanner.nextLine();
     }
 

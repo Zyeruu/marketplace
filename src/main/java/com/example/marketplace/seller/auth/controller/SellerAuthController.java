@@ -22,8 +22,8 @@ public final class SellerAuthController {
     public void register() {
 
         SellerAuthRequest user = view.collectRegistrationData();
-        user.setName(normalizeUserName(user.getName()));
-        user.setStoreName(normalizeUserName(user.getStoreName()));
+        user.setName(normalizeName(user.getName()));
+        user.setStoreName(normalizeName(user.getStoreName()));
 
         try {
             Validator.isValidEmail(user.getEmail());
@@ -59,7 +59,7 @@ public final class SellerAuthController {
         }
     }
 
-    public String normalizeUserName(String userName) {
+    public String normalizeName(String userName) {
 
         userName = Normalizer.normalize(userName, Normalizer.Form.NFD);
         return userName.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "").toUpperCase();

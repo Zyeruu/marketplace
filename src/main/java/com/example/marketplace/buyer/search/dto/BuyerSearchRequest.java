@@ -2,7 +2,7 @@ package main.java.com.example.marketplace.buyer.search.dto;
 
 import main.java.com.example.marketplace.shared.enums.ProductType;
 
-public class BuyerSearchRequest {
+public final class BuyerSearchRequest {
 
     private final String productName;
     private final ProductType productType;
