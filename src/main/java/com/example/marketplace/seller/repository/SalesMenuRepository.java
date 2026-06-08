@@ -16,7 +16,7 @@ public final class SalesMenuRepository {
         String email = SellerSession.getEmail();
 
         if (!DataBase.existsSellerByEmail(email))
-            throw new NotFoundException("Logged-in user does not exist.");
+            throw new NotFoundException("[!] Logged-in user does not exist.");
 
         List<TaxReceipt> taxReceiptListPointer = DataBase.findBuyerTaxReceiptListByEmail(email);
         List<TaxReceipt> taxReceiptListCopy = new ArrayList<>();
@@ -33,12 +33,12 @@ public final class SalesMenuRepository {
         String email = SellerSession.getEmail();
 
         if (!DataBase.existsSellerByEmail(email))
-            throw new NotFoundException("Logged-in user does not exist.");
+            throw new NotFoundException("[!] Logged-in user does not exist.");
 
         TaxReceipt taxReceipt = DataBase.findSellerTaxReceiptByEmailAndOrderId(email, orderId);
 
         if (taxReceipt == null)
-            throw new NotFoundException("The order with ID \"" + orderId + "\" was not found.");
+            throw new NotFoundException("[!] The order with ID \"" + orderId + "\" was not found.");
 
         return new TaxReceipt(taxReceipt);
     }

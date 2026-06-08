@@ -1,5 +1,6 @@
 package main.java.com.example.marketplace.seller.auth.controller;
 
+import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.seller.auth.dto.SellerAuthRequest;
 import main.java.com.example.marketplace.seller.auth.dto.SellerAuthResponse;
 import main.java.com.example.marketplace.seller.auth.repository.SellerAuthRepository;
@@ -37,7 +38,7 @@ public final class SellerAuthController {
             SellerSession.login(user.getEmail(), cnpj, store.getName());
             view.printMessage("Account successfully created!");
         }
-        catch (IllegalArgumentException e) {
+        catch (IllegalArgumentException | AlreadyExistsException e) {
             view.printMessage(e.getMessage());
         }
     }

@@ -16,7 +16,7 @@ public final class OrdersMenuRepository {
         String email = BuyerSession.getEmail();
 
         if (!DataBase.existsBuyerByEmail(email))
-            throw new NotFoundException("Logged-in user does not exist.");
+            throw new NotFoundException("[!] Logged-in user does not exist.");
 
         List<TaxReceipt> taxReceiptListPointer = DataBase.findBuyerTaxReceiptListByEmail(email);
         List<TaxReceipt> taxReceiptListCopy = new ArrayList<>();
@@ -24,6 +24,9 @@ public final class OrdersMenuRepository {
         // Copies the products from taxReceiptListPointer to taxReceiptListCopy
         for (TaxReceipt taxReceipt : taxReceiptListPointer)
             taxReceiptListCopy.add(new TaxReceipt(taxReceipt));
+
+        if (taxReceiptListCopy.isEmpty())
+            throw new NotFoundException("[!] No purchase history.");
 
         return taxReceiptListCopy;
     }
@@ -33,12 +36,12 @@ public final class OrdersMenuRepository {
         String email = BuyerSession.getEmail();
 
         if (!DataBase.existsBuyerByEmail(email))
-            throw new NotFoundException("Logged-in user does not exist.");
+            throw new NotFoundException("[!] Logged-in user does not exist.");
 
         TaxReceipt taxReceipt = DataBase.findBuyerTaxReceiptByEmailAndOrderId(email, orderId);
 
         if (taxReceipt == null)
-            throw new NotFoundException("The order with ID \"" + orderId + "\" was not found.");
+            throw new NotFoundException("[!] The order with ID \"" + orderId + "\" was not found.");
 
         return new TaxReceipt(taxReceipt);
     }

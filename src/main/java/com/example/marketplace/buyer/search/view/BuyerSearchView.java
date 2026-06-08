@@ -76,9 +76,9 @@ public class BuyerSearchView {
 
         while (true) {
             try {
-                return scanner.nextInt();
+                return Integer.parseInt(scanner.nextLine());
             }
-            catch (InputMismatchException e) {
+            catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a number.");
             }
         }

@@ -9,7 +9,7 @@ public final class BuyerAuthView {
     Scanner scanner = new Scanner(System.in);
 
     public BuyerAuthRequest collectRegistrationData() {
-        System.out.println("--------| BUYER | REGISTER |--------\n");
+        System.out.println("--------| CUSTOMER | REGISTER |--------\n");
 
         System.out.print("E-mail: ");
         String email = scanner.nextLine();
@@ -26,10 +26,10 @@ public final class BuyerAuthView {
     public BuyerAuthRequest collectEmailAndPassword() {
         System.out.println("-------- LOGIN --------\n");
 
-        System.out.println("E-mail: ");
+        System.out.print("E-mail: ");
         String email = scanner.nextLine();
 
-        System.out.println("Password: ");
+        System.out.print("Password: ");
         String password = scanner.nextLine();
 
         return new BuyerAuthRequest(email, password, "");

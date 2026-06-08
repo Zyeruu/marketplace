@@ -14,7 +14,7 @@ public final class SellerAccountRepository {
         String email = SellerSession.getEmail();
 
         if (!DataBase.existsSellerByEmail(email))
-            throw new NotFoundException("Logged-in user does not exist.");
+            throw new NotFoundException("[!] Logged-in user does not exist.");
 
         Seller seller = DataBase.findSellerByEmail(email);
         String name = seller.getName();
@@ -28,7 +28,7 @@ public final class SellerAccountRepository {
         String email = SellerSession.getEmail();
 
         if (!DataBase.existsSellerByEmailAndPassword(email, password))
-            throw new NotFoundException("Incorrect password.");
+            throw new NotFoundException("[!] Incorrect password.");
 
         Seller seller = DataBase.findSellerByEmail(email);
 

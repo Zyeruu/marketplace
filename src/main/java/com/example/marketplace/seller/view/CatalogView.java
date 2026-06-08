@@ -146,7 +146,7 @@ public final class CatalogView {
 
         while (true) {
             try {
-                int value = scanner.nextInt();
+                int value = Integer.parseInt(scanner.nextLine());
 
                 if (value <= 0) {
                     printMessage("Needs to be greater than 0. Try again.");
@@ -155,7 +155,7 @@ public final class CatalogView {
 
                 return value;
             }
-            catch (InputMismatchException e) {
+            catch (NumberFormatException e) {
                 scanner.nextLine();
                 printMessage("Invalid input. Please enter a number.");
             }
@@ -166,7 +166,7 @@ public final class CatalogView {
 
         while (true) {
             try {
-                float value = scanner.nextInt();
+                float value = Float.parseFloat(scanner.nextLine());
 
                 if (value <= 0) {
                     printMessage("Needs to be greater than 0. Try again.");
@@ -175,7 +175,7 @@ public final class CatalogView {
 
                 return value;
             }
-            catch (InputMismatchException e) {
+            catch (NumberFormatException e) {
                 scanner.nextLine();
                 printMessage("Invalid input. Please enter a number.");
             }
@@ -186,7 +186,7 @@ public final class CatalogView {
 
         while (true) {
             try {
-                int choice = scanner.nextInt();
+                int choice = Integer.parseInt(scanner.nextLine());
 
                 if (choice != 1 && choice != 2) {
                     printMessage("Invalid option. Try again.");
@@ -195,7 +195,7 @@ public final class CatalogView {
 
                 return choice;
             }
-            catch (InputMismatchException e) {
+            catch (NumberFormatException e) {
                 scanner.nextLine();
                 printMessage("Invalid input. Please enter a number.");
             }

@@ -10,8 +10,8 @@ public final class BuyerAuthRepository {
 
     public void save(Buyer buyer) {
 
-        if (!DataBase.existsBuyerByEmail(buyer.getEmail()))
-            throw new AlreadyExistsException("The email address entered is already in use.");
+        if (DataBase.existsBuyerByEmail(buyer.getEmail()))
+            throw new AlreadyExistsException("[!] The email address entered is already in use.");
 
         DataBase.saveBuyer(buyer);
     }
@@ -19,6 +19,6 @@ public final class BuyerAuthRepository {
     public void login(BuyerAuthRequest user) {
 
         if (!DataBase.existsBuyerByEmailAndPassword(user.getEmail(), user.getPassword()))
-            throw new NotFoundException("Incorrect email or password.");
+            throw new NotFoundException("[!] Incorrect email or password.");
     }
 }

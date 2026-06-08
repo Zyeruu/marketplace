@@ -14,7 +14,7 @@ public class BuyerSearchRepository {
     public List<Product> findProducts() {
 
         if (DataBase.isProductListEmpty())
-            throw new NotFoundException("No results were found.");
+            throw new NotFoundException("[!] No results were found.");
 
         List<Product> productList = new ArrayList<>();
 
@@ -26,7 +26,7 @@ public class BuyerSearchRepository {
     public List<Product> findByName(String productName) {
 
         if (!DataBase.existsProductByName(productName))
-            throw new NotFoundException("No results were found.");
+            throw new NotFoundException("[!] No results were found.");
 
         List<Product> productList = new ArrayList<>();
 
@@ -40,7 +40,7 @@ public class BuyerSearchRepository {
     public List<Product> findByType(ProductType productType) {
 
         if (!DataBase.existsProductByType(productType))
-            throw new NotFoundException("No results were found.");
+            throw new NotFoundException("[!] No results were found.");
 
         List<Product> productList = new ArrayList<>();
 
@@ -57,10 +57,10 @@ public class BuyerSearchRepository {
         ProductType type = searchRequest.getProductType();
 
         if (!DataBase.existsProductByName(name))
-            throw new NotFoundException("No results were found.");
+            throw new NotFoundException("[!] No results were found.");
 
         if (!DataBase.existsProductByType(type))
-            throw new NotFoundException("No results were found.");
+            throw new NotFoundException("[!] No results were found.");
 
         List<Product> productList = new ArrayList<>();
 

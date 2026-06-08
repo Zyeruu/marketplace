@@ -21,6 +21,7 @@ public final class BuyerAccountView {
         System.out.print("Password: ");
         for (int i = 0; i < buyerProfile.passwordSize(); i++)
             System.out.print("*");
+        System.out.println();
     }
 
     public void printMessage(String message) {

@@ -24,22 +24,22 @@ public final class CheckoutRepository {
         String email = BuyerSession.getEmail();
 
         if (DataBase.isCartEmptyByEmail(email))
-            throw new EmptyCartException("Your cart is empty.");
+            throw new EmptyCartException("[!] Your cart is empty.");
 
         List<CartProduct> cartProductList = DataBase.findCartProductListByEmail(email);
 
         for (CartProduct item : cartProductList) {
 
             if (!DataBase.existsProductById(item.getId()))
-                throw new NotFoundException("Your cart contained product(s) that were unavailable. Your cart has been updated.");
+                throw new NotFoundException("[!] Your cart contained product(s) that were unavailable. Your cart has been updated.");
 
             Product product = DataBase.findProductById(item.getId());
 
             if (item.getQuantity() > product.getStock())
-                throw new InsufficientStockException("Your cart contained more product(s) than were available. Your cart has been updated.");
+                throw new InsufficientStockException("[!] Your cart contained more product(s) than were available. Your cart has been updated.");
 
             if (product.getUnitPrice() != item.getUnitPrice())
-                throw new OutdatedPriceException("Your cart contained product(s) with outdated prices. Your cart has been updated.");
+                throw new OutdatedPriceException("[!] Your cart contained product(s) with outdated prices. Your cart has been updated.");
         }
     }
 

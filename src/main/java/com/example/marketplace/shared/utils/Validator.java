@@ -10,21 +10,21 @@ public final class Validator {
 
     public static void isValidEmail(String email) {
         if (!EMAIL.matcher(email).matches())
-            throw new IllegalArgumentException("Invalid email format.");
+            throw new IllegalArgumentException("[!] Invalid email format.");
     }
 
     public static void isValidPassword(String password) {
         if (!PASSWORD.matcher(password).matches())
-            throw new IllegalArgumentException("Your password must be between 8 and 128 characters long.");
+            throw new IllegalArgumentException("[!] Your password must be between 8 and 128 characters long.");
     }
 
     public static void isValidUserName(String userName) {
         if (USER_NAME.matcher(userName).matches())
-            throw new IllegalArgumentException("The name provided has an invalid format. Symbols are not supported.");
+            throw new IllegalArgumentException("[!] The name provided has an invalid format. Symbols are not supported.");
     }
 
     public static void isValidStoreName(String storeName) {
         if (STORE_NAME.matcher(storeName).matches())
-            throw new IllegalArgumentException("The store name provided has an invalid format. Symbols and spaces are not supported.");
+            throw new IllegalArgumentException("[!] The store name provided has an invalid format. Symbols and spaces are not supported.");
     }
 }

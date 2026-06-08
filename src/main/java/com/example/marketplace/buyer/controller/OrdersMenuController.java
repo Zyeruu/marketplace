@@ -16,11 +16,7 @@ public final class OrdersMenuController {
 
         try {
             List<TaxReceipt> taxReceiptList = repository.findByEmail();
-
-            if (taxReceiptList.isEmpty())
-                view.printMessage("No purchase history.");
-            else
-                view.printOrders(taxReceiptList);
+            view.printOrders(taxReceiptList);
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());

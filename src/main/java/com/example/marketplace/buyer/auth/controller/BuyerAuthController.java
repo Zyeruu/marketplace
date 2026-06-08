@@ -4,6 +4,7 @@ import main.java.com.example.marketplace.buyer.auth.dto.BuyerAuthRequest;
 import main.java.com.example.marketplace.buyer.auth.repository.BuyerAuthRepository;
 import main.java.com.example.marketplace.buyer.auth.view.BuyerAuthView;
 import main.java.com.example.marketplace.buyer.model.Buyer;
+import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
 import main.java.com.example.marketplace.shared.utils.Validator;
@@ -29,7 +30,7 @@ public final class BuyerAuthController {
             BuyerSession.login(user.getEmail());
             view.printMessage("Account successfully created!");
         }
-        catch (IllegalArgumentException e) {
+        catch (IllegalArgumentException | AlreadyExistsException e) {
             view.printMessage(e.getMessage());
         }
     }

@@ -13,7 +13,7 @@ public final class BuyerAccountRepository {
         String email = BuyerSession.getEmail();
 
         if (!DataBase.existsBuyerByEmail(email))
-            throw new NotFoundException("Logged-in user does not exist.");
+            throw new NotFoundException("[!] Logged-in user does not exist.");
 
         Buyer buyer = DataBase.findBuyerByEmail(email);
         String name = buyer.getName();
@@ -27,7 +27,7 @@ public final class BuyerAccountRepository {
         String email = BuyerSession.getEmail();
 
         if (!DataBase.existsBuyerByEmailAndPassword(email, password))
-            throw new NotFoundException("Incorrect password.");
+            throw new NotFoundException("[!] Incorrect password.");
 
         Buyer buyer = DataBase.findBuyerByEmail(email);
         DataBase.deleteBuyer(buyer);

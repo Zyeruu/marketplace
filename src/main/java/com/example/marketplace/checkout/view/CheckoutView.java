@@ -2,7 +2,6 @@ package main.java.com.example.marketplace.checkout.view;
 
 import main.java.com.example.marketplace.checkout.model.PaymentMethod;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public final class CheckoutView {
@@ -31,7 +30,7 @@ public final class CheckoutView {
 
         while (true) {
             try {
-                int choice = scanner.nextInt();
+                int choice = Integer.parseInt(scanner.nextLine());
 
                 if (choice != 1 && choice != 2 && choice != 3) {
                     System.out.println("Invalid option. Try again.");
@@ -40,7 +39,7 @@ public final class CheckoutView {
 
                 return choice;
             }
-            catch (InputMismatchException e) {
+            catch (NumberFormatException e) {
                 scanner.nextLine();
                 printMessage("Invalid input. Please enter a number.");
             }

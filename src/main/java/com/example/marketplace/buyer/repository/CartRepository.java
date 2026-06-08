@@ -22,12 +22,12 @@ public final class CartRepository {
         Buyer buyer = DataBase.findBuyerByEmail(email);
 
         if (buyer == null)
-            throw new NotFoundException("Logged-in user does not exist!");
+            throw new NotFoundException("[!] Logged-in user does not exist!");
 
         List<CartProduct> cartProductListPointer = DataBase.findCartProductListByEmail(email);
 
         if (cartProductListPointer.isEmpty())
-            throw new EmptyCartException("Your cart is empty.");
+            throw new EmptyCartException("[!] Your cart is empty.");
 
         List<CartProduct> cartProductListCopy = new ArrayList<>();
 
@@ -47,12 +47,12 @@ public final class CartRepository {
         Buyer buyer = DataBase.findBuyerByEmail(email);
 
         if (buyer == null)
-            throw new NotFoundException("Logged-in user does not exist.");
+            throw new NotFoundException("[!] Logged-in user does not exist.");
 
         List<CartProduct> cartProductListPointer = DataBase.findCartProductListByEmail(email);
 
         if (cartProductListPointer.isEmpty())
-            throw new EmptyCartException("Your cart is empty.");
+            throw new EmptyCartException("[!] Your cart is empty.");
 
         List<CartProduct> cartProductListCopy = new ArrayList<>();
 
@@ -61,7 +61,7 @@ public final class CartRepository {
                 cartProductListCopy.add(new CartProduct(product));
 
         if (cartProductListCopy.isEmpty())
-            throw new NotFoundException("No results were found.");
+            throw new NotFoundException("[!] No results were found.");
 
         if (productType == ProductType.FOOD) {
             int totalFood = buyer.getCart().getTotalFood();
@@ -79,12 +79,12 @@ public final class CartRepository {
         Buyer buyer = DataBase.findBuyerByEmail(email);
 
         if (buyer == null)
-            throw new NotFoundException("Logged-in user does not exist!");
+            throw new NotFoundException("[!] Logged-in user does not exist!");
 
         List<CartProduct> cartProductListPointer = DataBase.findCartProductListByEmail(email);
 
         if (cartProductListPointer.isEmpty())
-            throw new EmptyCartException("Your cart is empty.");
+            throw new EmptyCartException("[!] Your cart is empty.");
 
         List<CartProduct> cartProductListCopy = new ArrayList<>();
 
@@ -106,7 +106,7 @@ public final class CartRepository {
         totalProducts = totalFood + totalMisc;
 
         if (cartProductListCopy.isEmpty())
-            throw new NotFoundException("No results were found.");
+            throw new NotFoundException("[!] No results were found.");
 
         return new CartResponse(cartProductListCopy, totalProducts, totalFood, totalMisc);
     }
@@ -118,7 +118,7 @@ public final class CartRepository {
         int quantToBeAdded = cartRequest.getQuantity();
 
         if (!DataBase.existsProductById(productId))
-            throw new NotFoundException("The product with ID \"" + productId + "\" was not found.");
+            throw new NotFoundException("[!] The product with ID \"" + productId + "\" was not found.");
 
         int productStock = DataBase.getProductStockById(productId);
 
@@ -127,14 +127,14 @@ public final class CartRepository {
             int cartProductQuant = DataBase.findCartProductQuantityByEmailAndId(email, productId);
 
             if (cartProductQuant + quantToBeAdded > productStock)
-                throw new InsufficientStockException("Insufficient stock for this quantity.");
+                throw new InsufficientStockException("[!] Insufficient stock for this quantity.");
 
             DataBase.updateProductQuantity(email, productId, quantToBeAdded);
             return;
         }
 
         if (quantToBeAdded > productStock)
-            throw new InsufficientStockException("There is not enough stock to meet the requested quantity.");
+            throw new InsufficientStockException("[!] There is not enough stock to meet the requested quantity.");
 
         DataBase.addProductToCart(email, productId, quantToBeAdded);
     }
@@ -146,7 +146,7 @@ public final class CartRepository {
         int quantToBeRemoved = cartRequest.getQuantity();
 
         if (!DataBase.existsCartProductByEmailAndId(email, productId))
-            throw new NotFoundException("The product with ID \"" + productId + "\" was not found.");
+            throw new NotFoundException("[!] The product with ID \"" + productId + "\" was not found.");
 
         DataBase.removeProductFromCart(email, productId, quantToBeRemoved);
     }

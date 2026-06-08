@@ -93,7 +93,7 @@ public final class CartView {
 
         while (true) {
             try {
-                int value = scanner.nextInt();
+                int value = Integer.parseInt(scanner.nextLine());
 
                 if (value <= 0) {
                     printMessage("Needs to be greater than 0. Try again.");
@@ -102,7 +102,7 @@ public final class CartView {
 
                 return value;
             }
-            catch (InputMismatchException e) {
+            catch (NumberFormatException e) {
                 scanner.nextLine();
                 printMessage("Invalid input. Please enter a number.");
             }
