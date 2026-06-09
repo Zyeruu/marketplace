@@ -1,6 +1,5 @@
 package main.java.com.example.marketplace.seller.controller;
 
-import main.java.com.example.marketplace.exceptions.EmptySalesException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.seller.repository.SalesMenuRepository;
@@ -19,7 +18,7 @@ public final class SalesMenuController {
             List<TaxReceipt> taxReceiptList = repository.findByEmailAndCnpj();
             view.printSales(taxReceiptList);
         }
-        catch (NotFoundException | EmptySalesException e) {
+        catch (NotFoundException e) {
             view.printMessage(e.getMessage());
         }
     }

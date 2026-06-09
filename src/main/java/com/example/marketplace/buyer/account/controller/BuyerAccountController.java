@@ -3,11 +3,10 @@ package main.java.com.example.marketplace.buyer.account.controller;
 import main.java.com.example.marketplace.buyer.account.dto.BuyerAccountResponse;
 import main.java.com.example.marketplace.buyer.account.repository.BuyerAccountRepository;
 import main.java.com.example.marketplace.buyer.account.view.BuyerAccountView;
+import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
 import main.java.com.example.marketplace.shared.utils.Validator;
-
-import java.text.Normalizer;
 
 public final class BuyerAccountController {
 
@@ -37,7 +36,7 @@ public final class BuyerAccountController {
             BuyerSession.setEmail(newEmail);
             view.printMessage("[*] E-mail successfully changed!");
         }
-        catch (NotFoundException | IllegalArgumentException e) {
+        catch (NotFoundException | IllegalArgumentException | AlreadyExistsException e) {
             view.printMessage(e.getMessage());
         }
     }

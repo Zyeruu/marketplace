@@ -3,6 +3,7 @@ package main.java.com.example.marketplace.buyer.account.repository;
 import main.java.com.example.marketplace.buyer.account.dto.BuyerAccountResponse;
 import main.java.com.example.marketplace.buyer.model.Buyer;
 import main.java.com.example.marketplace.database.DataBase;
+import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
 
@@ -28,6 +29,9 @@ public final class BuyerAccountRepository {
 
         if (currentEmail.equals(newEmail))
             throw new IllegalArgumentException("[!] The new e-mail must be different from the current e-mail.");
+
+        if (DataBase.existsBuyerByEmail(newEmail))
+            throw new AlreadyExistsException("[!] E-mail already registered.");
 
         DataBase.updateBuyerEmail(currentEmail, newEmail);
     }

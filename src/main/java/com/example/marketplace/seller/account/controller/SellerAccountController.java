@@ -1,5 +1,6 @@
 package main.java.com.example.marketplace.seller.account.controller;
 
+import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.seller.account.dto.SellerAccountResponse;
 import main.java.com.example.marketplace.seller.account.repository.SellerAccountRepository;
@@ -35,7 +36,7 @@ public final class SellerAccountController {
             SellerSession.setEmail(newEmail);
             view.printMessage("[*] E-mail successfully changed!");
         }
-        catch (NotFoundException | IllegalArgumentException e) {
+        catch (NotFoundException | IllegalArgumentException | AlreadyExistsException e) {
             view.printMessage(e.getMessage());
         }
     }

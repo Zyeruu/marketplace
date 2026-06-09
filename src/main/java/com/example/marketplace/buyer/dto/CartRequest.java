@@ -2,8 +2,8 @@ package main.java.com.example.marketplace.buyer.dto;
 
 public final class CartRequest {
 
-    private String id;
-    private int quantity;
+    private final String id;
+    private final int quantity;
 
     public CartRequest(String id, int quantity) {
         this.id = id;

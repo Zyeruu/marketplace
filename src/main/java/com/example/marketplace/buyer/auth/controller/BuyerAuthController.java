@@ -1,5 +1,6 @@
 package main.java.com.example.marketplace.buyer.auth.controller;
 
+import main.java.com.example.marketplace.shared.interfaces.Authenticable;
 import main.java.com.example.marketplace.buyer.auth.dto.BuyerAuthRequest;
 import main.java.com.example.marketplace.buyer.auth.repository.BuyerAuthRepository;
 import main.java.com.example.marketplace.buyer.auth.view.BuyerAuthView;
@@ -11,11 +12,29 @@ import main.java.com.example.marketplace.shared.utils.Validator;
 
 import java.text.Normalizer;
 
-public final class BuyerAuthController {
+public final class BuyerAuthController implements Authenticable {
 
     private final BuyerAuthRepository repository = new BuyerAuthRepository();
     private final BuyerAuthView view = new BuyerAuthView();
 
+    @Override
+    public void login() {
+
+        BuyerAuthRequest user = view.collectEmailAndPassword();
+
+        try {
+            Validator.isValidEmail(user.getEmail());
+            Validator.isValidPassword(user.getPassword());
+            repository.login(user);
+            BuyerSession.login(user.getEmail());
+            view.printMessage("[✓] You are now logged in.");
+        }
+        catch (IllegalArgumentException | NotFoundException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    @Override
     public void register() {
 
         BuyerAuthRequest user = view.collectRegistrationData();
@@ -35,20 +54,11 @@ public final class BuyerAuthController {
         }
     }
 
-    public void login() {
+    @Override
+    public void logout() {
 
-        BuyerAuthRequest user = view.collectEmailAndPassword();
-
-        try {
-            Validator.isValidEmail(user.getEmail());
-            Validator.isValidPassword(user.getPassword());
-            repository.login(user);
-            BuyerSession.login(user.getEmail());
-            view.printMessage("[✓] You are now logged in.");
-        }
-        catch (IllegalArgumentException | NotFoundException e) {
-            view.printMessage(e.getMessage());
-        }
+        BuyerSession.logout();
+        view.printMessage("[*] You are now logged out.");
     }
 
     public String normalizeName(String userName) {

@@ -1,5 +1,6 @@
 package main.java.com.example.marketplace.seller.auth.controller;
 
+import main.java.com.example.marketplace.shared.interfaces.Authenticable;
 import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.seller.auth.dto.SellerAuthRequest;
 import main.java.com.example.marketplace.seller.auth.dto.SellerAuthResponse;
@@ -14,11 +15,12 @@ import main.java.com.example.marketplace.shared.session.SellerSession;
 
 import java.text.Normalizer;
 
-public final class SellerAuthController {
+public final class SellerAuthController implements Authenticable {
 
     private final SellerAuthRepository repository = new SellerAuthRepository();
     private final SellerAuthView view = new SellerAuthView();
 
+    @Override
     public void register() {
 
         SellerAuthRequest user = view.collectRegistrationData();
@@ -43,6 +45,7 @@ public final class SellerAuthController {
         }
     }
 
+    @Override
     public void login() {
 
         SellerAuthRequest user = view.collectEmailAndPassword();
@@ -57,6 +60,13 @@ public final class SellerAuthController {
         catch (IllegalArgumentException | NotFoundException e) {
             view.printMessage(e.getMessage());
         }
+    }
+
+    @Override
+    public void logout() {
+
+        SellerSession.logout();
+        view.printMessage("[*] You are now logged out.");
     }
 
     public String normalizeName(String userName) {

@@ -1,6 +1,7 @@
 package main.java.com.example.marketplace.seller.account.repository;
 
 import main.java.com.example.marketplace.database.DataBase;
+import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.seller.account.dto.SellerAccountResponse;
 import main.java.com.example.marketplace.seller.model.Product;
@@ -32,6 +33,9 @@ public final class SellerAccountRepository {
 
         if (currentEmail.equals(newEmail))
             throw new IllegalArgumentException("[!] The new e-mail must be different from the current e-mail.");
+
+        if (DataBase.existsSellerByEmail(newEmail))
+            throw new AlreadyExistsException("[!] E-mail already registered.");
 
         DataBase.updateSellerEmail(currentEmail, newEmail);
     }

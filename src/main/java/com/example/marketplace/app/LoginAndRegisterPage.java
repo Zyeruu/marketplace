@@ -3,6 +3,7 @@ package main.java.com.example.marketplace.app;
 import main.java.com.example.marketplace.MarketplaceApplication;
 import main.java.com.example.marketplace.buyer.auth.controller.BuyerAuthController;
 import main.java.com.example.marketplace.seller.auth.controller.SellerAuthController;
+import main.java.com.example.marketplace.shared.interfaces.Authenticable;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
 import main.java.com.example.marketplace.shared.session.SellerSession;
 
@@ -10,10 +11,9 @@ import java.util.Scanner;
 
 public final class LoginAndRegisterPage {
 
-    private static final BuyerAuthController buyerAuth = new BuyerAuthController();
-    private static final SellerAuthController sellerAuth = new SellerAuthController();
-
     public static void page() {
+
+        Authenticable controller = null;
         int choice;
 
         do {
@@ -31,15 +31,19 @@ public final class LoginAndRegisterPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> buyerAuth.login();
-                            case 2 -> sellerAuth.login();
-                            case 3 -> System.out.println();
+                            case 1 -> controller = new BuyerAuthController();
+                            case 2 -> controller = new SellerAuthController();
+                            case 3 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Please try again.");
                         }
+
+                        if (controller != null)
+                            controller.login();
+
                         if (BuyerSession.isLogged() || SellerSession.isLogged())
                             return;
+
                     } while (choice != 3);
-                    choice = 0;
                     break;
                 case 2:
                     do {
@@ -49,15 +53,19 @@ public final class LoginAndRegisterPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> buyerAuth.register();
-                            case 2 -> sellerAuth.register();
-                            case 3 -> System.out.println();
+                            case 1 -> controller = new BuyerAuthController();
+                            case 2 -> controller = new SellerAuthController();
+                            case 3 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Please try again.");
                         }
+
+                        if (controller != null)
+                            controller.register();
+
                         if (BuyerSession.isLogged() || SellerSession.isLogged())
                             return;
+
                     } while (choice != 3);
-                    choice = 0;
                     break;
                 case 3:
                     MarketplaceApplication.setRunning(false);

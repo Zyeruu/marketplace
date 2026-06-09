@@ -1,6 +1,7 @@
 package main.java.com.example.marketplace.app;
 
 import main.java.com.example.marketplace.seller.account.controller.SellerAccountController;
+import main.java.com.example.marketplace.seller.auth.controller.SellerAuthController;
 import main.java.com.example.marketplace.seller.controller.CatalogController;
 import main.java.com.example.marketplace.seller.controller.SalesMenuController;
 import main.java.com.example.marketplace.shared.session.SellerSession;
@@ -9,9 +10,10 @@ import java.util.Scanner;
 
 public final class SellerPage {
 
-    private static final SellerAccountController sellerAccount = new SellerAccountController();
-    private static final CatalogController sellerCatalog = new CatalogController();
-    private static final SalesMenuController sellerSalesMenu = new SalesMenuController();
+    private static final SellerAuthController authController = new SellerAuthController();
+    private static final SellerAccountController accountController = new SellerAccountController();
+    private static final CatalogController catalogController = new CatalogController();
+    private static final SalesMenuController salesMenuController = new SalesMenuController();
 
     public static void page() {
 
@@ -32,15 +34,26 @@ public final class SellerPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> sellerAccount.printSeller();
-                            case 2 -> sellerAccount.changeEmail();
-                            case 3 -> sellerAccount.changePassword();
-                            case 4 -> sellerAccount.deleteAccount();
+                            case 1 -> accountController.printSeller();
+                            case 2 -> accountController.changeEmail();
+                            case 3 -> accountController.changePassword();
+                            case 4 -> accountController.deleteAccount();
                             case 5 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
+
                         if (!SellerSession.isLogged())
                             return;
+
+                        if (choice != 5) {
+                            System.out.println("-----------------------------------");
+                            System.out.println("[1] <- Back");
+                            System.out.println("-----------------------------------");
+                            do {
+                                choice = readInt();
+                            } while (choice != 1);
+                        }
+
                     } while (choice != 5);
                     choice = 0;
                     break;
@@ -53,16 +66,26 @@ public final class SellerPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> sellerCatalog.printCatalog();
-                            case 2 -> sellerCatalog.printCatalogByProductName();
-                            case 3 -> sellerCatalog.printCatalogByProductType();
-                            case 4 -> sellerCatalog.printAllProductDetails();
-                            case 5 -> sellerCatalog.addProductToCatalog();
-                            case 6 -> sellerCatalog.removeCatalogProduct();
-                            case 7 -> sellerCatalog.updateCatalogProduct();
+                            case 1 -> catalogController.printCatalog();
+                            case 2 -> catalogController.printCatalogByProductName();
+                            case 3 -> catalogController.printCatalogByProductType();
+                            case 4 -> catalogController.printAllProductDetails();
+                            case 5 -> catalogController.addProductToCatalog();
+                            case 6 -> catalogController.removeCatalogProduct();
+                            case 7 -> catalogController.updateCatalogProduct();
                             case 8 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
+
+                        if (choice != 8) {
+                            System.out.println("-----------------------------------");
+                            System.out.println("[1] <- Back");
+                            System.out.println("-----------------------------------");
+                            do {
+                                choice = readInt();
+                            } while (choice != 1);
+                        }
+
                     } while (choice != 8);
                     choice = 0;
                     break;
@@ -75,17 +98,27 @@ public final class SellerPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> sellerSalesMenu.printTaxReceiptList();
-                            case 2 -> sellerSalesMenu.printTaxReceipt();
+                            case 1 -> salesMenuController.printTaxReceiptList();
+                            case 2 -> salesMenuController.printTaxReceipt();
                             case 3 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
+
+                        if (choice != 3) {
+                            System.out.println("-----------------------------------");
+                            System.out.println("[1] <- Back");
+                            System.out.println("-----------------------------------");
+                            do {
+                                choice = readInt();
+                            } while (choice != 1);
+                        }
+
                     } while (choice != 3);
                     choice = 0;
                     break;
 
                 case 4:
-                    SellerSession.logout();
+                    authController.logout();
                     break;
 
                 default:
