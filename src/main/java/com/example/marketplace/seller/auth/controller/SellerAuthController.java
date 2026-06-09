@@ -17,8 +17,30 @@ import java.text.Normalizer;
 
 public final class SellerAuthController implements Authenticable {
 
-    private final SellerAuthRepository repository = new SellerAuthRepository();
-    private final SellerAuthView view = new SellerAuthView();
+    private final SellerAuthView view;
+    private final SellerAuthRepository repository;
+
+    public SellerAuthController(SellerAuthView view, SellerAuthRepository repository) {
+        this.view = view;
+        this.repository = repository;
+    }
+
+    @Override
+    public void login() {
+
+        SellerAuthRequest user = view.collectEmailAndPassword();
+
+        try {
+            Validator.isValidEmail(user.getEmail());
+            Validator.isValidPassword(user.getPassword());
+            SellerAuthResponse authResponse = repository.login(user);
+            SellerSession.login(user.getEmail(), authResponse.getCnpj(), authResponse.getStoreName());
+            view.printMessage("[✓] You are now logged in.");
+        }
+        catch (IllegalArgumentException | NotFoundException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
 
     @Override
     public void register() {
@@ -41,23 +63,6 @@ public final class SellerAuthController implements Authenticable {
             view.printMessage("[+] Account successfully created!");
         }
         catch (IllegalArgumentException | AlreadyExistsException e) {
-            view.printMessage(e.getMessage());
-        }
-    }
-
-    @Override
-    public void login() {
-
-        SellerAuthRequest user = view.collectEmailAndPassword();
-
-        try {
-            Validator.isValidEmail(user.getEmail());
-            Validator.isValidPassword(user.getPassword());
-            SellerAuthResponse authResponse = repository.login(user);
-            SellerSession.login(user.getEmail(), authResponse.getCnpj(), authResponse.getStoreName());
-            view.printMessage("[✓] You are now logged in.");
-        }
-        catch (IllegalArgumentException | NotFoundException e) {
             view.printMessage(e.getMessage());
         }
     }

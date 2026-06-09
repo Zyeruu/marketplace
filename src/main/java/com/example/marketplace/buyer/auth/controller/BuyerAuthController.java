@@ -14,8 +14,13 @@ import java.text.Normalizer;
 
 public final class BuyerAuthController implements Authenticable {
 
-    private final BuyerAuthRepository repository = new BuyerAuthRepository();
-    private final BuyerAuthView view = new BuyerAuthView();
+    private final BuyerAuthView view;
+    private final BuyerAuthRepository repository;
+
+    public BuyerAuthController(BuyerAuthView view, BuyerAuthRepository repository) {
+        this.view = view;
+        this.repository = repository;
+    }
 
     @Override
     public void login() {

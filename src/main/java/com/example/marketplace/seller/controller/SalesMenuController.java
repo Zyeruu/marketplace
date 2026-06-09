@@ -9,8 +9,13 @@ import java.util.List;
 
 public final class SalesMenuController {
 
-    private final SalesMenuRepository repository = new SalesMenuRepository();
-    private final SalesMenuView view = new SalesMenuView();
+    private final SalesMenuView view;
+    private final SalesMenuRepository repository;
+
+    public SalesMenuController(SalesMenuView view, SalesMenuRepository repository) {
+        this.view = view;
+        this.repository = repository;
+    }
 
     public void printTaxReceiptList() {
 

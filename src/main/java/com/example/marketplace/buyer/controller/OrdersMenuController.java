@@ -9,8 +9,13 @@ import java.util.List;
 
 public final class OrdersMenuController {
 
-    private final OrdersMenuRepository repository = new OrdersMenuRepository();
-    private final OrdersMenuView view = new OrdersMenuView();
+    private final OrdersMenuView view;
+    private final OrdersMenuRepository repository;
+
+    public OrdersMenuController(OrdersMenuView view, OrdersMenuRepository repository) {
+        this.view = view;
+        this.repository = repository;
+    }
 
     public void printOrders() {
 

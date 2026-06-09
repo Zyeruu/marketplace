@@ -10,12 +10,19 @@ import java.util.Scanner;
 
 public final class SellerPage {
 
-    private static final SellerAuthController authController = new SellerAuthController();
-    private static final SellerAccountController accountController = new SellerAccountController();
-    private static final CatalogController catalogController = new CatalogController();
-    private static final SalesMenuController salesMenuController = new SalesMenuController();
+    private final SellerAuthController auth;
+    private final SellerAccountController account;
+    private final CatalogController catalog;
+    private final SalesMenuController salesMenu;
 
-    public static void page() {
+    public SellerPage(SellerAuthController auth, SellerAccountController account, CatalogController catalog, SalesMenuController salesMenu) {
+        this.auth = auth;
+        this.account = account;
+        this.catalog = catalog;
+        this.salesMenu = salesMenu;
+    }
+
+    public void page() {
 
         int choice;
 
@@ -34,10 +41,10 @@ public final class SellerPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> accountController.printSeller();
-                            case 2 -> accountController.changeEmail();
-                            case 3 -> accountController.changePassword();
-                            case 4 -> accountController.deleteAccount();
+                            case 1 -> account.printSeller();
+                            case 2 -> account.changeEmail();
+                            case 3 -> account.changePassword();
+                            case 4 -> account.deleteAccount();
                             case 5 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
@@ -66,13 +73,13 @@ public final class SellerPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> catalogController.printCatalog();
-                            case 2 -> catalogController.printCatalogByProductName();
-                            case 3 -> catalogController.printCatalogByProductType();
-                            case 4 -> catalogController.printAllProductDetails();
-                            case 5 -> catalogController.addProductToCatalog();
-                            case 6 -> catalogController.removeCatalogProduct();
-                            case 7 -> catalogController.updateCatalogProduct();
+                            case 1 -> catalog.printCatalog();
+                            case 2 -> catalog.printCatalogByProductName();
+                            case 3 -> catalog.printCatalogByProductType();
+                            case 4 -> catalog.printAllProductDetails();
+                            case 5 -> catalog.addProductToCatalog();
+                            case 6 -> catalog.removeCatalogProduct();
+                            case 7 -> catalog.updateCatalogProduct();
                             case 8 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
@@ -98,8 +105,8 @@ public final class SellerPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> salesMenuController.printTaxReceiptList();
-                            case 2 -> salesMenuController.printTaxReceipt();
+                            case 1 -> salesMenu.printTaxReceiptList();
+                            case 2 -> salesMenu.printTaxReceipt();
                             case 3 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
@@ -118,7 +125,7 @@ public final class SellerPage {
                     break;
 
                 case 4:
-                    authController.logout();
+                    auth.logout();
                     break;
 
                 default:

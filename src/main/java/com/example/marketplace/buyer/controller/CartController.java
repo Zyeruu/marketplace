@@ -12,8 +12,13 @@ import main.java.com.example.marketplace.shared.enums.ProductType;
 
 public final class CartController {
 
-    private final CartRepository repository = new CartRepository();
-    private final CartView view = new CartView();
+    private final CartView view ;
+    private final CartRepository repository;
+
+    public CartController(CartView view, CartRepository repository) {
+        this.view = view;
+        this.repository = repository;
+    }
 
     public void printCart() {
 

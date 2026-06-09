@@ -3,6 +3,7 @@ package main.java.com.example.marketplace;
 import main.java.com.example.marketplace.app.BuyerPage;
 import main.java.com.example.marketplace.app.LoginAndRegisterPage;
 import main.java.com.example.marketplace.app.SellerPage;
+import main.java.com.example.marketplace.config.DependencyInjector;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
 import main.java.com.example.marketplace.shared.session.SellerSession;
 
@@ -14,17 +15,22 @@ public class MarketplaceApplication {
 
     public static void main(String[] args) {
 
+        DependencyInjector injector = new DependencyInjector();
+        LoginAndRegisterPage loginAndRegister = new LoginAndRegisterPage(injector.getBuyerAuthController(), injector.getSellerAuthController());
+        BuyerPage buyer = new BuyerPage(injector.getBuyerAuthController(), injector.getBuyerAccountController(), injector.getCartController(), injector.getOrdersMenuController(), injector.getSearchController(), injector.getCheckoutController());
+        SellerPage seller = new SellerPage(injector.getSellerAuthController(), injector.getSellerAccountController(), injector.getCatalogController(), injector.getSalesMenuController());
+
         int choice;
 
         do {
             if (!(BuyerSession.isLogged() || SellerSession.isLogged()))
-                LoginAndRegisterPage.page();
+                loginAndRegister.page();
 
             if (BuyerSession.isLogged())
-                BuyerPage.page();
+                buyer.page();
 
             if (SellerSession.isLogged())
-                SellerPage.page();
+                seller.page();
 
             if (!running) {
 

@@ -12,14 +12,23 @@ import java.util.Scanner;
 
 public final class BuyerPage {
 
-    private static final BuyerAuthController authController = new BuyerAuthController();
-    private static final BuyerAccountController accountController = new BuyerAccountController();
-    private static final CartController cartController = new CartController();
-    private static final OrdersMenuController ordersMenuController = new OrdersMenuController();
-    private static final BuyerSearchController searchController = new BuyerSearchController();
-    private static final CheckoutController checkoutController = new CheckoutController();
+    private final BuyerAuthController auth;
+    private final BuyerAccountController account;
+    private final CartController cart;
+    private final OrdersMenuController ordersMenu;
+    private final BuyerSearchController search;
+    private final CheckoutController checkout;
 
-    public static void page() {
+    public BuyerPage(BuyerAuthController auth, BuyerAccountController account, CartController cart, OrdersMenuController ordersMenu, BuyerSearchController search, CheckoutController checkout) {
+        this.auth = auth;
+        this.account = account;
+        this.cart = cart;
+        this.ordersMenu = ordersMenu;
+        this.search = search;
+        this.checkout = checkout;
+    }
+
+    public void page() {
 
         int choice;
 
@@ -37,10 +46,10 @@ public final class BuyerPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> accountController.printBuyer();
-                            case 2 -> accountController.changeEmail();
-                            case 3 -> accountController.changePassword();
-                            case 4 -> accountController.deleteAccount();
+                            case 1 -> account.printBuyer();
+                            case 2 -> account.changeEmail();
+                            case 3 -> account.changePassword();
+                            case 4 -> account.deleteAccount();
                             case 5 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
@@ -69,8 +78,8 @@ public final class BuyerPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> ordersMenuController.printOrders();
-                            case 2 -> ordersMenuController.printOrder();
+                            case 1 -> ordersMenu.printOrders();
+                            case 2 -> ordersMenu.printOrder();
                             case 3 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
@@ -96,12 +105,12 @@ public final class BuyerPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> cartController.printCart();
-                            case 2 -> cartController.printCartByProductName();
-                            case 3 -> cartController.printCartByProductType();
-                            case 4 -> cartController.printAllProductDetails();
-                            case 5 -> cartController.removeProduct();
-                            case 6 -> checkoutController.checkout();
+                            case 1 -> cart.printCart();
+                            case 2 -> cart.printCartByProductName();
+                            case 3 -> cart.printCartByProductType();
+                            case 4 -> cart.printAllProductDetails();
+                            case 5 -> cart.removeProduct();
+                            case 6 -> checkout.checkout();
                             case 7 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
@@ -127,10 +136,10 @@ public final class BuyerPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> searchController.searchByName();
-                            case 2 -> searchController.searchByType();
-                            case 3 -> searchController.searchByNameAndType();
-                            case 4 -> searchController.searchAll();
+                            case 1 -> search.searchByName();
+                            case 2 -> search.searchByType();
+                            case 3 -> search.searchByNameAndType();
+                            case 4 -> search.searchAll();
                             case 5 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
@@ -142,8 +151,8 @@ public final class BuyerPage {
                             choice = readInt();
 
                             switch (choice) {
-                                case 1 -> cartController.addProduct();
-                                case 2 -> searchController.printAllProductDetails();
+                                case 1 -> cart.addProduct();
+                                case 2 -> search.printAllProductDetails();
                                 case 3 -> System.out.print("");
                                 default -> System.out.println("[!] Invalid option. Try again.");
                             }
@@ -153,7 +162,7 @@ public final class BuyerPage {
                     break;
 
                 case 5:
-                    authController.logout();
+                    auth.logout();
                     break;
 
                 default:

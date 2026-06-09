@@ -10,8 +10,13 @@ import main.java.com.example.marketplace.shared.utils.Validator;
 
 public final class SellerAccountController {
 
-    private final SellerAccountRepository repository = new SellerAccountRepository();
-    private final SellerAccountView view = new SellerAccountView();
+    private final SellerAccountView view;
+    private final SellerAccountRepository repository;
+
+    public SellerAccountController(SellerAccountView view, SellerAccountRepository repository) {
+        this.view = view;
+        this.repository = repository;
+    }
 
     public void printSeller() {
 

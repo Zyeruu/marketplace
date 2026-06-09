@@ -11,7 +11,15 @@ import java.util.Scanner;
 
 public final class LoginAndRegisterPage {
 
-    public static void page() {
+    private final BuyerAuthController buyerAuthController;
+    private final SellerAuthController sellerAuthController;
+
+    public LoginAndRegisterPage(BuyerAuthController buyerAuthController, SellerAuthController sellerAuthController) {
+        this.buyerAuthController = buyerAuthController;
+        this.sellerAuthController = sellerAuthController;
+    }
+
+    public void page() {
 
         Authenticable controller = null;
         int choice;
@@ -31,8 +39,8 @@ public final class LoginAndRegisterPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> controller = new BuyerAuthController();
-                            case 2 -> controller = new SellerAuthController();
+                            case 1 -> controller = buyerAuthController;
+                            case 2 -> controller = sellerAuthController;
                             case 3 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Please try again.");
                         }
@@ -53,8 +61,8 @@ public final class LoginAndRegisterPage {
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> controller = new BuyerAuthController();
-                            case 2 -> controller = new SellerAuthController();
+                            case 1 -> controller = buyerAuthController;
+                            case 2 -> controller = sellerAuthController;
                             case 3 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Please try again.");
                         }

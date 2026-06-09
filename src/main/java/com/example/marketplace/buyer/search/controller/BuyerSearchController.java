@@ -11,8 +11,13 @@ import java.util.List;
 
 public final class BuyerSearchController {
 
-    private final BuyerSearchRepository repository = new BuyerSearchRepository();
-    private final BuyerSearchView view = new BuyerSearchView();
+    private final BuyerSearchView view;
+    private final BuyerSearchRepository repository;
+
+    public BuyerSearchController(BuyerSearchView view, BuyerSearchRepository repository) {
+        this.view = view;
+        this.repository = repository;
+    }
 
     public void searchAll() {
 
