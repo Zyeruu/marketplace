@@ -16,7 +16,7 @@ public final class CartView {
 
     public void printBuyerCart(CartResponse cart) {
 
-        System.out.println("\n--------| PRODUCTS |--------");
+        System.out.println("\n-----------| PRODUCTS |-----------");
 
         for (CartProduct cartProduct : cart.getCartProducts()) {
             if (cartProduct.getType() == ProductType.FOOD) {
@@ -51,6 +51,7 @@ public final class CartView {
 
     public void printCartProduct(CartProduct cartProduct) {
 
+        System.out.println("\n------------| PRODUCT |------------");
         System.out.println("Name: " + cartProduct.getName());
         System.out.println("ID: " + cartProduct.getId());
         System.out.println("Seller: " + cartProduct.getStoreName());
@@ -92,7 +93,7 @@ public final class CartView {
             switch (choice){
                 case 1 -> productType = ProductType.FOOD;
                 case 2 -> productType = ProductType.MISCELLANEOUS;
-                default -> System.out.println("Invalid option. Try again.");
+                default -> System.out.println("[!] Invalid option. Try again.");
             }
         } while (choice != 1 && choice != 2);
 
@@ -120,7 +121,7 @@ public final class CartView {
                 int value = Integer.parseInt(scanner.nextLine());
 
                 if (value <= 0) {
-                    printMessage("Needs to be greater than 0. Try again.");
+                    printMessage("[!] Needs to be greater than 0. Try again.");
                     System.out.print(">> ");
                     System.out.flush();
                     continue;
@@ -129,7 +130,7 @@ public final class CartView {
                 return value;
             }
             catch (NumberFormatException e) {
-                printMessage("Invalid input. Please enter a number.");
+                printMessage("[!] Invalid input. Please enter a number.");
                 System.out.print(">> ");
                 System.out.flush();
             }

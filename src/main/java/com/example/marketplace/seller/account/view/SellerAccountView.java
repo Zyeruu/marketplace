@@ -10,14 +10,14 @@ public final class SellerAccountView {
 
     public void printSellerProfile(SellerAccountResponse sellerProfile) {
 
-        System.out.println("----------| PROFILE |----------");
+        System.out.println("\n------------| PROFILE |------------");
         System.out.println("Name: " + sellerProfile.getName());
         System.out.println("E-mail: " + sellerProfile.getEmail());
         System.out.print("Password: ");
         for (int i = 0; i < sellerProfile.getPasswordSize(); i++)
             System.out.print("*");
 
-        System.out.println("----------| STORE |----------");
+        System.out.println("\n\n-------------| STORE |-------------");
         System.out.println("Name: " + sellerProfile.getStoreName());
         System.out.println("CNPJ: " + sellerProfile.getCnpj());
     }
@@ -40,7 +40,7 @@ public final class SellerAccountView {
 
         System.out.print("Enter the new e-mail: ");
         System.out.flush();
-        return scanner.nextLine();
+        return scanner.nextLine().toLowerCase();
     }
 
     public void printMessage(String message) {

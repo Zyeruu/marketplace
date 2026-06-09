@@ -7,7 +7,7 @@ public final class BuyerAuthRequest {
     private String name;
 
     public BuyerAuthRequest(String email, String password, String name) {
-        this.email = email.toLowerCase();
+        this.email = email;
         this.password = password;
         this.name = name;
     }

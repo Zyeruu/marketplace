@@ -43,6 +43,12 @@ public final class DataBase {
         buyer.setPassword(newPassword);
     }
 
+    public static boolean isSameBuyerPassword(String email, String password) {
+
+        Buyer buyer = findBuyerByEmail(email);
+        return buyer.getPassword().equals(password);
+    }
+
     // ---------------------------------------------| CART METHODS |---------------------------------------------
 
     public static void addProductToCart(String email, String productId, int quantity) {
@@ -169,6 +175,12 @@ public final class DataBase {
 
         Seller seller = findSellerByEmail(email);
         seller.setPassword(newPassword);
+    }
+
+    public static boolean isSameSellerPassword(String email, String password) {
+
+        Seller seller = findSellerByEmail(email);
+        return seller.getPassword().equals(password);
     }
 
     // -----------------------------------------------| CATALOG METHODS |--------------------------------------------

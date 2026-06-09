@@ -23,14 +23,12 @@ public final class SalesMenuView {
 
     public void printSales(List<TaxReceipt> taxReceiptList) {
 
-        System.out.println("\n--------| SALES MENU |--------");
-
         for (TaxReceipt taxReceipt : taxReceiptList)
             printOrder(taxReceipt);
 
-        System.out.println("--------------------------------");
+        System.out.println("-----------------------------------");
         System.out.println("Total Sales: " + taxReceiptList.size());
-        System.out.println("--------------------------------");
+        System.out.println("-----------------------------------");
     }
 
     public void printOrder(TaxReceipt taxReceipt) {
@@ -38,14 +36,14 @@ public final class SalesMenuView {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String formattedDate = taxReceipt.getDateTime().format(formatter);
 
-        System.out.println("\n--------| TAX RECEIPT |--------\n");
+        System.out.println("\n----------| TAX RECEIPT |----------");
         System.out.println("Order ID: " + taxReceipt.getOrderId());
         System.out.println("Buyer name: " + taxReceipt.getBuyerName());
         System.out.println("Seller name: " + taxReceipt.getSellerName());
         System.out.println("Date: " + formattedDate);
         System.out.printf("Total: R$%.2f\n", taxReceipt.getTotalCost());
 
-        System.out.println("\n--------| PRODUCTS |--------\n");
+        System.out.println("\n-----------| PRODUCTS |-----------");
 
         for (OrderedProduct orderedProduct : taxReceipt.getOrderedProductList()) {
 

@@ -36,7 +36,7 @@ public final class SellerAuthController {
             Seller seller = new Seller(user.getName(), user.getEmail(), user.getPassword(), store);
             repository.save(seller);
             SellerSession.login(user.getEmail(), cnpj, store.getName());
-            view.printMessage("Account successfully created!");
+            view.printMessage("[+] Account successfully created!");
         }
         catch (IllegalArgumentException | AlreadyExistsException e) {
             view.printMessage(e.getMessage());
@@ -52,7 +52,7 @@ public final class SellerAuthController {
             Validator.isValidPassword(user.getPassword());
             SellerAuthResponse authResponse = repository.login(user);
             SellerSession.login(user.getEmail(), authResponse.getCnpj(), authResponse.getStoreName());
-            view.printMessage("You are now logged in.");
+            view.printMessage("[✓] You are now logged in.");
         }
         catch (IllegalArgumentException | NotFoundException e) {
             view.printMessage(e.getMessage());

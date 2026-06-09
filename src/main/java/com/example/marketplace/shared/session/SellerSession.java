@@ -37,4 +37,9 @@ public final class SellerSession {
     public static boolean isLogged() {
         return logged;
     }
+
+    // Setters
+    public static void setEmail(String email) {
+        SellerSession.email = email;
+    }
 }

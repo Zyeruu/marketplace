@@ -10,6 +10,7 @@ public final class BuyerAccountView {
 
     public void printBuyerProfile(BuyerAccountResponse buyerProfile) {
 
+        System.out.println("\n------------| PROFILE |------------");
         System.out.println("Name: " + buyerProfile.name());
         System.out.println("E-mail: " + buyerProfile.email());
         System.out.print("Password: ");
@@ -36,7 +37,7 @@ public final class BuyerAccountView {
 
         System.out.print("Enter the new e-mail: ");
         System.out.flush();
-        return scanner.nextLine();
+        return scanner.nextLine().toLowerCase();
     }
 
     public void printMessage(String message) {

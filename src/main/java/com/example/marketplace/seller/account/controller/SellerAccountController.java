@@ -32,6 +32,8 @@ public final class SellerAccountController {
             String newEmail = view.getEmail();
             Validator.isValidEmail(newEmail);
             repository.updateEmail(newEmail);
+            SellerSession.setEmail(newEmail);
+            view.printMessage("[*] E-mail successfully changed!");
         }
         catch (NotFoundException | IllegalArgumentException e) {
             view.printMessage(e.getMessage());
@@ -47,6 +49,7 @@ public final class SellerAccountController {
             String newPassword = view.getNewPassword();
             Validator.isValidPassword(newPassword);
             repository.updatePassword(newPassword);
+            view.printMessage("[*] Password successfully changed!");
         }
         catch (NotFoundException | IllegalArgumentException e) {
             view.printMessage(e.getMessage());
@@ -60,7 +63,7 @@ public final class SellerAccountController {
         try {
             repository.deleteAccount(password);
             SellerSession.logout();
-            view.printMessage("Your account has been successfully deleted!");
+            view.printMessage("[-] Your account has been successfully deleted!");
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());

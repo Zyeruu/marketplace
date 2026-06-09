@@ -19,10 +19,10 @@ public final class CheckoutController {
             repository.verifyCart();
             PaymentMethod paymentMethod = view.selectPaymentMethod();
             float totalCost = repository.getTotalCost();
-            view.printMessage("Processing payment of R$" + formatFloat(totalCost) + "...");
-            view.printMessage("Payment confirmed!");
+            view.printMessage("[*] Processing payment of R$" + formatFloat(totalCost) + "...");
+            view.printMessage("[✓] Payment confirmed!");
             repository.saveOrder(paymentMethod);
-            view.printMessage("Purchase confirmed!");
+            view.printMessage("[✓] Purchase confirmed!");
         }
         catch (EmptyCartException | NotFoundException | InsufficientStockException | OutdatedPriceException e) {
             repository.updateCart();

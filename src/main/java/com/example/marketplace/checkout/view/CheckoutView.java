@@ -34,7 +34,7 @@ public final class CheckoutView {
                 int choice = Integer.parseInt(scanner.nextLine());
 
                 if (choice != 1 && choice != 2 && choice != 3) {
-                    System.out.println("Invalid option. Try again.");
+                    System.out.println("[!] Invalid option. Try again.");
                     System.out.print(">> ");
                     System.out.flush();
                     continue;
@@ -43,7 +43,7 @@ public final class CheckoutView {
                 return choice;
             }
             catch (NumberFormatException e) {
-                printMessage("Invalid input. Please enter a number.");
+                printMessage("[!] Invalid input. Please enter a number.");
                 System.out.print(">> ");
                 System.out.flush();
             }

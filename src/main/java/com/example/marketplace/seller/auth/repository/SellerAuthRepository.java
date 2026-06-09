@@ -12,10 +12,10 @@ public final class SellerAuthRepository {
     public void save(Seller seller) {
 
         if (DataBase.existsSellerByEmail(seller.getEmail()))
-            throw new AlreadyExistsException("[!] The email address entered is already registered.");
+            throw new AlreadyExistsException("[!] E-mail already registered.");
 
         if (DataBase.existsSellerByStoreName(seller.getStore().getName()))
-            throw new AlreadyExistsException("[!] The store name entered is already in use.");
+            throw new AlreadyExistsException("[!] Store name already registered.");
 
         DataBase.saveSeller(seller);
     }
@@ -23,7 +23,7 @@ public final class SellerAuthRepository {
     public SellerAuthResponse login(SellerAuthRequest user) {
 
         if (!DataBase.existsSellerByEmailAndPassword(user.getEmail(), user.getPassword()))
-            throw new NotFoundException("[!] Invalid email or password.");
+            throw new NotFoundException("[!] Incorrect e-mail or password.");
 
         Seller seller = DataBase.findSellerByEmailAndPassword(user.getEmail(), user.getPassword());
 

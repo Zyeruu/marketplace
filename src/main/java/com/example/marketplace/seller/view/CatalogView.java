@@ -15,7 +15,7 @@ public final class CatalogView {
 
     public void printCatalog(CatalogResponse catalog) {
 
-        System.out.println("\n--------| PRODUCTS |--------\n");
+        System.out.println("\n-----------| PRODUCTS |-----------");
 
         for (Product p : catalog.getProductList()) {
             System.out.println("Name: " + p.getName());
@@ -35,7 +35,7 @@ public final class CatalogView {
 
     public void printCatalogProduct(Product product) {
 
-        System.out.println("\n--------| PRODUCT |--------\n");
+        System.out.println("\n------------| PRODUCT |------------");
 
         System.out.println("\nName: " + product.getName());
         System.out.println("ID: " + product.getId());
@@ -55,7 +55,7 @@ public final class CatalogView {
         int choice;
         String storeName = SellerSession.getStoreName();
 
-        System.out.println("----------| CATALOG |----------\n");
+        System.out.println("\n------------| CATALOG |------------");
 
         System.out.println("Select the product type:");
         System.out.println("[1] Food\n[2] Miscellaneous");
@@ -110,7 +110,7 @@ public final class CatalogView {
             switch (choice){
                 case 1 -> productType = ProductType.FOOD;
                 case 2 -> productType = ProductType.MISCELLANEOUS;
-                default -> System.out.println("Invalid option. Try again.");
+                default -> System.out.println("[!] Invalid option. Try again.");
             }
         } while (choice != 1 && choice != 2);
 
@@ -164,7 +164,7 @@ public final class CatalogView {
                 int value = Integer.parseInt(scanner.nextLine());
 
                 if (value <= 0) {
-                    printMessage("Needs to be greater than 0. Try again.");
+                    printMessage("[!] Needs to be greater than 0. Try again.");
                     System.out.print(">> ");
                     System.out.flush();
                     continue;
@@ -173,7 +173,7 @@ public final class CatalogView {
                 return value;
             }
             catch (NumberFormatException e) {
-                printMessage("Invalid input. Please enter a number.");
+                printMessage("[!] Invalid input. Please enter a number.");
                 System.out.print(">> ");
                 System.out.flush();
             }
@@ -187,7 +187,7 @@ public final class CatalogView {
                 float value = Float.parseFloat(scanner.nextLine());
 
                 if (value <= 0) {
-                    printMessage("Needs to be greater than 0. Try again.");
+                    printMessage("[!] Needs to be greater than 0. Try again.");
                     System.out.print(">> ");
                     System.out.flush();
                     continue;
@@ -196,7 +196,7 @@ public final class CatalogView {
                 return value;
             }
             catch (NumberFormatException e) {
-                printMessage("Invalid input. Please enter a number.");
+                printMessage("[!] Invalid input. Please enter a number.");
                 System.out.print(">> ");
                 System.out.flush();
             }
@@ -212,14 +212,14 @@ public final class CatalogView {
                 int choice = Integer.parseInt(scanner.nextLine());
 
                 if (choice != 1 && choice != 2) {
-                    printMessage("Invalid option. Try again.");
+                    printMessage("[!] Invalid option. Try again.");
                     continue;
                 }
 
                 return choice;
             }
             catch (NumberFormatException e) {
-                printMessage("Invalid input. Please enter a number.");
+                printMessage("[!] Invalid input. Please enter a number.");
             }
         }
     }

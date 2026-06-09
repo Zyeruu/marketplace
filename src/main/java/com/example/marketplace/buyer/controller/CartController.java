@@ -71,7 +71,7 @@ public final class CartController {
 
         try {
             repository.addProduct(cartRequest);
-            view.printMessage("Product added.");
+            view.printMessage("[+] Product added.");
         }
         catch (NotFoundException | InsufficientStockException e) {
             view.printMessage(e.getMessage());
@@ -84,7 +84,7 @@ public final class CartController {
 
         try {
             repository.removeProduct(cartRequest);
-            view.printMessage("Product removed.");
+            view.printMessage("[-] Product removed.");
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());

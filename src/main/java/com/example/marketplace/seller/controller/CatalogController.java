@@ -71,7 +71,7 @@ public final class CatalogController {
 
         try {
             repository.saveProduct(product);
-            view.printMessage("Product added to catalog.");
+            view.printMessage("[+] Product added to catalog.");
         }
         catch (AlreadyExistsException e) {
             view.printMessage(e.getMessage());
@@ -84,7 +84,7 @@ public final class CatalogController {
 
         try {
             repository.removeProduct(productId);
-            view.printMessage("Product deleted.");
+            view.printMessage("[-] Product deleted.");
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());
@@ -108,7 +108,7 @@ public final class CatalogController {
 
         try {
             repository.updateProductStock(catalogRequest);
-            view.printMessage("Stock updated.");
+            view.printMessage("[*] Stock updated.");
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());
@@ -121,7 +121,7 @@ public final class CatalogController {
 
         try {
             repository.updateProductPrice(catalogRequest);
-            view.printMessage("Price updated.");
+            view.printMessage("[*] Price updated.");
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());

@@ -10,11 +10,11 @@ public final class SellerAuthView {
 
     public SellerAuthRequest collectRegistrationData() {
 
-        System.out.println("--------| SELLER | REGISTER |--------\n");
+        System.out.println("\n-------| SELLER | REGISTER |-------");
 
         System.out.print("E-mail: ");
         System.out.flush();
-        String email = scanner.nextLine();
+        String email = scanner.nextLine().toLowerCase();
 
         System.out.print("Password: ");
         System.out.flush();
@@ -33,7 +33,7 @@ public final class SellerAuthView {
 
     public SellerAuthRequest collectEmailAndPassword() {
 
-        System.out.println("--------| LOGIN |--------\n");
+        System.out.println("\n-------------| LOGIN |-------------");
 
         System.out.print("E-mail: ");
         System.out.flush();

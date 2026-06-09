@@ -8,7 +8,7 @@ public final class SellerAuthRequest {
     private String storeName;
 
     public SellerAuthRequest(String email, String password, String name, String storeName) {
-        this.email = email.toLowerCase();
+        this.email = email;
         this.password = password;
         this.name = name;
         this.storeName = storeName;

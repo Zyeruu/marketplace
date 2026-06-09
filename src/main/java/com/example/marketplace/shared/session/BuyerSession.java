@@ -23,4 +23,9 @@ public final class BuyerSession {
     public static boolean isLogged() {
         return logged;
     }
+
+    // Setters
+    public static void setEmail(String email) {
+        BuyerSession.email = email;
+    }
 }

@@ -13,7 +13,7 @@ public final class BuyerSearchView {
 
     public void printProduct(Product product) {
 
-        System.out.println("--------| PRODUCTS |--------\n");
+        System.out.println("\n------------| PRODUCT |------------");
 
         System.out.println("Name: " + product.getName());
         System.out.println("ID: " + product.getId());
@@ -30,8 +30,9 @@ public final class BuyerSearchView {
 
     public void printProductListCompacted(List<Product> productList) {
 
-        System.out.println("--------| PRODUCTS |--------");
-        System.out.println("\nTotal products found: " + productList.size() + "\n");
+        System.out.println("\n------------| PRODUCTS |------------");
+        System.out.println("\nTotal products found: " + productList.size());
+        System.out.println();
 
         for (Product product : productList) {
 
@@ -66,7 +67,7 @@ public final class BuyerSearchView {
             switch (choice){
                 case 1 -> productType = ProductType.FOOD;
                 case 2 -> productType = ProductType.MISCELLANEOUS;
-                default -> System.out.println("Invalid option. Try again.");
+                default -> System.out.println("[!] Invalid option. Try again.");
             }
         } while (choice != 1 && choice != 2);
 
@@ -100,7 +101,7 @@ public final class BuyerSearchView {
                 return Integer.parseInt(scanner.nextLine());
             }
             catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
+                System.out.println("[!] Invalid input. Please enter a number.");
                 System.out.print(">> ");
                 System.out.flush();
             }

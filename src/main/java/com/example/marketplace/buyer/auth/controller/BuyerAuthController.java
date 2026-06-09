@@ -19,7 +19,7 @@ public final class BuyerAuthController {
     public void register() {
 
         BuyerAuthRequest user = view.collectRegistrationData();
-        user.setName(normalizeUserName(user.getName()));
+        user.setName(normalizeName(user.getName()));
 
         try {
             Validator.isValidEmail(user.getEmail());
@@ -28,7 +28,7 @@ public final class BuyerAuthController {
             Buyer buyer = new Buyer(user.getName(), user.getEmail(), user.getPassword());
             repository.save(buyer);
             BuyerSession.login(user.getEmail());
-            view.printMessage("Account successfully created!");
+            view.printMessage("[+] Account successfully created!");
         }
         catch (IllegalArgumentException | AlreadyExistsException e) {
             view.printMessage(e.getMessage());
@@ -44,14 +44,14 @@ public final class BuyerAuthController {
             Validator.isValidPassword(user.getPassword());
             repository.login(user);
             BuyerSession.login(user.getEmail());
-            view.printMessage("You are now logged in.");
+            view.printMessage("[✓] You are now logged in.");
         }
         catch (IllegalArgumentException | NotFoundException e) {
             view.printMessage(e.getMessage());
         }
     }
 
-    public String normalizeUserName(String userName) {
+    public String normalizeName(String userName) {
 
         userName = Normalizer.normalize(userName, Normalizer.Form.NFD);
         return userName.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "").toUpperCase();

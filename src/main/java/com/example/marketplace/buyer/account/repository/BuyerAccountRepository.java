@@ -26,12 +26,18 @@ public final class BuyerAccountRepository {
 
         String currentEmail = BuyerSession.getEmail();
 
+        if (currentEmail.equals(newEmail))
+            throw new IllegalArgumentException("[!] The new e-mail must be different from the current e-mail.");
+
         DataBase.updateBuyerEmail(currentEmail, newEmail);
     }
 
     public void updatePassword(String newPassword) {
 
         String email = BuyerSession.getEmail();
+
+        if (DataBase.isSameBuyerPassword(email, newPassword))
+            throw new IllegalArgumentException("[!] The new password must be different from the current password.");
 
         DataBase.updateBuyerPassword(email, newPassword);
     }

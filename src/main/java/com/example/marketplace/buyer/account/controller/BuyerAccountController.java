@@ -7,6 +7,8 @@ import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.session.BuyerSession;
 import main.java.com.example.marketplace.shared.utils.Validator;
 
+import java.text.Normalizer;
+
 public final class BuyerAccountController {
 
     private final BuyerAccountRepository repository = new BuyerAccountRepository();
@@ -32,6 +34,8 @@ public final class BuyerAccountController {
             String newEmail = view.getEmail();
             Validator.isValidEmail(newEmail);
             repository.updateEmail(newEmail);
+            BuyerSession.setEmail(newEmail);
+            view.printMessage("[*] E-mail successfully changed!");
         }
         catch (NotFoundException | IllegalArgumentException e) {
             view.printMessage(e.getMessage());
@@ -47,6 +51,7 @@ public final class BuyerAccountController {
             String newPassword = view.getNewPassword();
             Validator.isValidPassword(newPassword);
             repository.updatePassword(newPassword);
+            view.printMessage("[*] Password successfully changed!");
         }
         catch (NotFoundException | IllegalArgumentException e) {
             view.printMessage(e.getMessage());
@@ -60,7 +65,7 @@ public final class BuyerAccountController {
         try {
             repository.deleteAccount(password);
             BuyerSession.logout();
-            view.printMessage("Your account has been successfully deleted!");
+            view.printMessage("[-] Your account has been successfully deleted!");
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());
