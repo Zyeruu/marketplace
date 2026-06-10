@@ -19,6 +19,7 @@ public class MarketplaceApplication {
         final BuyerPage buyer = new BuyerPage(injector.getBuyerAuthController(), injector.getBuyerAccountController(), injector.getCartController(), injector.getOrdersMenuController(), injector.getSearchController(), injector.getCheckoutController(), injector.getSession());
         final SellerPage seller = new SellerPage(injector.getSellerAuthController(), injector.getSellerAccountController(), injector.getCatalogController(), injector.getSalesMenuController(), injector.getSession());
         final Session session = injector.getSession();
+        
         int choice;
 
         do {

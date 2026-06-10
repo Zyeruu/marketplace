@@ -6,8 +6,8 @@ import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.session.Session;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class OrdersMenuRepository {
 
@@ -27,12 +27,7 @@ public final class OrdersMenuRepository {
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
 
-        List<TaxReceipt> taxReceiptListPointer = buyer.getTaxReceiptList();
-        List<TaxReceipt> taxReceiptListCopy = new ArrayList<>();
-
-        // Copies the products from taxReceiptListPointer to taxReceiptListCopy
-        for (TaxReceipt taxReceipt : taxReceiptListPointer)
-            taxReceiptListCopy.add(new TaxReceipt(taxReceipt));
+        List<TaxReceipt> taxReceiptListCopy = buyer.getTaxReceiptList().stream().map(TaxReceipt::new).collect(Collectors.toList());
 
         if (taxReceiptListCopy.isEmpty())
             throw new NotFoundException("[!] No purchase history.");
@@ -48,19 +43,14 @@ public final class OrdersMenuRepository {
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
 
-        TaxReceipt taxReceipt = findTaxReceiptByOrderId(buyer, orderId);
+        TaxReceipt taxReceipt = buyer.getTaxReceiptList().stream()
+                .filter(product -> product.getOrderId().equals(orderId))
+                .findFirst()
+                .orElse(null);
 
         if (taxReceipt == null)
-            throw new NotFoundException("[!] The order with ID \"" + orderId + "\" was not found.");
+            throw new NotFoundException("[!] Order with ID \"" + orderId + "\" not found.");
 
         return new TaxReceipt(taxReceipt);
-    }
-
-    public TaxReceipt findTaxReceiptByOrderId(Buyer buyer, String orderId) {
-
-        for (TaxReceipt taxReceipt : buyer.getTaxReceiptList())
-            if (taxReceipt.getOrderId().equals(orderId))
-                return taxReceipt;
-        return null;
     }
 }

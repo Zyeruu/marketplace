@@ -14,6 +14,7 @@ import main.java.com.example.marketplace.shared.session.Session;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class CartRepository {
 
@@ -32,15 +33,12 @@ public final class CartRepository {
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
 
-        List<CartProduct> cartProductListPointer = buyer.getCartProductList();
-
-        if (cartProductListPointer.isEmpty())
+        if (buyer.getCartProductList().isEmpty())
             throw new EmptyCartException("[!] Your cart is empty.");
 
-        List<CartProduct> cartProductListCopy = new ArrayList<>();
-
-        for (CartProduct product : cartProductListPointer)
-            cartProductListCopy.add(new CartProduct(product));
+        List<CartProduct> cartProductListCopy = buyer.getCartProductList().stream()
+                .map(CartProduct::new)
+                .collect(Collectors.toList());
 
         float totalCost = buyer.getCartTotalCost();
         int totalProducts = buyer.getCartTotalProducts();
@@ -56,19 +54,18 @@ public final class CartRepository {
         Buyer buyer = dataBase.findBuyerByEmail(email);
 
         if (buyer == null)
-            throw new NotFoundException("[!] Logged-in user does not exist.");
+            throw new NotFoundException("[!] User not found.");
 
-        List<CartProduct> cartProductListPointer = buyer.getCartProductList();
-
-        if (cartProductListPointer.isEmpty())
+        if (buyer.getCartProductList().isEmpty())
             throw new EmptyCartException("[!] Your cart is empty.");
 
         List<CartProduct> cartProductListCopy = new ArrayList<>();
 
         float totalCost = 0;
 
-        for (CartProduct product : cartProductListPointer) {
+        for (CartProduct product : buyer.getCartProductList()) {
             if (product.getType() == productType) {
+
                 cartProductListCopy.add(new CartProduct(product));
                 totalCost += product.getUnitPrice() * product.getQuantity();
             }
@@ -95,9 +92,7 @@ public final class CartRepository {
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
 
-        List<CartProduct> cartProductListPointer = buyer.getCartProductList();
-
-        if (cartProductListPointer.isEmpty())
+        if (buyer.getCartProductList().isEmpty())
             throw new EmptyCartException("[!] Your cart is empty.");
 
         List<CartProduct> cartProductListCopy = new ArrayList<>();
@@ -107,10 +102,10 @@ public final class CartRepository {
         int totalFood = 0;
         int totalMisc = 0;
 
-        for (CartProduct product : cartProductListPointer) {
+        for (CartProduct product : buyer.getCartProductList()) {
             if (product.getName().equalsIgnoreCase(productName)) {
-                cartProductListCopy.add(new CartProduct(product));
 
+                cartProductListCopy.add(new CartProduct(product));
                 totalCost += product.getUnitPrice() * product.getQuantity();
 
                 if (product.getType() == ProductType.FOOD)
@@ -136,21 +131,19 @@ public final class CartRepository {
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
 
-        List<CartProduct> cartProductListPointer = buyer.getCartProductList();
-
-        if (cartProductListPointer.isEmpty())
+        if (buyer.getCartProductList().isEmpty())
             throw new EmptyCartException("[!] Your cart is empty.");
 
         CartProduct cartProduct = null;
 
-        for (CartProduct product : cartProductListPointer)
-            if (product.getId().equals(productId)) {
-                cartProduct = new CartProduct(product);
-                break;
-            }
+        cartProduct = buyer.getCartProductList().stream()
+                .filter(product -> product.getId().equals(productId))
+                .map(CartProduct::new)
+                .findFirst()
+                .orElse(null);
 
         if (cartProduct == null)
-            throw new NotFoundException("[!] The product with ID \"" + productId + "\" was not found.");
+            throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
 
         return cartProduct;
     }
@@ -168,25 +161,35 @@ public final class CartRepository {
         Product catalogProduct = dataBase.findProductById(productId);
 
         if (catalogProduct == null)
-            throw new NotFoundException("[!] The product with ID \"" + productId + "\" was not found.");
+            throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
 
         if (quantToBeAdded > catalogProduct.getStock())
-            throw new InsufficientStockException("[!] There is not enough stock to meet the requested quantity.");
+            throw new InsufficientStockException("[!] Insufficient stock for the requested quantity.");
 
-        CartProduct cartProduct = findCartProductById(buyer, productId);
+        CartProduct cartProduct = buyer.getCartProductList().stream()
+                .filter(product -> product.getId().equals(productId))
+                .findFirst()
+                .orElse(null);
 
         if (cartProduct != null) {
 
             if (cartProduct.getQuantity() + cartRequest.getQuantity() > catalogProduct.getStock())
-                throw new InsufficientStockException("[!] Insufficient stock for this quantity.");
+                throw new InsufficientStockException("[!] Insufficient stock for the requested quantity.");
 
             cartProduct.setQuantity(cartProduct.getQuantity() + cartRequest.getQuantity());
             return;
         }
 
-        buyer.getCartProductList().add(new CartProduct(catalogProduct.getName(), productId, catalogProduct.getStoreName(),
-                catalogProduct.getType(), catalogProduct.getBrand(), catalogProduct.getUnitPrice(), catalogProduct.getWeight(),
-                cartRequest.getQuantity(), catalogProduct.getWarranty()));
+        buyer.getCartProductList().add(new CartProduct(
+                catalogProduct.getName(),
+                productId,
+                catalogProduct.getStoreName(),
+                catalogProduct.getType(),
+                catalogProduct.getBrand(),
+                catalogProduct.getUnitPrice(),
+                catalogProduct.getWeight(),
+                cartRequest.getQuantity(),
+                catalogProduct.getWarranty()));
     }
 
     public void removeProduct(CartRequest cartRequest) {
@@ -197,22 +200,17 @@ public final class CartRepository {
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
 
-        CartProduct cartProduct = findCartProductById(buyer, cartRequest.getId());
+        CartProduct cartProduct = buyer.getCartProductList().stream()
+                .filter(product -> product.getId().equals(cartRequest.getId()))
+                .findFirst()
+                .orElse(null);
 
         if (cartProduct == null)
-            throw new NotFoundException("[!] The product with ID \"" + cartRequest.getId() + "\" was not found.");
+            throw new NotFoundException("[!] Product with ID \"" + cartRequest.getId() + "\" not found.");
 
         if (cartProduct.getQuantity() == cartRequest.getQuantity())
             buyer.getCartProductList().remove(cartProduct);
         else
             cartProduct.setQuantity(cartProduct.getQuantity() - cartRequest.getQuantity());
-    }
-
-    public CartProduct findCartProductById(Buyer buyer, String productId) {
-
-        for (CartProduct product : buyer.getCartProductList())
-            if (product.getId().equals(productId))
-                return product;
-        return null;
     }
 }

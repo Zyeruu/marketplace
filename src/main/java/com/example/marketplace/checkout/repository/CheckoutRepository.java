@@ -17,6 +17,7 @@ import main.java.com.example.marketplace.shared.utils.IdGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class CheckoutRepository {
 
@@ -64,26 +65,26 @@ public final class CheckoutRepository {
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
 
-        List<CartProduct> cartProductList = buyer.getCartProductList();
-        List<String> storeNames = getStoreNames(cartProductList);
+        List<String> storeNames = getStoreNames(buyer.getCartProductList());
 
         for (String name : storeNames) {
 
             Seller seller = dataBase.findSellerByStoreName(name);
 
-            List<OrderedProduct> buyerOrderedProductList = new ArrayList<>();
-            List<OrderedProduct> sellerOrderedProductList = new ArrayList<>();
+            List<OrderedProduct> buyerOrderedProductList = buyer.getCartProductList().stream()
+                    .filter(p -> p.getStoreName().equals(name))
+                    .map(p -> new OrderedProduct(p.getName(), p.getId(), p.getType(), p.getQuantity(), p.getUnitPrice()))
+                    .collect(Collectors.toList());
 
-            float totalCost = 0;
+            List<OrderedProduct> sellerOrderedProductList = buyer.getCartProductList().stream()
+                    .filter(p -> p.getStoreName().equals(name))
+                    .map(p -> new OrderedProduct(p.getName(), p.getId(), p.getType(), p.getQuantity(), p.getUnitPrice()))
+                    .collect(Collectors.toList());
 
-            for (CartProduct product : cartProductList)
-                if (product.getStoreName().equals(name)) {
-
-                    totalCost += product.getUnitPrice() * product.getQuantity();
-
-                    buyerOrderedProductList.add(new OrderedProduct(product.getName(), product.getId(), product.getType(), product.getQuantity(), product.getUnitPrice()));
-                    sellerOrderedProductList.add(new OrderedProduct(product.getName(), product.getId(), product.getType(), product.getQuantity(), product.getUnitPrice()));
-                }
+            float totalCost = (float) buyer.getCartProductList().stream()
+                    .filter(p -> p.getStoreName().equals(name))
+                    .mapToDouble(p -> p.getUnitPrice() * p.getQuantity())
+                    .sum();
 
             String orderId = IdGenerator.generateOrderId();
 
@@ -99,6 +100,9 @@ public final class CheckoutRepository {
 
         String email = session.getEmail();
         Buyer buyer = dataBase.findBuyerByEmail(email);
+
+        if (buyer == null)
+            throw new NotFoundException("[!] User not found.");
 
         buyer.updateCart();
         return buyer.getCartTotalCost();

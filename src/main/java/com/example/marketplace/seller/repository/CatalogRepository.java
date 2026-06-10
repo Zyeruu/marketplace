@@ -13,6 +13,7 @@ import main.java.com.example.marketplace.shared.session.Session;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class CatalogRepository {
 
@@ -32,15 +33,10 @@ public final class CatalogRepository {
         if (seller == null)
             throw new NotFoundException("[!] User not found.");
 
-        List<Product> productListPointer = seller.getProductList();
-
-        if (productListPointer.isEmpty())
+        if (seller.getProductList().isEmpty())
             throw new EmptyCatalogException("[!] Your catalog is empty.");
 
-        List<Product> productListCopy = new ArrayList<>();
-
-        for (Product product : productListPointer)
-            productListCopy.add(new Product(product));
+        List<Product> productListCopy = seller.getProductList().stream().map(Product::new).collect(Collectors.toList());
 
         int totalProducts = seller.getTotalProducts();
         int totalFood = seller.getTotalFood();
@@ -57,16 +53,13 @@ public final class CatalogRepository {
         if (seller == null)
             throw new NotFoundException("[!] User not found.");
 
-        List<Product> productListPointer = seller.getProductList();
-
-        if (productListPointer.isEmpty())
+        if (seller.getProductList().isEmpty())
             throw new EmptyCatalogException("[!] Your catalog is empty.");
 
-        List<Product> productListCopy = new ArrayList<>();
-
-        for (Product product : productListPointer)
-            if (product.getType() == productType)
-                productListCopy.add(new Product(product));
+        List<Product> productListCopy = seller.getProductList().stream()
+                .filter(product -> product.getType() == productType)
+                .map(Product::new)
+                .collect(Collectors.toList());
 
         if (productListCopy.isEmpty())
             throw new NotFoundException("[!] No results were found.");
@@ -89,9 +82,7 @@ public final class CatalogRepository {
         if (seller == null)
             throw new NotFoundException("[!] User not found.");
 
-        List<Product> productListPointer = seller.getProductList();
-
-        if (productListPointer.isEmpty())
+        if (seller.getProductList().isEmpty())
             throw new EmptyCatalogException("[!] Your catalog is empty.");
 
         List<Product> productListCopy = new ArrayList<>();
@@ -100,7 +91,7 @@ public final class CatalogRepository {
         int totalFood = 0;
         int totalMisc = 0;
 
-        for (Product product : productListPointer) {
+        for (Product product : seller.getProductList()) {
             if (product.getName().equalsIgnoreCase(productName)) {
                 productListCopy.add(new Product(product));
 
@@ -127,18 +118,14 @@ public final class CatalogRepository {
         if (seller == null)
             throw new NotFoundException("[!] User not found.");
 
-        List<Product> productListPointer = seller.getProductList();
-
-        if (productListPointer.isEmpty())
+        if (seller.getProductList().isEmpty())
             throw new EmptyCatalogException("[!] Your catalog is empty.");
 
-        Product catalogProduct = null;
-
-        for (Product product : productListPointer)
-            if (product.getId().equals(productId)) {
-                catalogProduct = new Product(product);
-                break;
-            }
+        Product catalogProduct = seller.getProductList().stream()
+                .filter(product -> product.getId().equals(productId))
+                .map(Product::new)
+                .findFirst()
+                .orElse(null);
 
         if (catalogProduct == null)
             throw new NotFoundException("Product with ID \"" + productId + "\" not found.");
@@ -154,15 +141,7 @@ public final class CatalogRepository {
         if (seller == null)
             throw new NotFoundException("[!] User not found.");
 
-        boolean existsProductByName = false;
-
-        for (Product p : seller.getProductList())
-            if (p.getName().equalsIgnoreCase(product.getName())) {
-                existsProductByName = true;
-                break;
-            }
-
-        if (existsProductByName)
+        if (seller.getProductList().stream().anyMatch(p -> p.getName().equalsIgnoreCase(product.getName())))
             throw new AlreadyExistsException("[!] The product you want to add already exists in your catalog.");
 
         product.setStoreName(session.getStoreName());

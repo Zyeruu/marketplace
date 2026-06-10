@@ -13,6 +13,7 @@ public final class DataBase {
     // List of registered users and their respective database
     private final List<Buyer> buyerList = new ArrayList<>();
     private final List<Seller> sellerList = new ArrayList<>();
+    // List of products from all sellers
     private final List<Product> productList = new ArrayList<>();
 
 
@@ -32,26 +33,22 @@ public final class DataBase {
 
     public boolean existsBuyerByEmail(String email) {
 
-        for (Buyer buyer : buyerList)
-            if (buyer.getEmail().equals(email))
-                return true;
-        return false;
+        return buyerList.stream()
+                .anyMatch(buyer -> buyer.getEmail().equals(email));
     }
 
     public Buyer findBuyerByEmail(String email) {
 
-        for (Buyer buyer : buyerList)
-            if (buyer.getEmail().equals(email))
-                return buyer;
-        return null;
+        return buyerList.stream()
+                .filter(buyer -> buyer.getEmail().equals(email))
+                .findFirst()
+                .orElse(null);
     }
 
     public boolean existsBuyerByEmailAndPassword(String email, String password) {
 
-        for (Buyer buyer : buyerList)
-            if (buyer.getEmail().equals(email))
-                return buyer.getPassword().equals(password);
-        return false;
+        return buyerList.stream()
+                .anyMatch(buyer -> buyer.getEmail().equals(email) && buyer.getPassword().equals(password));
     }
 
 
@@ -68,49 +65,41 @@ public final class DataBase {
     }
 
 
-    // ----------------------------------------------| OTHERS METHODS |----------------------------------------------
-
-    public boolean existsSellerByEmail(String email) {
-
-        for (Seller seller : sellerList)
-            if (seller.getEmail().equals(email))
-                return true;
-        return false;
-    }
-
-    public Seller findSellerByEmail(String email) {
-
-        for (Seller seller : sellerList)
-            if (seller.getEmail().equals(email))
-                return seller;
-        return null;
-    }
-
-    public boolean existsSellerByStoreName(String storeName) {
-
-        for (Seller seller : sellerList)
-            if (seller.getStoreName().equals(storeName))
-                return true;
-        return false;
-    }
-
-
     // --------------------------------------------| CHECKOUT METHODS |--------------------------------------------
 
     public Seller findSellerByStoreName(String storeName) {
 
-        for (Seller seller : sellerList)
-            if (seller.getStoreName().equals(storeName))
-                return seller;
-        return null;
+        return sellerList.stream()
+                .filter(seller -> seller.getStoreName().equals(storeName))
+                .findFirst()
+                .orElse(null);
+    }
+
+
+    // ----------------------------------------------| OTHERS METHODS |----------------------------------------------
+
+    public boolean existsSellerByEmail(String email) {
+
+        return sellerList.stream()
+                .anyMatch(seller -> seller.getEmail().equals(email));
+    }
+
+    public Seller findSellerByEmail(String email) {
+
+        return sellerList.stream()
+                .filter(seller -> seller.getEmail().equals(email))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public boolean existsSellerByStoreName(String storeName) {
+
+        return sellerList.stream()
+                .anyMatch(seller -> seller.getStoreName().equals(storeName));
     }
 
 
     // ---------------------------------------------| PRODUCT LIST |--------------------------------------------
-
-    public boolean isProductListEmpty() {
-        return productList.isEmpty();
-    }
 
     public void addToProductList(Product product) {
         productList.add(product);
@@ -120,28 +109,12 @@ public final class DataBase {
         productList.remove(product);
     }
 
-    public boolean existsProductByName(String productName) {
+    public Product findProductById(String productId) {
 
-        for (Product product : productList)
-            if (product.getName().equalsIgnoreCase(productName))
-                return true;
-        return false;
-    }
-
-    public boolean existsProductByType(ProductType productType) {
-
-        for (Product product : productList)
-            if (product.getType() == productType)
-                return true;
-        return false;
-    }
-
-    public Product findProductById(String id) {
-
-        for (Product product : productList)
-            if (product.getId().equals(id))
-                return product;
-        return null;
+        return productList.stream()
+                .filter(product -> product.getId().equals(productId))
+                .findFirst()
+                .orElse(null);
     }
 
     public List<Product> getProductList() {

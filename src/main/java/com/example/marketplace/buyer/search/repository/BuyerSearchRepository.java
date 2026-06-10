@@ -8,6 +8,7 @@ import main.java.com.example.marketplace.shared.enums.ProductType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class BuyerSearchRepository {
 
@@ -19,40 +20,38 @@ public final class BuyerSearchRepository {
 
     public List<Product> findProducts() {
 
-        if (dataBase.isProductListEmpty())
+        List<Product> productList = dataBase.getProductList().stream()
+                .map(Product::new)
+                .collect(Collectors.toList());
+
+        if (productList.isEmpty())
             throw new NotFoundException("[!] No results were found.");
-
-        List<Product> productList = new ArrayList<>();
-
-        for (Product product : dataBase.getProductList())
-            productList.add(new Product(product));
 
         return productList;
     }
+
     public List<Product> findByName(String productName) {
 
-        if (!dataBase.existsProductByName(productName))
+        List<Product> productList = dataBase.getProductList().stream()
+                .filter(product -> product.getName().equalsIgnoreCase(productName))
+                .map(Product::new)
+                .collect(Collectors.toList());
+
+        if (productList.isEmpty())
             throw new NotFoundException("[!] No results were found.");
-
-        List<Product> productList = new ArrayList<>();
-
-        for (Product product : dataBase.getProductList())
-            if (product.getName().equalsIgnoreCase(productName))
-                productList.add(new Product(product));
 
         return productList;
     }
 
     public List<Product> findByType(ProductType productType) {
 
-        if (!dataBase.existsProductByType(productType))
+        List<Product> productList = dataBase.getProductList().stream()
+                .filter(product -> product.getType() == productType)
+                .map(Product::new)
+                .collect(Collectors.toList());
+
+        if (productList.isEmpty())
             throw new NotFoundException("[!] No results were found.");
-
-        List<Product> productList = new ArrayList<>();
-
-        for (Product product : dataBase.getProductList())
-            if (product.getType() == productType)
-                productList.add(new Product(product));
 
         return productList;
     }
@@ -62,11 +61,10 @@ public final class BuyerSearchRepository {
         String name = searchRequest.getProductName();
         ProductType type = searchRequest.getProductType();
 
-        List<Product> productList = new ArrayList<>();
-
-        for (Product product : dataBase.getProductList())
-            if (product.getName().equalsIgnoreCase(name) && product.getType() == type)
-                productList.add(new Product(product));
+        List<Product> productList = dataBase.getProductList().stream()
+                .filter(product -> product.getName().equalsIgnoreCase(name) && product.getType() == type)
+                .map(Product::new)
+                .collect(Collectors.toList());
 
         if (productList.isEmpty())
             throw new NotFoundException("[!] No results were found.");
@@ -76,11 +74,10 @@ public final class BuyerSearchRepository {
 
     public Product findById(String productId) {
 
-        Product product = null;
-
-        for (Product p : dataBase.getProductList())
-            if (p.getId().equals(productId))
-                product = new Product(p);
+        Product product = dataBase.getProductList().stream()
+                .filter(p -> p.getId().equals(productId))
+                .map(Product::new)
+                .findFirst().orElse(null);
 
         if (product == null)
             throw new NotFoundException("Product with ID \"" + productId + "\" not found.");
