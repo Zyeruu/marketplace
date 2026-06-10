@@ -11,7 +11,7 @@ import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.seller.model.Store;
 import main.java.com.example.marketplace.shared.utils.IdGenerator;
 import main.java.com.example.marketplace.shared.utils.Validator;
-import main.java.com.example.marketplace.shared.session.SellerSession;
+import main.java.com.example.marketplace.shared.session.Session;
 
 import java.text.Normalizer;
 
@@ -19,10 +19,12 @@ public final class SellerAuthController implements Authenticable {
 
     private final SellerAuthView view;
     private final SellerAuthRepository repository;
+    private final Session session;
 
-    public SellerAuthController(SellerAuthView view, SellerAuthRepository repository) {
+    public SellerAuthController(SellerAuthView view, SellerAuthRepository repository, Session session) {
         this.view = view;
         this.repository = repository;
+        this.session = session;
     }
 
     @Override
@@ -34,7 +36,7 @@ public final class SellerAuthController implements Authenticable {
             Validator.isValidEmail(user.getEmail());
             Validator.isValidPassword(user.getPassword());
             SellerAuthResponse authResponse = repository.login(user);
-            SellerSession.login(user.getEmail(), authResponse.getCnpj(), authResponse.getStoreName());
+            session.login(user.getEmail(), authResponse.getCnpj(), authResponse.getStoreName());
             view.printMessage("[✓] You are now logged in.");
         }
         catch (IllegalArgumentException | NotFoundException e) {
@@ -59,7 +61,7 @@ public final class SellerAuthController implements Authenticable {
             Store store = new Store(user.getStoreName(), cnpj);
             Seller seller = new Seller(user.getName(), user.getEmail(), user.getPassword(), store);
             repository.save(seller);
-            SellerSession.login(user.getEmail(), cnpj, store.getName());
+            session.login(user.getEmail(), cnpj, store.getName());
             view.printMessage("[+] Account successfully created!");
         }
         catch (IllegalArgumentException | AlreadyExistsException e) {
@@ -70,7 +72,7 @@ public final class SellerAuthController implements Authenticable {
     @Override
     public void logout() {
 
-        SellerSession.logout();
+        session.logout();
         view.printMessage("[*] You are now logged out.");
     }
 

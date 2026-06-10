@@ -9,22 +9,30 @@ import main.java.com.example.marketplace.seller.dto.CatalogResponse;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.seller.model.Seller;
 import main.java.com.example.marketplace.shared.enums.ProductType;
-import main.java.com.example.marketplace.shared.session.SellerSession;
+import main.java.com.example.marketplace.shared.session.Session;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class CatalogRepository {
 
+    private final DataBase dataBase;
+    private final Session session;
+
+    public CatalogRepository(DataBase dataBase, Session session) {
+        this.dataBase = dataBase;
+        this.session = session;
+    }
+
     public CatalogResponse findByEmail() {
 
-        String email = SellerSession.getEmail();
-        Seller seller = DataBase.findSellerByEmail(email);
+        String email = session.getEmail();
+        Seller seller = dataBase.findSellerByEmail(email);
 
         if (seller == null)
-            throw new NotFoundException("[!] Logged-in user does not exist.");
+            throw new NotFoundException("[!] User not found.");
 
-        List<Product> productListPointer = seller.getStore().getCatalog().getProductList();
+        List<Product> productListPointer = seller.getProductList();
 
         if (productListPointer.isEmpty())
             throw new EmptyCatalogException("[!] Your catalog is empty.");
@@ -34,22 +42,22 @@ public final class CatalogRepository {
         for (Product product : productListPointer)
             productListCopy.add(new Product(product));
 
-        int totalProducts = seller.getStore().getCatalog().getTotalProducts();
-        int totalFood = seller.getStore().getCatalog().getTotalFood();
-        int totalMisc = seller.getStore().getCatalog().getTotalMisc();
+        int totalProducts = seller.getTotalProducts();
+        int totalFood = seller.getTotalFood();
+        int totalMisc = seller.getTotalMisc();
 
         return new CatalogResponse(productListCopy, totalProducts, totalFood, totalMisc);
     }
 
     public CatalogResponse findByEmailAndProductType(ProductType productType) {
 
-        String email = SellerSession.getEmail();
-        Seller seller = DataBase.findSellerByEmail(email);
+        String email = session.getEmail();
+        Seller seller = dataBase.findSellerByEmail(email);
 
         if (seller == null)
-            throw new NotFoundException("[!] Logged-in user does not exist.");
+            throw new NotFoundException("[!] User not found.");
 
-        List<Product> productListPointer = seller.getStore().getCatalog().getProductList();
+        List<Product> productListPointer = seller.getProductList();
 
         if (productListPointer.isEmpty())
             throw new EmptyCatalogException("[!] Your catalog is empty.");
@@ -64,24 +72,24 @@ public final class CatalogRepository {
             throw new NotFoundException("[!] No results were found.");
 
         if (productType == ProductType.FOOD) {
-            int totalFood = seller.getStore().getCatalog().getTotalFood();
+            int totalFood = seller.getTotalFood();
             return new CatalogResponse(productListCopy, 0, totalFood, 0);
         }
         else {
-            int totalMisc = seller.getStore().getCatalog().getTotalMisc();
+            int totalMisc = seller.getTotalMisc();
             return new CatalogResponse(productListCopy, 0, 0, totalMisc);
         }
     }
 
     public CatalogResponse findByEmailAndProductName(String productName) {
 
-        String email = SellerSession.getEmail();
-        Seller seller = DataBase.findSellerByEmail(email);
+        String email = session.getEmail();
+        Seller seller = dataBase.findSellerByEmail(email);
 
         if (seller == null)
-            throw new NotFoundException("[!] Logged-in user does not exist.");
+            throw new NotFoundException("[!] User not found.");
 
-        List<Product> productListPointer = seller.getStore().getCatalog().getProductList();
+        List<Product> productListPointer = seller.getProductList();
 
         if (productListPointer.isEmpty())
             throw new EmptyCatalogException("[!] Your catalog is empty.");
@@ -113,12 +121,13 @@ public final class CatalogRepository {
 
     public Product findByEmailAndProductId(String productId) {
 
-        String email = SellerSession.getEmail();
+        String email = session.getEmail();
+        Seller seller = dataBase.findSellerByEmail(email);
 
-        if (!DataBase.existsSellerByEmail(email))
-            throw new NotFoundException("[!] Logged-in user does not exist.");
+        if (seller == null)
+            throw new NotFoundException("[!] User not found.");
 
-        List<Product> productListPointer = DataBase.findCatalogProductListByEmail(email);
+        List<Product> productListPointer = seller.getProductList();
 
         if (productListPointer.isEmpty())
             throw new EmptyCatalogException("[!] Your catalog is empty.");
@@ -132,49 +141,81 @@ public final class CatalogRepository {
             }
 
         if (catalogProduct == null)
-            throw new NotFoundException("The product with ID \"" + productId + "\" was not found.");
+            throw new NotFoundException("Product with ID \"" + productId + "\" not found.");
 
         return catalogProduct;
     }
 
     public void saveProduct(Product product) {
 
-        String cnpj = SellerSession.getCnpj();
-        String productName = product.getName();
+        String email = session.getEmail();
+        Seller seller = dataBase.findSellerByEmail(email);
 
-        if (DataBase.existsCatalogProductByNameAndCnpj(productName, cnpj))
+        if (seller == null)
+            throw new NotFoundException("[!] User not found.");
+
+        boolean existsProductByName = false;
+
+        for (Product p : seller.getProductList())
+            if (p.getName().equalsIgnoreCase(product.getName())) {
+                existsProductByName = true;
+                break;
+            }
+
+        if (existsProductByName)
             throw new AlreadyExistsException("[!] The product you want to add already exists in your catalog.");
 
-        DataBase.addProductToCatalog(product, cnpj);
+        product.setStoreName(session.getStoreName());
+        seller.getProductList().add(product);
+        dataBase.addToProductList(product);
     }
 
     public void removeProduct(String productId) {
 
-        String cnpj = SellerSession.getCnpj();
+        String email = session.getEmail();
+        Seller seller = dataBase.findSellerByEmail(email);
 
-        if (!DataBase.existsCatalogProductByIdAndCnpj(productId, cnpj))
-            throw new NotFoundException("[!] The product with ID \"" + productId + "\" was not found.");
+        if (seller == null)
+            throw new NotFoundException("[!] User not found.");
 
-        DataBase.removeCatalogProduct(productId, cnpj);
+        Product product = dataBase.findProductById(productId);
+
+        if (product == null)
+            throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
+
+        seller.getProductList().remove(product);
+        dataBase.deleteFromProductList(product);
     }
 
     public void updateProductStock(CatalogRequest catalogRequest) {
 
-        String cnpj = SellerSession.getCnpj();
+        String email = session.getEmail();
+        Seller seller = dataBase.findSellerByEmail(email);
 
-        if (!DataBase.existsCatalogProductByIdAndCnpj(catalogRequest.getId(), cnpj))
-            throw new NotFoundException("[!] The product with ID \"" + catalogRequest.getId() + "\" was not found.");
+        if (seller == null)
+            throw new NotFoundException("[!] User not found.");
 
-        DataBase.updateProductStock(catalogRequest);
+        Product product = dataBase.findProductById(catalogRequest.getId());
+
+        if (product == null)
+            throw new NotFoundException("[!] Product with ID \"" + catalogRequest.getId() + "\" not found.");
+
+        product.setStock(catalogRequest.getQuantity());
     }
 
     public void updateProductPrice(CatalogRequest catalogRequest) {
 
-        String cnpj = SellerSession.getCnpj();
+        String email = session.getEmail();
+        Seller seller = dataBase.findSellerByEmail(email);
 
-        if (!DataBase.existsCatalogProductByIdAndCnpj(catalogRequest.getId(), cnpj))
-            throw new NotFoundException("[!] The product with ID \"" + catalogRequest.getId() + "\" was not found.");
+        if (seller == null)
+            throw new NotFoundException("[!] User not found.");
 
-        DataBase.updateProductPrice(catalogRequest);
+        Product product = dataBase.findProductById(catalogRequest.getId());
+
+        if (product == null)
+            throw new NotFoundException("[!] Product with ID \"" + catalogRequest.getId() + "\" not found.");
+
+        product.setPrice(catalogRequest.getPrice());
     }
 }

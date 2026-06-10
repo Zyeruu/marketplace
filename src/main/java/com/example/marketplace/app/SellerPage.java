@@ -4,7 +4,7 @@ import main.java.com.example.marketplace.seller.account.controller.SellerAccount
 import main.java.com.example.marketplace.seller.auth.controller.SellerAuthController;
 import main.java.com.example.marketplace.seller.controller.CatalogController;
 import main.java.com.example.marketplace.seller.controller.SalesMenuController;
-import main.java.com.example.marketplace.shared.session.SellerSession;
+import main.java.com.example.marketplace.shared.session.Session;
 
 import java.util.Scanner;
 
@@ -14,12 +14,14 @@ public final class SellerPage {
     private final SellerAccountController account;
     private final CatalogController catalog;
     private final SalesMenuController salesMenu;
+    private final Session session;
 
-    public SellerPage(SellerAuthController auth, SellerAccountController account, CatalogController catalog, SalesMenuController salesMenu) {
+    public SellerPage(SellerAuthController auth, SellerAccountController account, CatalogController catalog, SalesMenuController salesMenu, Session session) {
         this.auth = auth;
         this.account = account;
         this.catalog = catalog;
         this.salesMenu = salesMenu;
+        this.session = session;
     }
 
     public void page() {
@@ -49,7 +51,7 @@ public final class SellerPage {
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
 
-                        if (!SellerSession.isLogged())
+                        if (!session.isSellerLogged())
                             return;
 
                         if (choice != 5) {

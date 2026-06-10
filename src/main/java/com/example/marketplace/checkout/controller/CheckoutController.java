@@ -27,6 +27,7 @@ public final class CheckoutController {
             view.printMessage("[*] Processing payment of R$" + formatFloat(totalCost) + "...");
             view.printMessage("[✓] Payment confirmed!");
             repository.saveOrder(paymentMethod);
+            repository.updateBuyerCartAndSellerCatalog();
             view.printMessage("[✓] Purchase confirmed!");
         }
         catch (EmptyCartException | NotFoundException | InsufficientStockException | OutdatedPriceException e) {

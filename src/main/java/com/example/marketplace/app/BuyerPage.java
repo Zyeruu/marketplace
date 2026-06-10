@@ -6,7 +6,7 @@ import main.java.com.example.marketplace.buyer.controller.CartController;
 import main.java.com.example.marketplace.buyer.controller.OrdersMenuController;
 import main.java.com.example.marketplace.buyer.search.controller.BuyerSearchController;
 import main.java.com.example.marketplace.checkout.controller.CheckoutController;
-import main.java.com.example.marketplace.shared.session.BuyerSession;
+import main.java.com.example.marketplace.shared.session.Session;
 
 import java.util.Scanner;
 
@@ -18,14 +18,16 @@ public final class BuyerPage {
     private final OrdersMenuController ordersMenu;
     private final BuyerSearchController search;
     private final CheckoutController checkout;
+    private final Session session;
 
-    public BuyerPage(BuyerAuthController auth, BuyerAccountController account, CartController cart, OrdersMenuController ordersMenu, BuyerSearchController search, CheckoutController checkout) {
+    public BuyerPage(BuyerAuthController auth, BuyerAccountController account, CartController cart, OrdersMenuController ordersMenu, BuyerSearchController search, CheckoutController checkout, Session session) {
         this.auth = auth;
         this.account = account;
         this.cart = cart;
         this.ordersMenu = ordersMenu;
         this.search = search;
         this.checkout = checkout;
+        this.session = session;
     }
 
     public void page() {
@@ -54,7 +56,7 @@ public final class BuyerPage {
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
 
-                        if (!BuyerSession.isLogged())
+                        if (!session.isBuyerLogged())
                             return;
 
                         if (choice != 5) {

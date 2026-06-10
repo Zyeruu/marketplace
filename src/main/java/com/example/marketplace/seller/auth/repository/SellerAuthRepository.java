@@ -9,24 +9,33 @@ import main.java.com.example.marketplace.exceptions.NotFoundException;
 
 public final class SellerAuthRepository {
 
+    private final DataBase dataBase;
+
+    public SellerAuthRepository(DataBase dataBase) {
+        this.dataBase = dataBase;
+    }
+
     public void save(Seller seller) {
 
-        if (DataBase.existsSellerByEmail(seller.getEmail()))
+        if (dataBase.existsSellerByEmail(seller.getEmail()))
             throw new AlreadyExistsException("[!] E-mail already registered.");
 
-        if (DataBase.existsSellerByStoreName(seller.getStore().getName()))
+        if (dataBase.existsSellerByStoreName(seller.getStore().getName()))
             throw new AlreadyExistsException("[!] Store name already registered.");
 
-        DataBase.saveSeller(seller);
+        dataBase.saveSeller(seller);
     }
 
     public SellerAuthResponse login(SellerAuthRequest user) {
 
-        if (!DataBase.existsSellerByEmailAndPassword(user.getEmail(), user.getPassword()))
+        Seller seller = dataBase.findSellerByEmail(user.getEmail());
+
+        if (seller == null)
             throw new NotFoundException("[!] Incorrect e-mail or password.");
 
-        Seller seller = DataBase.findSellerByEmailAndPassword(user.getEmail(), user.getPassword());
+        if (!seller.getPassword().equals(user.getPassword()))
+            throw new NotFoundException("[!] Incorrect e-mail or password.");
 
-        return new SellerAuthResponse(seller.getStore().getName(), seller.getStore().getCnpj());
+        return new SellerAuthResponse(seller.getStoreName(), seller.getCnpj());
     }
 }

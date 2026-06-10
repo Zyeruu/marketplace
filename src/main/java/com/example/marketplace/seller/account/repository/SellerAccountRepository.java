@@ -6,70 +6,91 @@ import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.seller.account.dto.SellerAccountResponse;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.seller.model.Seller;
-import main.java.com.example.marketplace.shared.session.SellerSession;
+import main.java.com.example.marketplace.shared.session.Session;
 
 public final class SellerAccountRepository {
 
+    private final DataBase dataBase;
+    private final Session session;
+
+    public SellerAccountRepository(DataBase dataBase, Session session) {
+        this.dataBase = dataBase;
+        this.session = session;
+    }
+
     public SellerAccountResponse findByEmail() {
 
-        String email = SellerSession.getEmail();
+        String email = session.getEmail();
+        Seller seller = dataBase.findSellerByEmail(email);
 
-        if (!DataBase.existsSellerByEmail(email))
-            throw new NotFoundException("[!] Logged-in user does not exist.");
-
-        Seller seller = DataBase.findSellerByEmail(email);
+        if (seller == null)
+            throw new NotFoundException("[!] User not found.");
 
         String name = seller.getName();
         int passwordSize = seller.getPassword().length();
-        String storeName = seller.getStore().getName();
-        String cnpj = seller.getStore().getCnpj();
+        String storeName = seller.getStoreName();
+        String cnpj = seller.getCnpj();
 
         return new SellerAccountResponse(name, email, passwordSize, storeName, cnpj);
     }
 
     public void updateEmail(String newEmail) {
 
-        String currentEmail = SellerSession.getEmail();
+        String currentEmail = session.getEmail();
+        Seller seller = dataBase.findSellerByEmail(currentEmail);
+
+        if (seller == null)
+            throw new NotFoundException("[!] User not found.");
 
         if (currentEmail.equals(newEmail))
             throw new IllegalArgumentException("[!] The new e-mail must be different from the current e-mail.");
 
-        if (DataBase.existsSellerByEmail(newEmail))
+        if (dataBase.existsSellerByEmail(newEmail))
             throw new AlreadyExistsException("[!] E-mail already registered.");
 
-        DataBase.updateSellerEmail(currentEmail, newEmail);
+        seller.setEmail(newEmail);
     }
 
     public void updatePassword(String newPassword) {
 
-        String email = SellerSession.getEmail();
+        String email = session.getEmail();
+        Seller seller = dataBase.findSellerByEmail(email);
 
-        if (DataBase.isSameSellerPassword(email, newPassword))
-            throw new IllegalArgumentException("[!] The new password must be different from the current password.");
+        if (seller == null)
+            throw new NotFoundException("[!] User not found.");
 
-        DataBase.updateSellerPassword(email, newPassword);
+        if (seller.getPassword().equals(newPassword))
+            throw new IllegalArgumentException("[!] New password must be different from the current password.");
+
+        seller.setPassword(newPassword);
     }
 
     public void deleteAccount(String password) {
 
-        String email = SellerSession.getEmail();
+        String email = session.getEmail();
+        Seller seller = dataBase.findSellerByEmail(email);
 
-        if (!DataBase.existsSellerByEmailAndPassword(email, password))
+        if (seller == null)
+            throw new NotFoundException("[!] User not found.");
+
+        if (!seller.getPassword().equals(password))
             throw new NotFoundException("[!] Incorrect password.");
 
-        Seller seller = DataBase.findSellerByEmail(email);
+        for (Product product : seller.getProductList())
+            dataBase.deleteFromProductList(product);
 
-        for (Product product : seller.getStore().getCatalog().getProductList())
-            DataBase.removeFromProductList(product);
-
-        DataBase.deleteSeller(seller);
+        dataBase.deleteSeller(seller);
     }
 
     public void verifyPassword(String password) {
 
-        String email = SellerSession.getEmail();
+        String email = session.getEmail();
+        Seller seller = dataBase.findSellerByEmail(email);
 
-        if (!DataBase.existsSellerByEmailAndPassword(email, password))
+        if (seller == null)
+            throw new NotFoundException("[!] User not found.");
+
+        if (!seller.getPassword().equals(password))
             throw new NotFoundException("Incorrect password.");
     }
 }

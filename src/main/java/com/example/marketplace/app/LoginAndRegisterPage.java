@@ -4,8 +4,7 @@ import main.java.com.example.marketplace.MarketplaceApplication;
 import main.java.com.example.marketplace.buyer.auth.controller.BuyerAuthController;
 import main.java.com.example.marketplace.seller.auth.controller.SellerAuthController;
 import main.java.com.example.marketplace.shared.interfaces.Authenticable;
-import main.java.com.example.marketplace.shared.session.BuyerSession;
-import main.java.com.example.marketplace.shared.session.SellerSession;
+import main.java.com.example.marketplace.shared.session.Session;
 
 import java.util.Scanner;
 
@@ -13,10 +12,12 @@ public final class LoginAndRegisterPage {
 
     private final BuyerAuthController buyerAuthController;
     private final SellerAuthController sellerAuthController;
+    private final Session session;
 
-    public LoginAndRegisterPage(BuyerAuthController buyerAuthController, SellerAuthController sellerAuthController) {
+    public LoginAndRegisterPage(BuyerAuthController buyerAuthController, SellerAuthController sellerAuthController, Session session) {
         this.buyerAuthController = buyerAuthController;
         this.sellerAuthController = sellerAuthController;
+        this.session = session;
     }
 
     public void page() {
@@ -48,7 +49,7 @@ public final class LoginAndRegisterPage {
                         if (controller != null)
                             controller.login();
 
-                        if (BuyerSession.isLogged() || SellerSession.isLogged())
+                        if (session.isBuyerLogged() || session.isSellerLogged())
                             return;
 
                     } while (choice != 3);
@@ -70,7 +71,7 @@ public final class LoginAndRegisterPage {
                         if (controller != null)
                             controller.register();
 
-                        if (BuyerSession.isLogged() || SellerSession.isLogged())
+                        if (session.isBuyerLogged() || session.isSellerLogged())
                             return;
 
                     } while (choice != 3);
@@ -82,7 +83,7 @@ public final class LoginAndRegisterPage {
                     System.out.println("[!] Invalid option. Please try again.");
                     break;
             }
-        } while (choice != 3 && (!BuyerSession.isLogged() || !SellerSession.isLogged()));
+        } while (choice != 3 && (!session.isBuyerLogged() || !session.isSellerLogged()));
     }
 
     public static int readInt() {

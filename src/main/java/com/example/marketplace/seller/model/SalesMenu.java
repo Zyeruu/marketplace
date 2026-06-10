@@ -26,7 +26,7 @@ public final class SalesMenu {
     }
 
     // Getters
-    public List<TaxReceipt> getTaxReceiptsList() {
+    public List<TaxReceipt> getTaxReceiptList() {
         return taxReceiptsList;
     }
 
@@ -35,7 +35,7 @@ public final class SalesMenu {
     }
 
     // Setters
-    public void setTaxReceiptsList(TaxReceipt taxReceipt) {
+    public void setTaxReceiptList(TaxReceipt taxReceipt) {
         this.taxReceiptsList.add(taxReceipt);
         updateIncome();
         updateTotalSales();

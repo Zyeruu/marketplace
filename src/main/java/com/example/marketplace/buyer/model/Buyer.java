@@ -1,5 +1,9 @@
 package main.java.com.example.marketplace.buyer.model;
 
+import main.java.com.example.marketplace.checkout.model.TaxReceipt;
+
+import java.util.List;
+
 public final class Buyer {
 
     private final String name;
@@ -14,6 +18,10 @@ public final class Buyer {
         this.password = password;
         this.cart = new Cart();
         this.ordersMenu = new OrdersMenu();
+    }
+
+    public void updateCart() {
+        cart.updateCart();
     }
 
     // Getters
@@ -37,6 +45,30 @@ public final class Buyer {
         return ordersMenu;
     }
 
+    public List<CartProduct> getCartProductList() {
+        return cart.getCartProductList();
+    }
+
+    public List<TaxReceipt> getTaxReceiptList() {
+        return ordersMenu.getTaxReceiptList();
+    }
+
+    public float getCartTotalCost() {
+        return cart.getTotalCost();
+    }
+
+    public int getCartTotalProducts() {
+        return cart.getTotalProducts();
+    }
+
+    public int getCartTotalFood() {
+        return cart.getTotalFood();
+    }
+
+    public int getCartTotalMisc() {
+        return cart.getTotalMisc();
+    }
+
     // Setters
     public void setEmail(String email) {
         this.email = email;
@@ -44,5 +76,9 @@ public final class Buyer {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setTaxReceiptList(TaxReceipt taxReceipt) {
+        ordersMenu.setTaxReceiptList(taxReceipt);
     }
 }

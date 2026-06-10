@@ -6,7 +6,7 @@ public final class Product {
 
     private final String name;
     private final String id;
-    private final String storeName;
+    private String storeName;
     private final ProductType type;
     private final String brand;
     private float unitPrice;
@@ -91,15 +91,15 @@ public final class Product {
     }
 
     // Setters
-    public void updateStock(int stock) {
-        this.stock += stock;
-    }
-
     public void setStock(int stock) {
         this.stock = stock;
     }
 
     public void setPrice(float unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
     }
 }

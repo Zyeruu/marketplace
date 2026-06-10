@@ -18,6 +18,7 @@ import main.java.com.example.marketplace.buyer.view.OrdersMenuView;
 import main.java.com.example.marketplace.checkout.controller.CheckoutController;
 import main.java.com.example.marketplace.checkout.repository.CheckoutRepository;
 import main.java.com.example.marketplace.checkout.view.CheckoutView;
+import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.seller.account.controller.SellerAccountController;
 import main.java.com.example.marketplace.seller.account.repository.SellerAccountRepository;
 import main.java.com.example.marketplace.seller.account.view.SellerAccountView;
@@ -30,8 +31,13 @@ import main.java.com.example.marketplace.seller.repository.CatalogRepository;
 import main.java.com.example.marketplace.seller.repository.SalesMenuRepository;
 import main.java.com.example.marketplace.seller.view.CatalogView;
 import main.java.com.example.marketplace.seller.view.SalesMenuView;
+import main.java.com.example.marketplace.shared.session.Session;
 
 public class DependencyInjector {
+
+    private final DataBase dataBase;
+
+    private final Session session;
 
     private final BuyerAuthRepository buyerAuthRepository;
     private final BuyerAccountRepository buyerAccountRepository;
@@ -59,32 +65,40 @@ public class DependencyInjector {
 
     public DependencyInjector() {
 
-        this.buyerAuthRepository = new BuyerAuthRepository();
-        this.buyerAccountRepository = new BuyerAccountRepository();
-        this.cartRepository = new CartRepository();
-        this.ordersMenuRepository = new OrdersMenuRepository();
-        this.buyerSearchRepository = new BuyerSearchRepository();
-        this.checkoutRepository = new CheckoutRepository();
+        this.dataBase = new DataBase();
 
-        this.sellerAuthRepository = new SellerAuthRepository();
-        this.sellerAccountRepository = new SellerAccountRepository();
-        this.catalogRepository = new CatalogRepository();
-        this.salesMenuRepository = new SalesMenuRepository();
+        this.session = new Session();
 
-        this.buyerAuthController = new BuyerAuthController(new BuyerAuthView(), buyerAuthRepository);
-        this.buyerAccountController = new BuyerAccountController(new BuyerAccountView(), buyerAccountRepository);
+        this.buyerAuthRepository = new BuyerAuthRepository(dataBase);
+        this.buyerAccountRepository = new BuyerAccountRepository(dataBase, session);
+        this.cartRepository = new CartRepository(dataBase, session);
+        this.ordersMenuRepository = new OrdersMenuRepository(dataBase, session);
+        this.buyerSearchRepository = new BuyerSearchRepository(dataBase);
+        this.checkoutRepository = new CheckoutRepository(dataBase, session);
+
+        this.sellerAuthRepository = new SellerAuthRepository(dataBase);
+        this.sellerAccountRepository = new SellerAccountRepository(dataBase, session);
+        this.catalogRepository = new CatalogRepository(dataBase, session);
+        this.salesMenuRepository = new SalesMenuRepository(dataBase, session);
+
+        this.buyerAuthController = new BuyerAuthController(new BuyerAuthView(), buyerAuthRepository, session);
+        this.buyerAccountController = new BuyerAccountController(new BuyerAccountView(), buyerAccountRepository, session);
         this.cartController = new CartController(new CartView(), cartRepository);
         this.ordersMenuController = new OrdersMenuController(new OrdersMenuView(), ordersMenuRepository);
         this.searchController = new BuyerSearchController(new BuyerSearchView(), buyerSearchRepository);
         this.checkoutController = new CheckoutController(new CheckoutView(), checkoutRepository);
 
-        this.sellerAuthController = new SellerAuthController(new SellerAuthView(), sellerAuthRepository);
-        this.sellerAccountController = new SellerAccountController(new SellerAccountView(), sellerAccountRepository);
+        this.sellerAuthController = new SellerAuthController(new SellerAuthView(), sellerAuthRepository, session);
+        this.sellerAccountController = new SellerAccountController(new SellerAccountView(), sellerAccountRepository, session);
         this.catalogController = new CatalogController(new CatalogView(), catalogRepository);
         this.salesMenuController = new SalesMenuController(new SalesMenuView(), salesMenuRepository);
     }
 
     // Getters
+    public Session getSession() {
+        return session;
+    }
+
     public BuyerAuthController getBuyerAuthController() {
         return buyerAuthController;
     }

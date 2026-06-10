@@ -4,8 +4,7 @@ import main.java.com.example.marketplace.app.BuyerPage;
 import main.java.com.example.marketplace.app.LoginAndRegisterPage;
 import main.java.com.example.marketplace.app.SellerPage;
 import main.java.com.example.marketplace.config.DependencyInjector;
-import main.java.com.example.marketplace.shared.session.BuyerSession;
-import main.java.com.example.marketplace.shared.session.SellerSession;
+import main.java.com.example.marketplace.shared.session.Session;
 
 import java.util.Scanner;
 
@@ -15,21 +14,21 @@ public class MarketplaceApplication {
 
     public static void main(String[] args) {
 
-        DependencyInjector injector = new DependencyInjector();
-        LoginAndRegisterPage loginAndRegister = new LoginAndRegisterPage(injector.getBuyerAuthController(), injector.getSellerAuthController());
-        BuyerPage buyer = new BuyerPage(injector.getBuyerAuthController(), injector.getBuyerAccountController(), injector.getCartController(), injector.getOrdersMenuController(), injector.getSearchController(), injector.getCheckoutController());
-        SellerPage seller = new SellerPage(injector.getSellerAuthController(), injector.getSellerAccountController(), injector.getCatalogController(), injector.getSalesMenuController());
-
+        final DependencyInjector injector = new DependencyInjector();
+        final LoginAndRegisterPage loginAndRegister = new LoginAndRegisterPage(injector.getBuyerAuthController(), injector.getSellerAuthController(), injector.getSession());
+        final BuyerPage buyer = new BuyerPage(injector.getBuyerAuthController(), injector.getBuyerAccountController(), injector.getCartController(), injector.getOrdersMenuController(), injector.getSearchController(), injector.getCheckoutController(), injector.getSession());
+        final SellerPage seller = new SellerPage(injector.getSellerAuthController(), injector.getSellerAccountController(), injector.getCatalogController(), injector.getSalesMenuController(), injector.getSession());
+        final Session session = injector.getSession();
         int choice;
 
         do {
-            if (!(BuyerSession.isLogged() || SellerSession.isLogged()))
+            if (!(session.isBuyerLogged() || session.isSellerLogged()))
                 loginAndRegister.page();
 
-            if (BuyerSession.isLogged())
+            if (session.isBuyerLogged())
                 buyer.page();
 
-            if (SellerSession.isLogged())
+            if (session.isSellerLogged())
                 seller.page();
 
             if (!running) {

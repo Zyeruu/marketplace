@@ -5,17 +5,19 @@ import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.seller.account.dto.SellerAccountResponse;
 import main.java.com.example.marketplace.seller.account.repository.SellerAccountRepository;
 import main.java.com.example.marketplace.seller.account.view.SellerAccountView;
-import main.java.com.example.marketplace.shared.session.SellerSession;
+import main.java.com.example.marketplace.shared.session.Session;
 import main.java.com.example.marketplace.shared.utils.Validator;
 
 public final class SellerAccountController {
 
     private final SellerAccountView view;
     private final SellerAccountRepository repository;
+    private final Session session;
 
-    public SellerAccountController(SellerAccountView view, SellerAccountRepository repository) {
+    public SellerAccountController(SellerAccountView view, SellerAccountRepository repository, Session session) {
         this.view = view;
         this.repository = repository;
+        this.session = session;
     }
 
     public void printSeller() {
@@ -38,7 +40,7 @@ public final class SellerAccountController {
             String newEmail = view.getEmail();
             Validator.isValidEmail(newEmail);
             repository.updateEmail(newEmail);
-            SellerSession.setEmail(newEmail);
+            session.setEmail(newEmail);
             view.printMessage("[*] E-mail successfully changed!");
         }
         catch (NotFoundException | IllegalArgumentException | AlreadyExistsException e) {
@@ -68,7 +70,7 @@ public final class SellerAccountController {
 
         try {
             repository.deleteAccount(password);
-            SellerSession.logout();
+            session.logout();
             view.printMessage("[-] Your account has been successfully deleted!");
         }
         catch (NotFoundException e) {

@@ -4,7 +4,7 @@ import main.java.com.example.marketplace.seller.dto.CatalogRequest;
 import main.java.com.example.marketplace.seller.dto.CatalogResponse;
 import main.java.com.example.marketplace.shared.enums.ProductType;
 import main.java.com.example.marketplace.seller.model.Product;
-import main.java.com.example.marketplace.shared.session.SellerSession;
+import main.java.com.example.marketplace.shared.session.Session;
 import main.java.com.example.marketplace.shared.utils.IdGenerator;
 
 import java.util.Scanner;
@@ -53,7 +53,6 @@ public final class CatalogView {
     public Product getProductData() {
 
         int choice;
-        String storeName = SellerSession.getStoreName();
 
         System.out.println("\n------------| CATALOG |------------");
 
@@ -81,7 +80,7 @@ public final class CatalogView {
         int stock = readInt();
 
         if (choice == 1)
-            return new Product(name, id, storeName, unitPrice, weight, stock);
+            return new Product(name, id, "", unitPrice, weight, stock);
         else {
             System.out.print("Product brand: ");
             System.out.flush();
@@ -91,7 +90,7 @@ public final class CatalogView {
             System.out.flush();
             int warranty = readInt();
 
-            return new Product(name, id, storeName, brand, unitPrice, weight, stock, warranty);
+            return new Product(name, id, "", brand, unitPrice, weight, stock, warranty);
             }
     }
 
