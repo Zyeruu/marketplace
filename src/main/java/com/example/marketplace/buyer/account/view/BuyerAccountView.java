@@ -41,6 +41,7 @@ public final class BuyerAccountView {
     }
 
     public void printMessage(String message) {
+        System.out.println();
         System.out.println(message);
     }
 }

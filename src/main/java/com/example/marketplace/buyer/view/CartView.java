@@ -38,9 +38,9 @@ public final class CartView {
         }
 
         if (cart.getShipping() > 0)
-            System.out.printf("Shipping: R$%.2f\n", cart.getShipping());
+            System.out.printf("Shipping: R$%.2f", cart.getShipping());
         else
-            System.out.println("Shipping: Free");
+            System.out.print("Shipping: Free");
         System.out.printf("\nTotal cost: R$%.2f\n", cart.getTotalCost());
         if (cart.getTotalFood() > 0)
             System.out.println("Total Food: " + cart.getTotalFood());

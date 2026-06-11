@@ -6,7 +6,6 @@ import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.shared.enums.ProductType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

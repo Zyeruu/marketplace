@@ -3,7 +3,6 @@ package main.java.com.example.marketplace.database;
 import main.java.com.example.marketplace.buyer.model.Buyer;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.seller.model.Seller;
-import main.java.com.example.marketplace.shared.enums.ProductType;
 
 import java.util.ArrayList;
 import java.util.List;

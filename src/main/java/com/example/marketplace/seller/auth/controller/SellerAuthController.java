@@ -76,9 +76,10 @@ public final class SellerAuthController implements Authenticable {
         view.printMessage("[*] You are now logged out.");
     }
 
-    public String normalizeName(String userName) {
+    public String normalizeName(String name) {
 
-        userName = Normalizer.normalize(userName, Normalizer.Form.NFD);
-        return userName.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "").toUpperCase();
+        name = Normalizer.normalize(name, Normalizer.Form.NFD);
+        return name.replaceAll("\\p{InCombiningDiacriticalMarks}", "")
+                .replaceAll("\\s+", " ").toUpperCase();
     }
 }

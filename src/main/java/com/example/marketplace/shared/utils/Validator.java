@@ -11,7 +11,7 @@ public final class Validator {
 
     public static void isValidEmail(String email) {
         if (!EMAIL.matcher(email).matches())
-            throw new IllegalArgumentException("[!] Invalid email format.");
+            throw new IllegalArgumentException("[!] Invalid e-mail format.");
     }
 
     public static void isValidPassword(String password) {

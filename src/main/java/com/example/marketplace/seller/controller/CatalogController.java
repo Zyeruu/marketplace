@@ -78,7 +78,7 @@ public final class CatalogController {
             repository.saveProduct(product);
             view.printMessage("[+] Product added to catalog.");
         }
-        catch (AlreadyExistsException e) {
+        catch (NotFoundException | AlreadyExistsException e) {
             view.printMessage(e.getMessage());
         }
     }
@@ -91,7 +91,7 @@ public final class CatalogController {
             repository.removeProduct(productId);
             view.printMessage("[-] Product deleted.");
         }
-        catch (NotFoundException e) {
+        catch (NotFoundException | EmptyCatalogException e) {
             view.printMessage(e.getMessage());
         }
     }

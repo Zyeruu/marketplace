@@ -4,12 +4,12 @@ import main.java.com.example.marketplace.shared.enums.ProductType;
 
 public final class OrderedProduct {
 
-    private String name;
-    private String id;
-    private ProductType type;
-    private int quantity;
-    private float unitPrice;
-    private float totalCost;
+    private final String name;
+    private final String id;
+    private final ProductType type;
+    private final int quantity;
+    private final float unitPrice;
+    private final float totalCost;
 
     public OrderedProduct(String name, String id, ProductType type, int quantity, float unitPrice) {
         this.name = name;

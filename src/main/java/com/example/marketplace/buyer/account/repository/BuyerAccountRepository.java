@@ -58,7 +58,7 @@ public final class BuyerAccountRepository {
             throw new NotFoundException("[!] User not found.");
 
         if (buyer.getPassword().equals(newPassword))
-            throw new IllegalArgumentException("[!] New password must be different from the current password.");
+            throw new IllegalArgumentException("[!] The new password must be different from the current password.");
 
         buyer.setPassword(newPassword);
     }

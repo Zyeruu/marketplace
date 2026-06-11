@@ -4,7 +4,6 @@ import main.java.com.example.marketplace.seller.dto.CatalogRequest;
 import main.java.com.example.marketplace.seller.dto.CatalogResponse;
 import main.java.com.example.marketplace.shared.enums.ProductType;
 import main.java.com.example.marketplace.seller.model.Product;
-import main.java.com.example.marketplace.shared.session.Session;
 import main.java.com.example.marketplace.shared.utils.IdGenerator;
 
 import java.util.Scanner;
@@ -224,6 +223,7 @@ public final class CatalogView {
     }
 
     public void printMessage(String message) {
+        System.out.println();
         System.out.println(message);
     }
 }

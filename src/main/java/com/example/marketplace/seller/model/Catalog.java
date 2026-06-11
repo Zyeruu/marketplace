@@ -43,17 +43,4 @@ public final class Catalog {
     public int getTotalMisc() {
         return totalMisc;
     }
-
-    // Setters
-    public void setTotalProducts(int totalProducts) {
-        this.totalProducts = totalProducts;
-    }
-
-    public void setTotalFood(int totalFood) {
-        this.totalFood = totalFood;
-    }
-
-    public void setTotalMisc(int totalMisc) {
-        this.totalMisc = totalMisc;
-    }
 }

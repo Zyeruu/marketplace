@@ -60,7 +60,7 @@ public final class SellerAccountRepository {
             throw new NotFoundException("[!] User not found.");
 
         if (seller.getPassword().equals(newPassword))
-            throw new IllegalArgumentException("[!] New password must be different from the current password.");
+            throw new IllegalArgumentException("[!] The new password must be different from the current password.");
 
         seller.setPassword(newPassword);
     }
@@ -91,6 +91,6 @@ public final class SellerAccountRepository {
             throw new NotFoundException("[!] User not found.");
 
         if (!seller.getPassword().equals(password))
-            throw new NotFoundException("Incorrect password.");
+            throw new NotFoundException("[!] Incorrect password.");
     }
 }

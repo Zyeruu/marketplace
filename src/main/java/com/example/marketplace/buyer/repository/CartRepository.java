@@ -25,6 +25,7 @@ public final class CartRepository {
         this.dataBase = dataBase;
         this.session = session;
     }
+
     public CartResponse findByEmail() {
 
         String email = session.getEmail();

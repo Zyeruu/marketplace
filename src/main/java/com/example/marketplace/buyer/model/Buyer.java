@@ -37,14 +37,6 @@ public final class Buyer {
         return password;
     }
 
-    public Cart getCart() {
-        return cart;
-    }
-
-    public OrdersMenu getOrdersMenu() {
-        return ordersMenu;
-    }
-
     public List<CartProduct> getCartProductList() {
         return cart.getCartProductList();
     }

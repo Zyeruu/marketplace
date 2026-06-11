@@ -147,17 +147,19 @@ public final class BuyerPage {
                         }
 
                         if (choice != 5) {
-                            System.out.println("\n--------| CART | DETAILS |--------");
-                            System.out.println("[1] Add a product to the cart\n[2] Show all details of a product\n[3] <- Back");
-                            System.out.println("-----------------------------------");
-                            choice = readInt();
+                            do {
+                                System.out.println("\n--------| CART | DETAILS |--------");
+                                System.out.println("[1] Add a product to the cart\n[2] Show all details of a product\n[3] <- Back");
+                                System.out.println("-----------------------------------");
+                                choice = readInt();
 
-                            switch (choice) {
-                                case 1 -> cart.addProduct();
-                                case 2 -> search.printAllProductDetails();
-                                case 3 -> System.out.print("");
-                                default -> System.out.println("[!] Invalid option. Try again.");
-                            }
+                                switch (choice) {
+                                    case 1 -> cart.addProduct();
+                                    case 2 -> search.printAllProductDetails();
+                                    case 3 -> System.out.print("");
+                                    default -> System.out.println("[!] Invalid option. Try again.");
+                                }
+                            } while (choice != 3);
                         }
                     } while (choice != 5);
                     choice = 0;
