@@ -8,6 +8,7 @@ import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.exceptions.EmptyCartException;
 import main.java.com.example.marketplace.exceptions.InsufficientStockException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
+import main.java.com.example.marketplace.exceptions.ProductSelectionStateException;
 import main.java.com.example.marketplace.seller.model.Product;
 import main.java.com.example.marketplace.shared.enums.ProductType;
 import main.java.com.example.marketplace.shared.session.Session;
@@ -41,13 +42,85 @@ public final class CartRepository {
                 .map(CartProduct::new)
                 .collect(Collectors.toList());
 
-        float totalCost = buyer.getCartTotalCost();
-        float shipping = buyer.getCartShipping();
+        float shipping = buyer.getSelectedShipping();
+        float totalCost = buyer.getSelectedTotalCost();
         int totalProducts = buyer.getCartTotalProducts();
         int totalFood = buyer.getCartTotalFood();
         int totalMisc = buyer.getCartTotalMisc();
 
         return new CartResponse(cartProductListCopy, totalCost, shipping, totalProducts, totalFood, totalMisc);
+    }
+
+    public CartResponse findByEmailAndSelected() {
+
+        String email = session.getEmail();;
+        Buyer buyer = dataBase.findBuyerByEmail(email);
+
+        if (buyer == null)
+            throw new NotFoundException("[!] User not found.");
+
+        if (buyer.getCartProductList().isEmpty())
+            throw new EmptyCartException("[!] Your cart is empty.");
+
+        List<CartProduct> cartProductListCopy = buyer.getCartProductList().stream()
+                .filter(CartProduct::isSelected)
+                .map(CartProduct::new)
+                .collect(Collectors.toList());
+
+        if (cartProductListCopy.isEmpty())
+            throw new NotFoundException("[!] No results were found.");
+
+        float shipping = buyer.getSelectedShipping();
+
+        float totalCost = shipping + (float) cartProductListCopy.stream()
+                .mapToDouble(product -> product.getUnitPrice() * product.getQuantity())
+                .sum();
+
+        int totalFood = (int) cartProductListCopy.stream()
+                .filter(product -> product.getType() == ProductType.FOOD)
+                .count();
+
+        int totalMisc = (int) cartProductListCopy.stream()
+                .filter(product -> product.getType() == ProductType.MISCELLANEOUS)
+                .count();
+
+        return new CartResponse(cartProductListCopy, totalCost, shipping, totalFood + totalMisc, totalFood, totalMisc);
+    }
+
+    public CartResponse findByEmailAndDeselected() {
+
+        String email = session.getEmail();;
+        Buyer buyer = dataBase.findBuyerByEmail(email);
+
+        if (buyer == null)
+            throw new NotFoundException("[!] User not found.");
+
+        if (buyer.getCartProductList().isEmpty())
+            throw new EmptyCartException("[!] Your cart is empty.");
+
+        List<CartProduct> cartProductListCopy = buyer.getCartProductList().stream()
+                .filter(product -> !product.isSelected())
+                .map(CartProduct::new)
+                .collect(Collectors.toList());
+
+        if (cartProductListCopy.isEmpty())
+            throw new NotFoundException("[!] No results were found.");
+
+        float shipping = buyer.getDeselectedShipping();
+
+        float totalCost = shipping + (float) cartProductListCopy.stream()
+                .mapToDouble(product -> product.getUnitPrice() * product.getQuantity())
+                .sum();
+
+        int totalFood = (int) cartProductListCopy.stream()
+                .filter(product -> product.getType() == ProductType.FOOD)
+                .count();
+
+        int totalMisc = (int) cartProductListCopy.stream()
+                .filter(product -> product.getType() == ProductType.MISCELLANEOUS)
+                .count();
+
+        return new CartResponse(cartProductListCopy, totalCost, shipping, totalFood + totalMisc, totalFood, totalMisc);
     }
 
     public CartResponse findByEmailAndProductType(ProductType productType) {
@@ -222,5 +295,55 @@ public final class CartRepository {
             cartProduct.setQuantity(cartProduct.getQuantity() - cartRequest.quantity());
 
         buyer.updateCart();
+    }
+
+    public void selectProduct(String productId) {
+
+        String email = session.getEmail();;
+        Buyer buyer = dataBase.findBuyerByEmail(email);
+
+        if (buyer == null)
+            throw new NotFoundException("[!] User not found.");
+
+        if (buyer.getCartProductList().isEmpty())
+            throw new EmptyCartException("[!] Your cart is empty.");
+
+        CartProduct cartProduct = buyer.getCartProductList().stream()
+                .filter(product -> product.getId().equals(productId))
+                .findFirst()
+                .orElse(null);
+
+        if (cartProduct == null)
+            throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
+
+        if (cartProduct.isSelected())
+            throw new ProductSelectionStateException("[!] Product already selected.");
+
+        cartProduct.setSelected(true);
+    }
+
+    public void deselectProduct(String productId) {
+
+        String email = session.getEmail();;
+        Buyer buyer = dataBase.findBuyerByEmail(email);
+
+        if (buyer == null)
+            throw new NotFoundException("[!] User not found.");
+
+        if (buyer.getCartProductList().isEmpty())
+            throw new EmptyCartException("[!] Your cart is empty.");
+
+        CartProduct cartProduct = buyer.getCartProductList().stream()
+                .filter(product -> product.getId().equals(productId))
+                .findFirst()
+                .orElse(null);
+
+        if (cartProduct == null)
+            throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
+
+        if (!cartProduct.isSelected())
+            throw new ProductSelectionStateException("[!] Product already deselected.");
+
+        cartProduct.setSelected(false);
     }
 }

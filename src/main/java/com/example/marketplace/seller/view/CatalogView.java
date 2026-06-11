@@ -26,8 +26,10 @@ public final class CatalogView {
 
         if (catalog.totalFood() > 0)
             System.out.println("Total Food: " + catalog.totalFood());
+
         if (catalog.totalMisc() > 0)
             System.out.println("Total Miscellaneous: " + catalog.totalMisc());
+
         if (catalog.totalProduct() > 0)
             System.out.println("Total Products: " + catalog.totalProduct());
     }

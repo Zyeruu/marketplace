@@ -8,6 +8,7 @@ import main.java.com.example.marketplace.buyer.view.CartView;
 import main.java.com.example.marketplace.exceptions.EmptyCartException;
 import main.java.com.example.marketplace.exceptions.InsufficientStockException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
+import main.java.com.example.marketplace.exceptions.ProductSelectionStateException;
 import main.java.com.example.marketplace.shared.enums.ProductType;
 
 public final class CartController {
@@ -24,6 +25,28 @@ public final class CartController {
 
         try {
             CartResponse cartResponse = repository.findByEmail();
+            view.printBuyerCart(cartResponse);
+        }
+        catch (NotFoundException | EmptyCartException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void printSelected() {
+
+        try {
+            CartResponse cartResponse = repository.findByEmailAndSelected();
+            view.printBuyerCart(cartResponse);
+        }
+        catch (NotFoundException | EmptyCartException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void printDeselected() {
+
+        try {
+            CartResponse cartResponse = repository.findByEmailAndDeselected();
             view.printBuyerCart(cartResponse);
         }
         catch (NotFoundException | EmptyCartException e) {
@@ -92,6 +115,32 @@ public final class CartController {
             view.printMessage("[-] Product removed.");
         }
         catch (NotFoundException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void selectProduct() {
+
+        String productId = view.getProductId();
+
+        try {
+            repository.selectProduct(productId);
+            view.printMessage("[+] Product selected.");
+        }
+        catch (NotFoundException | EmptyCartException | ProductSelectionStateException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void deselectProduct() {
+
+        String productId = view.getProductId();
+
+        try {
+            repository.deselectProduct(productId);
+            view.printMessage("[-] Product deselected.");
+        }
+        catch (NotFoundException | EmptyCartException | ProductSelectionStateException e) {
             view.printMessage(e.getMessage());
         }
     }

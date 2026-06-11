@@ -20,6 +20,7 @@ public final class CartView {
                 System.out.println("\nName: " + cartProduct.getName());
                 System.out.println("ID: " + cartProduct.getId());
                 System.out.println("Seller: " + cartProduct.getStoreName());
+                System.out.println("Selected: " + (cartProduct.isSelected() ? "Yes" : "No"));
                 System.out.println("Quantity: " + cartProduct.getQuantity());
                 System.out.printf("Unit Price: R$%.2f\n", cartProduct.getUnitPrice());
                 System.out.printf("Total: R$%.2f\n", cartProduct.getUnitPrice() * cartProduct.getQuantity());
@@ -31,21 +32,27 @@ public final class CartView {
                 System.out.println("\nName: " + cartProduct.getName());
                 System.out.println("ID: " + cartProduct.getId());
                 System.out.println("Seller: " + cartProduct.getStoreName());
+                System.out.println("Selected: " + (cartProduct.isSelected() ? "Yes" : "No"));
                 System.out.println("Quantity: " + cartProduct.getQuantity());
                 System.out.printf("Unit Price: R$%.2f\n", cartProduct.getUnitPrice());
                 System.out.printf("Total: R$%.2f\n", cartProduct.getUnitPrice() * cartProduct.getQuantity());
             }
         }
 
-        if (cart.shipping() > 0)
-            System.out.printf("\nShipping: R$%.2f", cart.shipping());
-        else
-            System.out.print("\nShipping: Free");
+        if (cart.totalCost() > 0)
+            if (cart.shipping() > 0)
+                System.out.printf("\nShipping: R$%.2f", cart.shipping());
+            else
+                System.out.print("\nShipping: Free");
+
         System.out.printf("\nTotal cost: R$%.2f\n", cart.totalCost());
+
         if (cart.totalFood() > 0)
             System.out.println("Total Food: " + cart.totalFood());
+
         if (cart.totalMisc() > 0)
             System.out.println("Total Miscellaneous: " + cart.totalMisc());
+
         if (cart.totalProducts() > 0)
             System.out.println("Total Products: " + cart.totalProducts());
     }
@@ -56,6 +63,7 @@ public final class CartView {
         System.out.println("Name: " + cartProduct.getName());
         System.out.println("ID: " + cartProduct.getId());
         System.out.println("Seller: " + cartProduct.getStoreName());
+        System.out.println("Selected: " + (cartProduct.isSelected() ? "Yes" : "No"));
         if (cartProduct.getBrand() != null)
             System.out.println("Brand: " + cartProduct.getBrand());
         System.out.println("Type: " + cartProduct.getType().getName());

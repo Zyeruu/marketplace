@@ -102,7 +102,7 @@ public final class BuyerPage {
                 case 3:
                     do {
                         System.out.println("\n-------------| CART |-------------");
-                        System.out.println("[1] Show my cart\n[2] Show by name\n[3] Show by type\n[4] Show all details of a product\n[5] Remove product\n[6] Checkout\n[7] <- Back");
+                        System.out.println("[1] Show my cart\n[2] Show by name\n[3] Show by type\n[4] Show selected products\n[5] Show deselected products\n[6] Show all details of a product\n[7] Remove product\n[8] Checkout\n[9] <- Back");
                         System.out.println("-----------------------------------");
                         choice = readInt();
 
@@ -110,38 +110,93 @@ public final class BuyerPage {
                             case 1 -> cart.printCart();
                             case 2 -> cart.printCartByProductName();
                             case 3 -> cart.printCartByProductType();
-                            case 4 -> cart.printAllProductDetails();
-                            case 5 -> cart.removeProduct();
-                            case 6 -> checkout.checkout();
-                            case 7 -> System.out.print("");
+                            case 4 -> cart.printSelected();
+                            case 5 -> cart.printDeselected();
+                            case 6 -> cart.printAllProductDetails();
+                            case 7 -> cart.removeProduct();
+                            case 8 -> checkout.checkout();
+                            case 9 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
 
-                        if (choice != 7) {
+                        if (choice >= 1 && choice <= 3) {
+                            do {
+                                System.out.println("-----------------------------------");
+                                System.out.println("[1] Select a product\n[2] Deselect a product\n[3] <- Back");
+                                System.out.println("-----------------------------------");
+
+                                choice = readInt();
+
+                                switch (choice) {
+                                    case 1 -> cart.selectProduct();
+                                    case 2 -> cart.deselectProduct();
+                                    case 3 -> System.out.print("");
+                                    default -> System.out.println("[!] Invalid option. Try again.");
+                                }
+                            } while (choice != 3);
+                        }
+
+                        if (choice == 4) {
+                            do {
+                                System.out.println("-----------------------------------");
+                                System.out.println("[1] Deselect a product\n[2] <- Back");
+                                System.out.println("-----------------------------------");
+
+                                choice = readInt();
+
+                                switch (choice) {
+                                    case 1 -> cart.deselectProduct();
+                                    case 2 -> System.out.print("");
+                                    default -> System.out.println("[!] Invalid option. Try again.");
+                                }
+                            } while (choice != 2);
+                        }
+
+                        if (choice == 5) {
+                            do {
+                                System.out.println("-----------------------------------");
+                                System.out.println("[1] Select a product\n[2] <- Back");
+                                System.out.println("-----------------------------------");
+
+                                choice = readInt();
+
+                                switch (choice) {
+                                    case 1 -> cart.selectProduct();
+                                    case 2 -> System.out.print("");
+                                    default -> System.out.println("[!] Invalid option. Try again.");
+                                }
+                            } while (choice != 2);
+                        }
+
+                        if (choice >= 6 && choice <= 8) {
                             System.out.println("-----------------------------------");
                             System.out.println("[1] <- Back");
                             System.out.println("-----------------------------------");
+
                             do {
                                 choice = readInt();
+
+                                if (choice != 1)
+                                    System.out.println("[!] Invalid option. Try again.");
                             } while (choice != 1);
                         }
 
-                    } while (choice != 7);
+                    } while (choice != 9);
                     choice = 0;
                     break;
 
                 case 4:
                     do {
                         System.out.println("\n------------| SEARCH |------------");
-                        System.out.println("[1] Search by name\n[2] Search by type\n[3] Search by name and type\n[4] Search all\n[5] <- Back");
+                        System.out.println("[1] Search all\n[2] Search by name\n[3] Search by type\n[4] Search by name and type\n[5] <- Back");
                         System.out.println("-----------------------------------");
                         choice = readInt();
 
                         switch (choice) {
-                            case 1 -> search.searchByName();
-                            case 2 -> search.searchByType();
-                            case 3 -> search.searchByNameAndType();
-                            case 4 -> search.searchAll();
+                            case 1 -> search.searchAll();
+                            case 2 -> search.searchByName();
+                            case 3 -> search.searchByType();
+                            case 4 -> search.searchByNameAndType();
                             case 5 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }

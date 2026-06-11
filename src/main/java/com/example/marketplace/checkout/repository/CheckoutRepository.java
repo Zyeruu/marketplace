@@ -40,20 +40,25 @@ public final class CheckoutRepository {
         if (buyer.getCartProductList().isEmpty())
             throw new EmptyCartException("[!] Your cart is empty.");
 
+        if (buyer.getCartProductList().stream().noneMatch(CartProduct::isSelected))
+            throw new NotFoundException("[!] You have no products selected.");
+
         List<CartProduct> cartProductList = buyer.getCartProductList();
 
         for (CartProduct item : cartProductList) {
 
-            Product product = dataBase.findProductById(item.getId());
+            if (item.isSelected()) {
+                Product product = dataBase.findProductById(item.getId());
 
-            if (product == null)
-                throw new NotFoundException("[!] Your cart contained product(s) that were unavailable. Your cart has been updated.");
+                if (product == null)
+                    throw new NotFoundException("[!] Your cart contained product(s) that were unavailable. Your cart has been updated.");
 
-            if (item.getQuantity() > product.getStock())
-                throw new InsufficientStockException("[!] Your cart contained more product(s) than were available. Your cart has been updated.");
+                if (item.getQuantity() > product.getStock())
+                    throw new InsufficientStockException("[!] Your cart contained more product(s) than were available. Your cart has been updated.");
 
-            if (product.getUnitPrice() != item.getUnitPrice())
-                throw new OutdatedPriceException("[!] Your cart contained product(s) with outdated prices. Your cart has been updated.");
+                if (product.getUnitPrice() != item.getUnitPrice())
+                    throw new OutdatedPriceException("[!] Your cart contained product(s) with outdated prices. Your cart has been updated.");
+            }
         }
     }
 
@@ -65,29 +70,33 @@ public final class CheckoutRepository {
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
 
-        List<String> storeNames = getStoreNames(buyer.getCartProductList());
+        List<CartProduct> selectedProducts = buyer.getCartProductList().stream()
+                .filter(CartProduct::isSelected)
+                .collect(Collectors.toList());
+
+        List<String> storeNames = getStoreNames(selectedProducts);
 
         for (String name : storeNames) {
 
             Seller seller = dataBase.findSellerByStoreName(name);
 
-            List<OrderedProduct> buyerOrderedProductList = buyer.getCartProductList().stream()
+            List<OrderedProduct> buyerOrderedProductList = selectedProducts.stream()
                     .filter(p -> p.getStoreName().equals(name))
                     .map(p -> new OrderedProduct(p.getName(), p.getId(), p.getType(), p.getQuantity(), p.getUnitPrice()))
                     .collect(Collectors.toList());
 
-            List<OrderedProduct> sellerOrderedProductList = buyer.getCartProductList().stream()
+            List<OrderedProduct> sellerOrderedProductList = selectedProducts.stream()
                     .filter(p -> p.getStoreName().equals(name))
                     .map(p -> new OrderedProduct(p.getName(), p.getId(), p.getType(), p.getQuantity(), p.getUnitPrice()))
                     .collect(Collectors.toList());
 
-            float sellerRevenue = (float) buyer.getCartProductList().stream()
+            float sellerRevenue = (float) selectedProducts.stream()
                     .filter(p -> p.getStoreName().equals(name))
                     .mapToDouble(p -> p.getUnitPrice() * p.getQuantity())
                     .sum();
 
             String orderId = IdGenerator.generateOrderId();
-            float shipping = buyer.getCartShipping() / storeNames.size();
+            float shipping = buyer.getSelectedShipping() / storeNames.size();
             float buyerTotalCost = sellerRevenue + shipping;
 
             TaxReceipt buyerTaxReceipt = new TaxReceipt(orderId, name, buyer.getName(), paymentMethod, buyerTotalCost, shipping, buyerOrderedProductList);
@@ -107,7 +116,7 @@ public final class CheckoutRepository {
             throw new NotFoundException("[!] User not found.");
 
         buyer.updateCart();
-        return buyer.getCartTotalCost();
+        return buyer.getSelectedTotalCost();
     }
 
     public void updateBuyerCartAndSellerCatalog() {
@@ -118,7 +127,9 @@ public final class CheckoutRepository {
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
 
-        List<CartProduct> cart = buyer.getCartProductList();
+        List<CartProduct> cart = buyer.getCartProductList().stream()
+                .filter(CartProduct::isSelected)
+                .collect(Collectors.toList());
 
         for (int i = 0; i < cart.size(); i++) {
 
@@ -134,13 +145,13 @@ public final class CheckoutRepository {
 
                     if (cart.get(i).getQuantity() == products.get(j).getStock()) {
 
-                        Product product = dataBase.findProductById(products.get(j).getId());
-                        products.remove(product);
-                        dataBase.deleteFromProductList(product);
+                        dataBase.deleteFromProductList(products.get(j));
+                        products.remove(products.get(j));
                     }
                     else
                         products.get(j).setStock(products.get(j).getStock() - cart.get(i).getQuantity());
 
+                    buyer.getCartProductList().remove(cart.get(i));
                     break;
                 }
             }
@@ -148,7 +159,6 @@ public final class CheckoutRepository {
             seller.updateCatalog();
         }
 
-        cart.clear();
         buyer.updateCart();
     }
 

@@ -34,7 +34,7 @@ public final class Cart {
 
         float totalCostFood = 0;
         float totalCostMisc = 0;
-        this.shipping = 0;
+        shipping = 0;
 
         for (CartProduct product : cartProductList) {
             if (product.getType() == ProductType.FOOD)
@@ -44,11 +44,11 @@ public final class Cart {
         }
 
         if (totalCostFood > 0 && totalCostFood < 249.9)
-            this.shipping += 19.9F;
+            shipping += 19.9F;
         if (totalCostMisc > 0 && totalCostMisc < 79.9)
-            this.shipping += 19.9F;
+            shipping += 19.9F;
 
-        this.totalCost = totalCostFood + totalCostMisc + this.shipping;
+        totalCost = totalCostFood + totalCostMisc + shipping;
     }
 
     // Getters
@@ -71,6 +71,67 @@ public final class Cart {
     public float getTotalCost() {
         updateCart();
         return totalCost;
+    }
+
+    public float getSelectedTotalCost() {
+
+        float totalCostFood = 0;
+        float totalCostMisc = 0;
+
+        for (CartProduct product : cartProductList) {
+            if (product.isSelected()) {
+                if (product.getType() == ProductType.FOOD)
+                    totalCostFood += product.getQuantity() * product.getUnitPrice();
+                else
+                    totalCostMisc += product.getQuantity() * product.getUnitPrice();
+            }
+        }
+
+        return totalCost = totalCostFood + totalCostMisc + getSelectedShipping();
+    }
+
+    public float getSelectedShipping() {
+
+        float totalCostFood = 0;
+        float totalCostMisc = 0;
+        float shipping = 0;
+
+        for (CartProduct product : cartProductList) {
+            if(product.isSelected())
+                if (product.getType() == ProductType.FOOD)
+                    totalCostFood += product.getQuantity() * product.getUnitPrice();
+                else
+                    totalCostMisc += product.getQuantity() * product.getUnitPrice();
+        }
+
+        if (totalCostFood > 0 && totalCostFood < 249.9)
+            shipping += 19.9F;
+        if (totalCostMisc > 0 && totalCostMisc < 79.9)
+            shipping += 19.9F;
+
+        return shipping;
+    }
+
+    public float getDeselectedShipping() {
+
+        float totalCostFood = 0;
+        float totalCostMisc = 0;
+        float shipping = 0;
+
+        for (CartProduct product : cartProductList) {
+            if(!product.isSelected())
+                if (product.getType() == ProductType.FOOD)
+                    totalCostFood += product.getQuantity() * product.getUnitPrice();
+                else
+                    totalCostMisc += product.getQuantity() * product.getUnitPrice();
+        }
+
+        if (totalCostFood > 0 && totalCostFood < 249.9)
+            shipping += 19.9F;
+        if (totalCostMisc > 0 && totalCostMisc < 79.9)
+            shipping += 19.9F;
+
+        return shipping;
     }
 
     public float getShipping() {

@@ -13,6 +13,7 @@ public final class CartProduct {
     private final float weight;
     private int quantity;
     private final int warranty;
+    private boolean selected;
 
     public CartProduct(String name, String id, String storeName, ProductType type, String brand, float unitPrice, float weight, int quantity, int warranty) {
         this.name = name;
@@ -24,6 +25,7 @@ public final class CartProduct {
         this.weight = weight;
         this.quantity = quantity;
         this.warranty = warranty;
+        this.selected = true;
     }
 
     public CartProduct(CartProduct cartProductPointer) {
@@ -36,6 +38,7 @@ public final class CartProduct {
         this.weight = cartProductPointer.getWeight();
         this.quantity = cartProductPointer.getQuantity();
         this.warranty = cartProductPointer.getWarranty();
+        this.selected = cartProductPointer.isSelected();
     }
 
     // Getters
@@ -75,11 +78,20 @@ public final class CartProduct {
         return warranty;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
+    // Setters
     public void setUnitPrice(float unitPrice) {
         this.unitPrice = unitPrice;
     }
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }
