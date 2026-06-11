@@ -20,9 +20,7 @@ public final class OrderedProduct {
         this.totalCost = quantity * unitPrice;
     }
 
-    // Creates a copy of orderedProductPointer
     public OrderedProduct(OrderedProduct orderedProductPointer) {
-
         this.name = orderedProductPointer.name;
         this.id = orderedProductPointer.id;
         this.type = orderedProductPointer.type;

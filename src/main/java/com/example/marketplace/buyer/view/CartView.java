@@ -15,7 +15,7 @@ public final class CartView {
 
         System.out.println("\n-----------| PRODUCTS |-----------");
 
-        for (CartProduct cartProduct : cart.getCartProducts()) {
+        for (CartProduct cartProduct : cart.cartProducts()) {
             if (cartProduct.getType() == ProductType.FOOD) {
                 System.out.println("\nName: " + cartProduct.getName());
                 System.out.println("ID: " + cartProduct.getId());
@@ -26,7 +26,7 @@ public final class CartView {
             }
         }
 
-        for (CartProduct cartProduct : cart.getCartProducts()) {
+        for (CartProduct cartProduct : cart.cartProducts()) {
             if (cartProduct.getType() == ProductType.MISCELLANEOUS) {
                 System.out.println("\nName: " + cartProduct.getName());
                 System.out.println("ID: " + cartProduct.getId());
@@ -37,17 +37,17 @@ public final class CartView {
             }
         }
 
-        if (cart.getShipping() > 0)
-            System.out.printf("Shipping: R$%.2f", cart.getShipping());
+        if (cart.shipping() > 0)
+            System.out.printf("\nShipping: R$%.2f", cart.shipping());
         else
-            System.out.print("Shipping: Free");
-        System.out.printf("\nTotal cost: R$%.2f\n", cart.getTotalCost());
-        if (cart.getTotalFood() > 0)
-            System.out.println("Total Food: " + cart.getTotalFood());
-        if (cart.getTotalMisc() > 0)
-            System.out.println("Total Miscellaneous: " + cart.getTotalMisc());
-        if (cart.getTotalProducts() > 0)
-            System.out.println("Total Products: " + cart.getTotalProducts());
+            System.out.print("\nShipping: Free");
+        System.out.printf("\nTotal cost: R$%.2f\n", cart.totalCost());
+        if (cart.totalFood() > 0)
+            System.out.println("Total Food: " + cart.totalFood());
+        if (cart.totalMisc() > 0)
+            System.out.println("Total Miscellaneous: " + cart.totalMisc());
+        if (cart.totalProducts() > 0)
+            System.out.println("Total Products: " + cart.totalProducts());
     }
 
     public void printCartProduct(CartProduct cartProduct) {
@@ -56,9 +56,9 @@ public final class CartView {
         System.out.println("Name: " + cartProduct.getName());
         System.out.println("ID: " + cartProduct.getId());
         System.out.println("Seller: " + cartProduct.getStoreName());
-        if (cartProduct.getType() != null)
+        if (cartProduct.getBrand() != null)
             System.out.println("Brand: " + cartProduct.getBrand());
-        System.out.println("Type: " + cartProduct.getType());
+        System.out.println("Type: " + cartProduct.getType().getName());
         System.out.println("Quantity: " + cartProduct.getQuantity());
         System.out.printf("Unit Price: R$%.2f\n", cartProduct.getUnitPrice());
         System.out.printf("Weight: %.1fKg\n", cartProduct.getWeight());
@@ -139,6 +139,7 @@ public final class CartView {
     }
 
     public void printMessage(String message) {
+        System.out.println();
         System.out.println(message);
     }
 }

@@ -162,8 +162,8 @@ public final class CartRepository {
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
 
-        String productId = cartRequest.getId();
-        int quantToBeAdded = cartRequest.getQuantity();
+        String productId = cartRequest.id();
+        int quantToBeAdded = cartRequest.quantity();
         Product catalogProduct = dataBase.findProductById(productId);
 
         if (catalogProduct == null)
@@ -179,10 +179,10 @@ public final class CartRepository {
 
         if (cartProduct != null) {
 
-            if (cartProduct.getQuantity() + cartRequest.getQuantity() > catalogProduct.getStock())
+            if (cartProduct.getQuantity() + cartRequest.quantity() > catalogProduct.getStock())
                 throw new InsufficientStockException("[!] Insufficient stock for the requested quantity.");
 
-            cartProduct.setQuantity(cartProduct.getQuantity() + cartRequest.getQuantity());
+            cartProduct.setQuantity(cartProduct.getQuantity() + cartRequest.quantity());
             return;
         }
 
@@ -194,7 +194,7 @@ public final class CartRepository {
                 catalogProduct.getBrand(),
                 catalogProduct.getUnitPrice(),
                 catalogProduct.getWeight(),
-                cartRequest.getQuantity(),
+                cartRequest.quantity(),
                 catalogProduct.getWarranty()));
 
         buyer.updateCart();
@@ -209,17 +209,17 @@ public final class CartRepository {
             throw new NotFoundException("[!] User not found.");
 
         CartProduct cartProduct = buyer.getCartProductList().stream()
-                .filter(product -> product.getId().equals(cartRequest.getId()))
+                .filter(product -> product.getId().equals(cartRequest.id()))
                 .findFirst()
                 .orElse(null);
 
         if (cartProduct == null)
-            throw new NotFoundException("[!] Product with ID \"" + cartRequest.getId() + "\" not found.");
+            throw new NotFoundException("[!] Product with ID \"" + cartRequest.id() + "\" not found.");
 
-        if (cartProduct.getQuantity() == cartRequest.getQuantity())
+        if (cartProduct.getQuantity() == cartRequest.quantity())
             buyer.getCartProductList().remove(cartProduct);
         else
-            cartProduct.setQuantity(cartProduct.getQuantity() - cartRequest.getQuantity());
+            cartProduct.setQuantity(cartProduct.getQuantity() - cartRequest.quantity());
 
         buyer.updateCart();
     }

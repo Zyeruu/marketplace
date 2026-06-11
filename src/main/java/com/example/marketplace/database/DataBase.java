@@ -98,7 +98,7 @@ public final class DataBase {
     }
 
 
-    // ---------------------------------------------| PRODUCT LIST |--------------------------------------------
+    // =============================================| PRODUCT LIST |=============================================
 
     public void addToProductList(Product product) {
         productList.add(product);

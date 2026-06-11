@@ -16,7 +16,7 @@ public final class CatalogView {
 
         System.out.println("\n-----------| PRODUCTS |-----------");
 
-        for (Product p : catalog.getProductList()) {
+        for (Product p : catalog.productList()) {
             System.out.println("Name: " + p.getName());
             System.out.println("ID: " + p.getId());
             System.out.printf("Unit Price: R$%.2f\n", p.getUnitPrice());
@@ -24,28 +24,28 @@ public final class CatalogView {
             System.out.println();
         }
 
-        if (catalog.getTotalFood() > 0)
-            System.out.println("Total Food: " + catalog.getTotalFood());
-        if (catalog.getTotalMisc() > 0)
-            System.out.println("Total Miscellaneous: " + catalog.getTotalMisc());
-        if (catalog.getTotalProduct() > 0)
-            System.out.println("Total Products: " + catalog.getTotalProduct());
+        if (catalog.totalFood() > 0)
+            System.out.println("Total Food: " + catalog.totalFood());
+        if (catalog.totalMisc() > 0)
+            System.out.println("Total Miscellaneous: " + catalog.totalMisc());
+        if (catalog.totalProduct() > 0)
+            System.out.println("Total Products: " + catalog.totalProduct());
     }
 
     public void printCatalogProduct(Product product) {
 
         System.out.println("\n------------| PRODUCT |------------");
 
-        System.out.println("\nName: " + product.getName());
+        System.out.println("Name: " + product.getName());
         System.out.println("ID: " + product.getId());
-        System.out.println("Type: " + product.getType().name());
+        System.out.println("Type: " + product.getType().getName());
         if (product.getBrand() != null)
             System.out.println("Brand: " + product.getBrand());
         System.out.printf("Unit Price: R$%.2f\n", product.getUnitPrice());
         System.out.printf("Weight: %.1fKg\n", product.getWeight());
         System.out.println("Stock: " + product.getStock());
         if (product.getWarranty() > 0)
-            System.out.println("Warranty: " + product.getWarranty());
+            System.out.println("Warranty: " + product.getWarranty() + " months");
         System.out.println();
     }
 

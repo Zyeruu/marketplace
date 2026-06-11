@@ -18,14 +18,14 @@ public final class BuyerSearchView {
         System.out.println("Name: " + product.getName());
         System.out.println("ID: " + product.getId());
         System.out.println("Seller: " + product.getStoreName());
-        System.out.println("Type: " + product.getType().name());
+        System.out.println("Type: " + product.getType().getName());
         if (product.getBrand() != null)
             System.out.println("Brand: " + product.getBrand());
         System.out.printf("Unit Price: R$%.2f\n", product.getUnitPrice());
         System.out.printf("Weight: %.1fKg\n", product.getWeight());
         System.out.println("Stock: " + product.getStock());
         if (product.getWarranty() != 0)
-            System.out.println("Warranty: " + product.getWarranty());
+            System.out.println("Warranty: " + product.getWarranty() + " months");
     }
 
     public void printProductListCompacted(List<Product> productList) {

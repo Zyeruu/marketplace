@@ -26,7 +26,6 @@ public final class CartProduct {
         this.warranty = warranty;
     }
 
-    // Create a CartProduct copy
     public CartProduct(CartProduct cartProductPointer) {
         this.name = cartProductPointer.getName();
         this.id = cartProductPointer.getId();

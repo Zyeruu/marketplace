@@ -23,12 +23,12 @@ public final class SalesMenuView {
 
     public void printSales(SalesMenuResponse salesMenuResponse) {
 
-        for (TaxReceipt taxReceipt : salesMenuResponse.getTaxReceiptList())
+        for (TaxReceipt taxReceipt : salesMenuResponse.taxReceiptList())
             printOrder(taxReceipt);
 
         System.out.println("-----------------------------------");
-        System.out.println("Total Sales: " + salesMenuResponse.getTaxReceiptList().size());
-        System.out.printf("Total Revenue: R$%.2f\n", salesMenuResponse.getRevenue());
+        System.out.println("Total Sales: " + salesMenuResponse.taxReceiptList().size());
+        System.out.printf("Total Revenue: R$%.2f\n", salesMenuResponse.revenue());
         System.out.println("-----------------------------------");
     }
 
@@ -50,7 +50,7 @@ public final class SalesMenuView {
 
             System.out.println("Name: " + orderedProduct.getName());
             System.out.println("ID: " + orderedProduct.getId());
-            System.out.println("Type: " + orderedProduct.getType().name());
+            System.out.println("Type: " + orderedProduct.getType().getName());
             System.out.println("Quantity: " + orderedProduct.getQuantity());
             System.out.printf("Unit price: R$%.2f\n", orderedProduct.getUnitPrice());
             System.out.printf("Total: R$%.2f\n\n", orderedProduct.getTotalCost());

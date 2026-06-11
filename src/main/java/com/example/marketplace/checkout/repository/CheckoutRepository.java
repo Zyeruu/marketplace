@@ -133,11 +133,15 @@ public final class CheckoutRepository {
                 if (products.get(j).getId().equals(cart.get(i).getId())) {
 
                     if (cart.get(i).getQuantity() == products.get(j).getStock()) {
-                        seller.getProductList().remove(products.get(j));
-                        j--;
+
+                        Product product = dataBase.findProductById(products.get(j).getId());
+                        products.remove(product);
+                        dataBase.deleteFromProductList(product);
                     }
                     else
                         products.get(j).setStock(products.get(j).getStock() - cart.get(i).getQuantity());
+
+                    break;
                 }
             }
 

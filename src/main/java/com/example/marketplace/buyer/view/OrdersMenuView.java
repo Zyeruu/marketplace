@@ -43,7 +43,7 @@ public final class OrdersMenuView {
 
             System.out.println("Name: " + orderedProduct.getName());
             System.out.println("ID: " + orderedProduct.getId());
-            System.out.println("Type: " + orderedProduct.getType().name());
+            System.out.println("Type: " + orderedProduct.getType().getName());
             System.out.println("Quantity: " + orderedProduct.getQuantity());
             System.out.printf("Unit price: R$%.2f\n", orderedProduct.getUnitPrice());
             System.out.printf("Total: R$%.2f\n\n", orderedProduct.getTotalCost());
@@ -58,6 +58,7 @@ public final class OrdersMenuView {
     }
 
     public void printMessage(String message) {
+        System.out.println();
         System.out.println(message);
     }
 }

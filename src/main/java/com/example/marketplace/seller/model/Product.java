@@ -40,7 +40,6 @@ public final class Product {
         this.warranty = warranty;
     }
 
-    // Creates a copy of Product using a pointer to an existing Product
     public Product(Product product) {
         this.name = product.name;
         this.id = product.id;
