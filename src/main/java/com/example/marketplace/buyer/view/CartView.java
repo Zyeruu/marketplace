@@ -1,6 +1,5 @@
 package main.java.com.example.marketplace.buyer.view;
 
-import main.java.com.example.marketplace.buyer.controller.CartController;
 import main.java.com.example.marketplace.buyer.dto.CartRequest;
 import main.java.com.example.marketplace.buyer.dto.CartResponse;
 import main.java.com.example.marketplace.buyer.model.CartProduct;
@@ -9,8 +8,6 @@ import main.java.com.example.marketplace.shared.enums.ProductType;
 import java.util.Scanner;
 
 public final class CartView {
-
-    private CartController controller;
 
     Scanner scanner = new Scanner(System.in);
 
@@ -40,7 +37,11 @@ public final class CartView {
             }
         }
 
-        System.out.printf("\nTotal cost: R$%.2f", cart.getTotalCost());
+        if (cart.getShipping() > 0)
+            System.out.printf("Shipping: R$%.2f\n", cart.getShipping());
+        else
+            System.out.println("Shipping: Free");
+        System.out.printf("\nTotal cost: R$%.2f\n", cart.getTotalCost());
         if (cart.getTotalFood() > 0)
             System.out.println("Total Food: " + cart.getTotalFood());
         if (cart.getTotalMisc() > 0)

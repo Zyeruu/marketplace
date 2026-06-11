@@ -3,9 +3,9 @@ package main.java.com.example.marketplace.seller.view;
 import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.seller.controller.SalesMenuController;
+import main.java.com.example.marketplace.seller.dto.SalesMenuResponse;
 
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Scanner;
 
 public final class SalesMenuView {
@@ -21,13 +21,14 @@ public final class SalesMenuView {
         return scanner.nextLine();
     }
 
-    public void printSales(List<TaxReceipt> taxReceiptList) {
+    public void printSales(SalesMenuResponse salesMenuResponse) {
 
-        for (TaxReceipt taxReceipt : taxReceiptList)
+        for (TaxReceipt taxReceipt : salesMenuResponse.getTaxReceiptList())
             printOrder(taxReceipt);
 
         System.out.println("-----------------------------------");
-        System.out.println("Total Sales: " + taxReceiptList.size());
+        System.out.println("Total Sales: " + salesMenuResponse.getTaxReceiptList().size());
+        System.out.printf("Total Revenue: R$%.2f\n", salesMenuResponse.getRevenue());
         System.out.println("-----------------------------------");
     }
 

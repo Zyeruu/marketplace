@@ -67,6 +67,10 @@ public final class Seller {
         return store.getCatalog().getTotalMisc();
     }
 
+    public float getTotalRevenue() {
+        return store.getSalesMenu().getRevenue();
+    }
+
     // Setters
     public void setEmail(String email) {
         this.email = email;

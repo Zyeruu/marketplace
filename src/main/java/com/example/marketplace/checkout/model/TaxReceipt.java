@@ -3,6 +3,7 @@ package main.java.com.example.marketplace.checkout.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class TaxReceipt {
     private final String orderId;
@@ -11,19 +12,20 @@ public final class TaxReceipt {
     private final PaymentMethod paymentMethod;
     private final LocalDateTime dateTime;
     private final float totalCost;
+    private final float shipping;
     private final List<OrderedProduct> orderedProductList;
 
-    public TaxReceipt(String orderId, String sellerName, String buyerName, PaymentMethod paymentMethod, float totalCost, List<OrderedProduct> orderedProductList) {
+    public TaxReceipt(String orderId, String sellerName, String buyerName, PaymentMethod paymentMethod, float totalCost, float shipping, List<OrderedProduct> orderedProductList) {
         this.orderId = orderId;
         this.sellerName = sellerName;
         this.buyerName = buyerName;
         this.paymentMethod = paymentMethod;
         this.dateTime = LocalDateTime.now();
         this.totalCost = totalCost;
+        this.shipping = shipping;
         this.orderedProductList = orderedProductList;
     }
 
-    // Creates a copy of taxReceiptPointer
     public TaxReceipt(TaxReceipt taxReceiptPointer) {
 
         this.orderId = taxReceiptPointer.orderId;
@@ -32,13 +34,10 @@ public final class TaxReceipt {
         this.paymentMethod = taxReceiptPointer.paymentMethod;
         this.dateTime = taxReceiptPointer.dateTime;
         this.totalCost = taxReceiptPointer.totalCost;
-
-        List<OrderedProduct> orderedProductListCopy = new ArrayList<>();
-
-        // Copies the products of taxReceiptPointer's orderedProductList to orderedProductListCopy
-        for (OrderedProduct orderedProduct : taxReceiptPointer.getOrderedProductList())
-            orderedProductListCopy.add(new OrderedProduct(orderedProduct));
-        this.orderedProductList = orderedProductListCopy;
+        this.shipping = taxReceiptPointer.shipping;
+        this.orderedProductList = taxReceiptPointer.getOrderedProductList().stream()
+                .map(OrderedProduct::new)
+                .collect(Collectors.toList());
     }
 
     // Getters
@@ -64,5 +63,9 @@ public final class TaxReceipt {
 
     public float getTotalCost() {
         return totalCost;
+    }
+
+    public float getShipping() {
+        return shipping;
     }
 }

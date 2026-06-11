@@ -1,11 +1,9 @@
 package main.java.com.example.marketplace.seller.controller;
 
 import main.java.com.example.marketplace.exceptions.NotFoundException;
-import main.java.com.example.marketplace.checkout.model.TaxReceipt;
+import main.java.com.example.marketplace.seller.dto.SalesMenuResponse;
 import main.java.com.example.marketplace.seller.repository.SalesMenuRepository;
 import main.java.com.example.marketplace.seller.view.SalesMenuView;
-
-import java.util.List;
 
 public final class SalesMenuController {
 
@@ -20,8 +18,8 @@ public final class SalesMenuController {
     public void printTaxReceiptList() {
 
         try {
-            List<TaxReceipt> taxReceiptList = repository.findByEmailAndCnpj();
-            view.printSales(taxReceiptList);
+            SalesMenuResponse salesMenuResponse = repository.findByEmailAndCnpj();
+            view.printSales(salesMenuResponse);
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());
@@ -33,8 +31,8 @@ public final class SalesMenuController {
         String orderId = view.getOrderId();
 
         try {
-            TaxReceipt taxReceipt = repository.findByEmailAndCnpjAndOrderId(orderId);
-            view.printOrder(taxReceipt);
+            SalesMenuResponse salesMenuResponse = repository.findByOrderId(orderId);
+            view.printSales(salesMenuResponse);
         }
         catch (NotFoundException e) {
             view.printMessage(e.getMessage());

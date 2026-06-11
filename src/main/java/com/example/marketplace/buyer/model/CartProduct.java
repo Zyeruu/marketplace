@@ -10,7 +10,7 @@ public final class CartProduct {
     private final ProductType type;
     private final String brand;
     private float unitPrice;
-    private float weight;
+    private final float weight;
     private int quantity;
     private final int warranty;
 

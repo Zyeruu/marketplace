@@ -31,6 +31,10 @@ public final class OrdersMenuView {
         System.out.println("Seller name: " + taxReceipt.getSellerName());
         System.out.println("Buyer name: " + taxReceipt.getBuyerName());
         System.out.println("Date: " + formattedDate);
+        if (taxReceipt.getShipping() > 0)
+            System.out.printf("Shipping: R$%.2f\n", taxReceipt.getShipping());
+        else
+            System.out.println("Shipping: Free");
         System.out.printf("Total: R$%.2f\n", taxReceipt.getTotalCost());
 
         System.out.println("\n-----------| PRODUCTS |-----------");

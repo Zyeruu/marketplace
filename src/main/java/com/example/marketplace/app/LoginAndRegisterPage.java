@@ -42,7 +42,7 @@ public final class LoginAndRegisterPage {
                         switch (choice) {
                             case 1 -> controller = buyerAuthController;
                             case 2 -> controller = sellerAuthController;
-                            case 3 -> System.out.print("");
+                            case 3 -> controller = null;
                             default -> System.out.println("[!] Invalid option. Please try again.");
                         }
 
@@ -64,7 +64,7 @@ public final class LoginAndRegisterPage {
                         switch (choice) {
                             case 1 -> controller = buyerAuthController;
                             case 2 -> controller = sellerAuthController;
-                            case 3 -> System.out.print("");
+                            case 3 -> controller = null;
                             default -> System.out.println("[!] Invalid option. Please try again.");
                         }
 

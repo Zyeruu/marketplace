@@ -81,15 +81,17 @@ public final class CheckoutRepository {
                     .map(p -> new OrderedProduct(p.getName(), p.getId(), p.getType(), p.getQuantity(), p.getUnitPrice()))
                     .collect(Collectors.toList());
 
-            float totalCost = (float) buyer.getCartProductList().stream()
+            float sellerRevenue = (float) buyer.getCartProductList().stream()
                     .filter(p -> p.getStoreName().equals(name))
                     .mapToDouble(p -> p.getUnitPrice() * p.getQuantity())
                     .sum();
 
             String orderId = IdGenerator.generateOrderId();
+            float shipping = buyer.getCartShipping() / storeNames.size();
+            float buyerTotalCost = sellerRevenue + shipping;
 
-            TaxReceipt buyerTaxReceipt = new TaxReceipt(orderId, name, buyer.getName(), paymentMethod, totalCost, buyerOrderedProductList);
-            TaxReceipt sellerTaxReceipt = new TaxReceipt(orderId, name, buyer.getName(), paymentMethod, totalCost, sellerOrderedProductList);
+            TaxReceipt buyerTaxReceipt = new TaxReceipt(orderId, name, buyer.getName(), paymentMethod, buyerTotalCost, shipping, buyerOrderedProductList);
+            TaxReceipt sellerTaxReceipt = new TaxReceipt(orderId, name, buyer.getName(), paymentMethod, sellerRevenue, 0,  sellerOrderedProductList);
 
             buyer.setTaxReceiptList(buyerTaxReceipt);
             seller.setTaxReceiptList(sellerTaxReceipt);

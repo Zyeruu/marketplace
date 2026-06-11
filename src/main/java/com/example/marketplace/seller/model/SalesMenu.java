@@ -1,6 +1,5 @@
 package main.java.com.example.marketplace.seller.model;
 
-import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 
 import java.util.ArrayList;
@@ -9,20 +8,15 @@ import java.util.List;
 public final class SalesMenu {
 
     private final List<TaxReceipt> taxReceiptsList = new ArrayList<>();
-    private int totalSales = 0;
-    private float income = 0;
+    private float revenue = 0;
 
-    public void updateIncome() {
+    public void updateRevenue() {
 
-        this.income = 0;
+        this.revenue = 0;
 
-        for (TaxReceipt receipt : taxReceiptsList)
-            for (OrderedProduct product : receipt.getOrderedProductList())
-                this.income += product.getTotalCost();
-    }
-
-    public void updateTotalSales() {
-        this.totalSales++;
+        taxReceiptsList.stream()
+                .flatMap(taxReceipt -> taxReceipt.getOrderedProductList().stream())
+                .forEach(product -> this.revenue += product.getTotalCost());
     }
 
     // Getters
@@ -30,14 +24,13 @@ public final class SalesMenu {
         return taxReceiptsList;
     }
 
-    public int getTotalSales() {
-        return totalSales;
+    public float getRevenue() {
+        return revenue;
     }
 
     // Setters
     public void setTaxReceiptList(TaxReceipt taxReceipt) {
         this.taxReceiptsList.add(taxReceipt);
-        updateIncome();
-        updateTotalSales();
+        updateRevenue();
     }
 }

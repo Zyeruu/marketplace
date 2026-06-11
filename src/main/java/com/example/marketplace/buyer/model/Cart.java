@@ -69,6 +69,7 @@ public final class Cart {
     }
 
     public float getTotalCost() {
+        updateCart();
         return totalCost;
     }
 

@@ -3,6 +3,7 @@ package main.java.com.example.marketplace.seller.repository;
 import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
+import main.java.com.example.marketplace.seller.dto.SalesMenuResponse;
 import main.java.com.example.marketplace.seller.model.Seller;
 import main.java.com.example.marketplace.shared.session.Session;
 
@@ -19,7 +20,7 @@ public final class SalesMenuRepository {
         this.session = session;
     }
 
-    public List<TaxReceipt> findByEmailAndCnpj() {
+    public SalesMenuResponse findByEmailAndCnpj() {
 
         String email = session.getEmail();
         Seller seller = dataBase.findSellerByEmail(email);
@@ -37,10 +38,10 @@ public final class SalesMenuRepository {
         for (TaxReceipt taxReceipt : taxReceiptListPointer)
             taxReceiptListCopy.add(new TaxReceipt(taxReceipt));
 
-        return taxReceiptListCopy;
+        return new SalesMenuResponse(taxReceiptListCopy, seller.getTotalRevenue());
     }
 
-    public TaxReceipt findByEmailAndCnpjAndOrderId(String orderId) {
+    public SalesMenuResponse findByOrderId(String orderId) {
 
         String email = session.getEmail();
         Seller seller = dataBase.findSellerByEmail(email);
@@ -59,6 +60,9 @@ public final class SalesMenuRepository {
         if (taxReceiptCopy == null)
             throw new NotFoundException("[!] Order with ID \"" + orderId + "\" not found.");
 
-        return taxReceiptCopy;
+        List<TaxReceipt> taxReceiptListCopy = new ArrayList<>();
+        taxReceiptListCopy.add(taxReceiptCopy);
+
+        return new SalesMenuResponse(taxReceiptListCopy, taxReceiptCopy.getTotalCost());
     }
 }

@@ -41,11 +41,12 @@ public final class CartRepository {
                 .collect(Collectors.toList());
 
         float totalCost = buyer.getCartTotalCost();
+        float shipping = buyer.getCartShipping();
         int totalProducts = buyer.getCartTotalProducts();
         int totalFood = buyer.getCartTotalFood();
         int totalMisc = buyer.getCartTotalMisc();
 
-        return new CartResponse(cartProductListCopy, totalCost,totalProducts, totalFood, totalMisc);
+        return new CartResponse(cartProductListCopy, totalCost, shipping, totalProducts, totalFood, totalMisc);
     }
 
     public CartResponse findByEmailAndProductType(ProductType productType) {
@@ -71,16 +72,18 @@ public final class CartRepository {
             }
         }
 
+        float shipping = buyer.getCartShipping();
+
         if (cartProductListCopy.isEmpty())
             throw new NotFoundException("[!] No results were found.");
 
         if (productType == ProductType.FOOD) {
             int totalFood = buyer.getCartTotalFood();
-            return new CartResponse(cartProductListCopy, totalCost, 0, totalFood, 0);
+            return new CartResponse(cartProductListCopy, totalCost, shipping, 0, totalFood, 0);
         }
         else {
             int totalMisc = buyer.getCartTotalMisc();
-            return new CartResponse(cartProductListCopy, totalCost, 0, 0, totalMisc);
+            return new CartResponse(cartProductListCopy, totalCost, shipping, 0, 0, totalMisc);
         }
     }
 
@@ -120,7 +123,9 @@ public final class CartRepository {
         if (cartProductListCopy.isEmpty())
             throw new NotFoundException("[!] No results were found.");
 
-        return new CartResponse(cartProductListCopy, totalCost, totalProducts, totalFood, totalMisc);
+        float shipping = buyer.getCartShipping();
+
+        return new CartResponse(cartProductListCopy, totalCost, shipping, totalProducts, totalFood, totalMisc);
     }
 
     public CartProduct findByEmailAndProductId(String productId) {
@@ -190,6 +195,8 @@ public final class CartRepository {
                 catalogProduct.getWeight(),
                 cartRequest.getQuantity(),
                 catalogProduct.getWarranty()));
+
+        buyer.updateCart();
     }
 
     public void removeProduct(CartRequest cartRequest) {
@@ -212,5 +219,7 @@ public final class CartRepository {
             buyer.getCartProductList().remove(cartProduct);
         else
             cartProduct.setQuantity(cartProduct.getQuantity() - cartRequest.getQuantity());
+
+        buyer.updateCart();
     }
 }

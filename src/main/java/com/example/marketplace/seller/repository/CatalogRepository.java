@@ -36,7 +36,9 @@ public final class CatalogRepository {
         if (seller.getProductList().isEmpty())
             throw new EmptyCatalogException("[!] Your catalog is empty.");
 
-        List<Product> productListCopy = seller.getProductList().stream().map(Product::new).collect(Collectors.toList());
+        List<Product> productListCopy = seller.getProductList().stream()
+                .map(Product::new)
+                .collect(Collectors.toList());
 
         int totalProducts = seller.getTotalProducts();
         int totalFood = seller.getTotalFood();
@@ -157,7 +159,13 @@ public final class CatalogRepository {
         if (seller == null)
             throw new NotFoundException("[!] User not found.");
 
-        Product product = dataBase.findProductById(productId);
+        if (seller.getProductList().isEmpty())
+            throw new EmptyCatalogException("[!] Your catalog is empty.");
+
+        Product product = seller.getProductList().stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElse(null);
 
         if (product == null)
             throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
@@ -174,7 +182,10 @@ public final class CatalogRepository {
         if (seller == null)
             throw new NotFoundException("[!] User not found.");
 
-        Product product = dataBase.findProductById(catalogRequest.getId());
+        Product product = seller.getProductList().stream()
+                .filter(p -> p.getId().equals(catalogRequest.getId()))
+                .findFirst()
+                .orElse(null);
 
         if (product == null)
             throw new NotFoundException("[!] Product with ID \"" + catalogRequest.getId() + "\" not found.");
@@ -190,7 +201,10 @@ public final class CatalogRepository {
         if (seller == null)
             throw new NotFoundException("[!] User not found.");
 
-        Product product = dataBase.findProductById(catalogRequest.getId());
+        Product product = seller.getProductList().stream()
+                .filter(p -> p.getId().equals(catalogRequest.getId()))
+                .findFirst()
+                .orElse(null);
 
         if (product == null)
             throw new NotFoundException("[!] Product with ID \"" + catalogRequest.getId() + "\" not found.");

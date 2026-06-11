@@ -57,6 +57,10 @@ public final class Buyer {
         return cart.getTotalCost();
     }
 
+    public float getCartShipping() {
+        return cart.getShipping();
+    }
+
     public int getCartTotalProducts() {
         return cart.getTotalProducts();
     }
