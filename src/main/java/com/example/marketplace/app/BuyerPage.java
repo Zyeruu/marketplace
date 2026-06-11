@@ -7,8 +7,7 @@ import main.java.com.example.marketplace.buyer.controller.OrdersMenuController;
 import main.java.com.example.marketplace.buyer.search.controller.BuyerSearchController;
 import main.java.com.example.marketplace.checkout.controller.CheckoutController;
 import main.java.com.example.marketplace.shared.session.Session;
-
-import java.util.Scanner;
+import main.java.com.example.marketplace.shared.utils.InputReader;
 
 public final class BuyerPage {
 
@@ -37,7 +36,8 @@ public final class BuyerPage {
         do {
             System.out.println("\n----------| CUSTOMER PAGE |----------");
             System.out.println("[1] My profile\n[2] My Purchases\n[3] My Cart\n[4] Search for products\n[5] Log out");
-            choice = readInt();
+
+            choice = InputReader.readInt();
 
             switch (choice) {
                 case 1:
@@ -45,7 +45,8 @@ public final class BuyerPage {
                         System.out.println("\n------------| PROFILE |------------");
                         System.out.println("[1] Show my profile\n[2] Change my e-mail\n[3] Change my password\n[4] Delete my account\n[5] <- Back");
                         System.out.println("-----------------------------------");
-                        choice = readInt();
+
+                        choice = InputReader.readInt();
 
                         switch (choice) {
                             case 1 -> account.printBuyer();
@@ -63,8 +64,9 @@ public final class BuyerPage {
                             System.out.println("-----------------------------------");
                             System.out.println("[1] <- Back");
                             System.out.println("-----------------------------------");
+
                             do {
-                                choice = readInt();
+                                choice = InputReader.readInt();
                             } while (choice != 1);
                         }
 
@@ -77,7 +79,8 @@ public final class BuyerPage {
                         System.out.println("\n-----------| PURCHASES |-----------");
                         System.out.println("[1] Show my purchases\n[2] Show specific purchase\n[3] <- Back");
                         System.out.println("-----------------------------------");
-                        choice = readInt();
+
+                        choice = InputReader.readInt();
 
                         switch (choice) {
                             case 1 -> ordersMenu.printOrders();
@@ -90,8 +93,9 @@ public final class BuyerPage {
                             System.out.println("-----------------------------------");
                             System.out.println("[1] <- Back");
                             System.out.println("-----------------------------------");
+
                             do {
-                                choice = readInt();
+                                choice = InputReader.readInt();
                             } while (choice != 1);
                         }
 
@@ -104,7 +108,8 @@ public final class BuyerPage {
                         System.out.println("\n-------------| CART |-------------");
                         System.out.println("[1] Show my cart\n[2] Show by name\n[3] Show by type\n[4] Show selected products\n[5] Show deselected products\n[6] Show all details of a product\n[7] Remove product\n[8] Checkout\n[9] <- Back");
                         System.out.println("-----------------------------------");
-                        choice = readInt();
+
+                        choice = InputReader.readInt();
 
                         switch (choice) {
                             case 1 -> cart.printCart();
@@ -125,7 +130,7 @@ public final class BuyerPage {
                                 System.out.println("[1] Select a product\n[2] Deselect a product\n[3] <- Back");
                                 System.out.println("-----------------------------------");
 
-                                choice = readInt();
+                                choice = InputReader.readInt();
 
                                 switch (choice) {
                                     case 1 -> cart.selectProduct();
@@ -142,7 +147,7 @@ public final class BuyerPage {
                                 System.out.println("[1] Deselect a product\n[2] <- Back");
                                 System.out.println("-----------------------------------");
 
-                                choice = readInt();
+                                choice = InputReader.readInt();
 
                                 switch (choice) {
                                     case 1 -> cart.deselectProduct();
@@ -158,7 +163,7 @@ public final class BuyerPage {
                                 System.out.println("[1] Select a product\n[2] <- Back");
                                 System.out.println("-----------------------------------");
 
-                                choice = readInt();
+                                choice = InputReader.readInt();
 
                                 switch (choice) {
                                     case 1 -> cart.selectProduct();
@@ -174,7 +179,7 @@ public final class BuyerPage {
                             System.out.println("-----------------------------------");
 
                             do {
-                                choice = readInt();
+                                choice = InputReader.readInt();
 
                                 if (choice != 1)
                                     System.out.println("[!] Invalid option. Try again.");
@@ -190,7 +195,8 @@ public final class BuyerPage {
                         System.out.println("\n------------| SEARCH |------------");
                         System.out.println("[1] Search all\n[2] Search by name\n[3] Search by type\n[4] Search by name and type\n[5] <- Back");
                         System.out.println("-----------------------------------");
-                        choice = readInt();
+
+                        choice = InputReader.readInt();
 
                         switch (choice) {
                             case 1 -> search.searchAll();
@@ -206,7 +212,8 @@ public final class BuyerPage {
                                 System.out.println("\n--------| CART | DETAILS |--------");
                                 System.out.println("[1] Add a product to the cart\n[2] Show all details of a product\n[3] <- Back");
                                 System.out.println("-----------------------------------");
-                                choice = readInt();
+
+                                choice = InputReader.readInt();
 
                                 switch (choice) {
                                     case 1 -> cart.addProduct();
@@ -229,21 +236,5 @@ public final class BuyerPage {
                     break;
             }
         } while (choice != 5);
-    }
-
-    public static int readInt() {
-
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            try {
-                System.out.print(">> ");
-                System.out.flush();
-                return Integer.parseInt(scanner.nextLine());
-            }
-            catch (NumberFormatException e) {
-                System.out.println("[!] Invalid input. Please enter a number.");
-            }
-        }
     }
 }

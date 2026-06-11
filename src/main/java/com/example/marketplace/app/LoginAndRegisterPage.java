@@ -5,8 +5,7 @@ import main.java.com.example.marketplace.buyer.auth.controller.BuyerAuthControll
 import main.java.com.example.marketplace.seller.auth.controller.SellerAuthController;
 import main.java.com.example.marketplace.shared.interfaces.Authenticable;
 import main.java.com.example.marketplace.shared.session.Session;
-
-import java.util.Scanner;
+import main.java.com.example.marketplace.shared.utils.InputReader;
 
 public final class LoginAndRegisterPage {
 
@@ -29,7 +28,8 @@ public final class LoginAndRegisterPage {
             System.out.println("\n--------| LOGIN | SIGN UP |--------");
             System.out.println("[1] Log in\n[2] Sign up\n[3] Close program");
             System.out.println("-----------------------------------");
-            choice = readInt();
+
+            choice = InputReader.readInt();
 
             switch (choice) {
                 case 1:
@@ -37,7 +37,8 @@ public final class LoginAndRegisterPage {
                         System.out.println("\n-------------| LOG IN |-------------");
                         System.out.println("[1] Log in as a customer\n[2] Log in as a seller\n[3] <- Back");
                         System.out.println("-----------------------------------");
-                        choice = readInt();
+
+                        choice = InputReader.readInt();
 
                         switch (choice) {
                             case 1 -> controller = buyerAuthController;
@@ -59,7 +60,8 @@ public final class LoginAndRegisterPage {
                         System.out.println("\n------------| SIGN UP |------------");
                         System.out.println("[1] Sign up as a customer\n[2] Sign up as a seller\n[3] <- Back");
                         System.out.println("-----------------------------------");
-                        choice = readInt();
+
+                        choice = InputReader.readInt();
 
                         switch (choice) {
                             case 1 -> controller = buyerAuthController;
@@ -84,21 +86,5 @@ public final class LoginAndRegisterPage {
                     break;
             }
         } while (choice != 3 && (!session.isBuyerLogged() || !session.isSellerLogged()));
-    }
-
-    public static int readInt() {
-
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            try {
-                System.out.print(">> ");
-                System.out.flush();
-                return Integer.parseInt(scanner.nextLine());
-            }
-            catch (NumberFormatException e) {
-                System.out.println("[!] Invalid input. Please enter a number.");
-            }
-        }
     }
 }

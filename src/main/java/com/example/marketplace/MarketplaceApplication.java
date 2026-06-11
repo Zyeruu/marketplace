@@ -5,8 +5,7 @@ import main.java.com.example.marketplace.app.LoginAndRegisterPage;
 import main.java.com.example.marketplace.app.SellerPage;
 import main.java.com.example.marketplace.config.DependencyInjector;
 import main.java.com.example.marketplace.shared.session.Session;
-
-import java.util.Scanner;
+import main.java.com.example.marketplace.shared.utils.InputReader;
 
 public class MarketplaceApplication {
 
@@ -39,7 +38,7 @@ public class MarketplaceApplication {
                 System.out.println("[1] Yes, I'm sure\n[2] No, don't close the program");
 
                 do {
-                    choice = readInt();
+                    choice = InputReader.readInt();
 
                     switch (choice) {
                         case 1 -> System.out.println("Closing...");
@@ -50,22 +49,6 @@ public class MarketplaceApplication {
             }
 
         } while (running);
-    }
-
-    public static int readInt() {
-
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            try {
-                System.out.print(">> ");
-                System.out.flush();
-                return Integer.parseInt(scanner.nextLine());
-            }
-            catch (NumberFormatException e) {
-                System.out.println("[!] Invalid input. Please enter a number.");
-            }
-        }
     }
 
     public static void setRunning(boolean running) {
