@@ -1,8 +1,6 @@
 package main.java.com.example.marketplace;
 
-import main.java.com.example.marketplace.app.BuyerPage;
-import main.java.com.example.marketplace.app.LoginAndRegisterPage;
-import main.java.com.example.marketplace.app.SellerPage;
+import main.java.com.example.marketplace.app.*;
 import main.java.com.example.marketplace.config.DependencyInjector;
 import main.java.com.example.marketplace.shared.session.Session;
 import main.java.com.example.marketplace.shared.utils.InputReader;
@@ -14,28 +12,27 @@ public class MarketplaceApplication {
     public static void main(String[] args) {
 
         final DependencyInjector injector = new DependencyInjector();
-        final LoginAndRegisterPage loginAndRegister = new LoginAndRegisterPage(injector.getBuyerAuthController(), injector.getSellerAuthController(), injector.getSession());
-        final BuyerPage buyer = new BuyerPage(injector.getBuyerAuthController(), injector.getBuyerAccountController(), injector.getCartController(), injector.getOrdersMenuController(), injector.getSearchController(), injector.getCheckoutController(), injector.getSession());
-        final SellerPage seller = new SellerPage(injector.getSellerAuthController(), injector.getSellerAccountController(), injector.getCatalogController(), injector.getSalesMenuController(), injector.getSession());
+        final LoginAndRegisterPage loginAndRegister = new LoginAndRegisterPage(injector.getAuthController(), injector.getSession());
+        final UserPage user = new UserPage(injector.getAuthController(), injector.getAccountController(), injector.getCartController(), injector.getOrdersMenuController(), injector.getSearchController(), injector.getCheckoutController(), injector.getSession());
+        final StoreUserPage storeUser = new StoreUserPage(injector.getAuthController(), injector.getAccountController(), injector.getCartController(), injector.getCatalogController(), injector.getOrdersMenuController(), injector.getStoreController(), injector.getSalesMenuController(), injector.getSearchController(), injector.getCheckoutController(), injector.getSession());
         final Session session = injector.getSession();
         
         int choice;
 
         do {
-            if (!(session.isBuyerLogged() || session.isSellerLogged()))
+            if (!session.isLogged())
                 loginAndRegister.page();
 
-            if (session.isBuyerLogged())
-                buyer.page();
-
-            if (session.isSellerLogged())
-                seller.page();
+            if (session.hasStore())
+                storeUser.page();
+            else
+                user.page();
 
             if (!running) {
 
                 System.out.print("Are you sure you want to close the program? ");
                 System.out.println("If you close the program, all data will be permanently deleted.");
-                System.out.println("[1] Yes, I'm sure\n[2] No, don't close the program");
+                System.out.println("[1] Yes, exit\n[2] No, don't close the program");
 
                 do {
                     choice = InputReader.readInt();

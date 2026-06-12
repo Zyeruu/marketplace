@@ -1,17 +1,13 @@
 package main.java.com.example.marketplace.checkout.repository;
 
-import main.java.com.example.marketplace.buyer.model.Buyer;
-import main.java.com.example.marketplace.buyer.model.CartProduct;
+import main.java.com.example.marketplace.exceptions.*;
+import main.java.com.example.marketplace.user.model.User;
+import main.java.com.example.marketplace.user.model.CartProduct;
 import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.checkout.model.PaymentMethod;
 import main.java.com.example.marketplace.database.DataBase;
-import main.java.com.example.marketplace.exceptions.EmptyCartException;
-import main.java.com.example.marketplace.exceptions.InsufficientStockException;
-import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
-import main.java.com.example.marketplace.exceptions.OutdatedPriceException;
-import main.java.com.example.marketplace.seller.model.Product;
-import main.java.com.example.marketplace.seller.model.Seller;
+import main.java.com.example.marketplace.user.store.model.Product;
 import main.java.com.example.marketplace.shared.session.Session;
 import main.java.com.example.marketplace.shared.utils.IdGenerator;
 
@@ -32,7 +28,7 @@ public final class CheckoutRepository {
     public void verifyCart() {
 
         String email = session.getEmail();
-        Buyer buyer = dataBase.findBuyerByEmail(email);
+        User buyer = dataBase.findUserByEmail(email);
 
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
@@ -58,6 +54,9 @@ public final class CheckoutRepository {
 
                 if (product.getUnitPrice() != item.getUnitPrice())
                     throw new OutdatedPriceException("[!] Your cart contained product(s) with outdated prices. Your cart has been updated.");
+
+                if (!item.getStoreName().equals(product.getStoreName()))
+                    throw new OutdatedStoreNameException("[!] Your cart contained product(s) with an outdated store name. Your cart has been updated.");
             }
         }
     }
@@ -65,7 +64,7 @@ public final class CheckoutRepository {
     public void saveOrder(PaymentMethod paymentMethod) {
 
         String buyerEmail = session.getEmail();
-        Buyer buyer = dataBase.findBuyerByEmail(buyerEmail);
+        User buyer = dataBase.findUserByEmail(buyerEmail);
 
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
@@ -78,7 +77,7 @@ public final class CheckoutRepository {
 
         for (String name : storeNames) {
 
-            Seller seller = dataBase.findSellerByStoreName(name);
+            User seller = dataBase.findSellerByStoreName(name);
 
             List<OrderedProduct> buyerOrderedProductList = selectedProducts.stream()
                     .filter(p -> p.getStoreName().equals(name))
@@ -102,15 +101,15 @@ public final class CheckoutRepository {
             TaxReceipt buyerTaxReceipt = new TaxReceipt(orderId, name, buyer.getName(), paymentMethod, buyerTotalCost, shipping, buyerOrderedProductList);
             TaxReceipt sellerTaxReceipt = new TaxReceipt(orderId, name, buyer.getName(), paymentMethod, sellerRevenue, 0,  sellerOrderedProductList);
 
-            buyer.setTaxReceiptList(buyerTaxReceipt);
-            seller.setTaxReceiptList(sellerTaxReceipt);
+            buyer.setOrdersMenuTaxReceiptList(buyerTaxReceipt);
+            seller.setSalesMenuTaxReceiptList(sellerTaxReceipt);
         }
     }
 
     public float getTotalCost() {
 
         String email = session.getEmail();
-        Buyer buyer = dataBase.findBuyerByEmail(email);
+        User buyer = dataBase.findUserByEmail(email);
 
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
@@ -122,7 +121,7 @@ public final class CheckoutRepository {
     public void updateBuyerCartAndSellerCatalog() {
 
         String email = session.getEmail();
-        Buyer buyer = dataBase.findBuyerByEmail(email);
+        User buyer = dataBase.findUserByEmail(email);
 
         if (buyer == null)
             throw new NotFoundException("[!] User not found.");
@@ -133,12 +132,12 @@ public final class CheckoutRepository {
 
         for (int i = 0; i < cart.size(); i++) {
 
-            Seller seller = dataBase.findSellerByStoreName(cart.get(i).getStoreName());
+            User seller = dataBase.findSellerByStoreName(cart.get(i).getStoreName());
 
             if (seller == null)
                 throw new NotFoundException("[!] Seller not found.");
 
-            List<Product> products = seller.getProductList();
+            List<Product> products = seller.getCatalogProductList();
 
             for (int j = 0; j < products.size(); j++) {
                 if (products.get(j).getId().equals(cart.get(i).getId())) {
@@ -165,12 +164,12 @@ public final class CheckoutRepository {
     public void updateCart() {
 
         String email = session.getEmail();
-        Buyer buyer = dataBase.findBuyerByEmail(email);
+        User user = dataBase.findUserByEmail(email);
 
-        if (buyer == null)
+        if (user == null)
             throw new NotFoundException("[!] User not found.");
 
-        List<CartProduct> cartProductList = buyer.getCartProductList();
+        List<CartProduct> cartProductList = user.getCartProductList();
 
         for (int i = 0; i < cartProductList.size(); i++) {
 
@@ -187,6 +186,9 @@ public final class CheckoutRepository {
 
             if (cartProductList.get(i).getUnitPrice() != product.getUnitPrice())
                 cartProductList.get(i).setUnitPrice(product.getUnitPrice());
+
+            if (!cartProductList.get(i).getStoreName().equals(product.getStoreName()))
+                cartProductList.get(i).setStoreName(product.getStoreName());
         }
     }
 

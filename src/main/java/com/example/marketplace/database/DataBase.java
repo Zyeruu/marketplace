@@ -1,8 +1,7 @@
 package main.java.com.example.marketplace.database;
 
-import main.java.com.example.marketplace.buyer.model.Buyer;
-import main.java.com.example.marketplace.seller.model.Product;
-import main.java.com.example.marketplace.seller.model.Seller;
+import main.java.com.example.marketplace.user.model.User;
+import main.java.com.example.marketplace.user.store.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +9,7 @@ import java.util.List;
 public final class DataBase {
 
     // List of registered users and their respective database
-    private final List<Buyer> buyerList = new ArrayList<>();
-    private final List<Seller> sellerList = new ArrayList<>();
+    private final List<User> userList = new ArrayList<>();
     // List of products from all sellers
     private final List<Product> productList = new ArrayList<>();
 
@@ -20,34 +18,34 @@ public final class DataBase {
 
     // ---------------------------------------------| AUTH | ACCOUNT |--------------------------------------------
 
-    public void saveBuyer(Buyer buyer) {
-        buyerList.add(buyer);
+    public void saveUser(User user) {
+        userList.add(user);
     }
 
-    public void deleteBuyer(Buyer buyer) {
-        buyerList.remove(buyer);
+    public void deleteUser(User user) {
+        userList.remove(user);
     }
 
     // ---------------------------------------------| OTHERS METHODS |---------------------------------------------
 
-    public boolean existsBuyerByEmail(String email) {
+    public boolean existsUserByEmail(String email) {
 
-        return buyerList.stream()
-                .anyMatch(buyer -> buyer.getEmail().equals(email));
+        return userList.stream()
+                .anyMatch(user -> user.getEmail().equals(email));
     }
 
-    public Buyer findBuyerByEmail(String email) {
+    public User findUserByEmail(String email) {
 
-        return buyerList.stream()
-                .filter(buyer -> buyer.getEmail().equals(email))
+        return userList.stream()
+                .filter(user -> user.getEmail().equals(email))
                 .findFirst()
                 .orElse(null);
     }
 
-    public boolean existsBuyerByEmailAndPassword(String email, String password) {
+    public boolean existsUserByEmailAndPassword(String email, String password) {
 
-        return buyerList.stream()
-                .anyMatch(buyer -> buyer.getEmail().equals(email) && buyer.getPassword().equals(password));
+        return userList.stream()
+                .anyMatch(user -> user.getEmail().equals(email) && user.getPassword().equals(password));
     }
 
 
@@ -55,46 +53,25 @@ public final class DataBase {
 
     // ----------------------------------------------| AUTH | ACCOUNT |----------------------------------------------
 
-    public void saveSeller(Seller seller) {
-        sellerList.add(seller);
-    }
-
-    public void deleteSeller(Seller seller) {
-        sellerList.remove(seller);
-    }
-
 
     // --------------------------------------------| CHECKOUT METHODS |--------------------------------------------
 
-    public Seller findSellerByStoreName(String storeName) {
+    public User findSellerByStoreName(String storeName) {
 
-        return sellerList.stream()
-                .filter(seller -> seller.getStoreName().equals(storeName))
+        return userList.stream()
+                .filter(user -> user.getStore() != null)
+                .filter(user -> user.getStoreName().equals(storeName))
                 .findFirst()
                 .orElse(null);
     }
 
 
-    // ----------------------------------------------| OTHERS METHODS |----------------------------------------------
-
-    public boolean existsSellerByEmail(String email) {
-
-        return sellerList.stream()
-                .anyMatch(seller -> seller.getEmail().equals(email));
-    }
-
-    public Seller findSellerByEmail(String email) {
-
-        return sellerList.stream()
-                .filter(seller -> seller.getEmail().equals(email))
-                .findFirst()
-                .orElse(null);
-    }
+    // --------------------------------------------| OTHERS METHODS |--------------------------------------------
 
     public boolean existsSellerByStoreName(String storeName) {
 
-        return sellerList.stream()
-                .anyMatch(seller -> seller.getStoreName().equals(storeName));
+        return userList.stream()
+                .filter(user -> user.getStore() != null).anyMatch(user -> user.getStoreName().equals(storeName));
     }
 
 

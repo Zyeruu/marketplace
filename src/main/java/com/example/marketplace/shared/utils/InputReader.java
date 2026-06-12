@@ -2,7 +2,7 @@ package main.java.com.example.marketplace.shared.utils;
 
 import java.util.Scanner;
 
-public class InputReader {
+public final class InputReader {
 
     public static int readInt() {
 

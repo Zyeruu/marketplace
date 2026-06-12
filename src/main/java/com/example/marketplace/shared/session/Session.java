@@ -5,36 +5,40 @@ public final class Session {
     private String email;
     private String cnpj;
     private String storeName;
-    private boolean buyerLogged;
-    private boolean sellerLogged;
+    private boolean logged;
+    private boolean hasStore;
 
     public Session() {
         this.email = null;
         this.cnpj = null;
         this.storeName = null;
-        this.buyerLogged = false;
-        this.sellerLogged = false;
     }
 
     public void login(String email) {
         this.email = email;
-        buyerLogged = true;
-        sellerLogged = false;
+        this.logged = true;
+        this.hasStore = false;
     }
     public void login(String email, String cnpj, String storeName) {
         this.email = email;
         this.cnpj = cnpj;
         this.storeName = storeName;
-        this.sellerLogged = true;
-        this.buyerLogged = false;
+        this.logged = true;
+        this.hasStore = true;
     }
 
     public void logout() {
         this.email = null;
         this.cnpj = null;
         this.storeName = null;
-        this.buyerLogged = false;
-        this.sellerLogged = false;
+        this.logged = false;
+        this.hasStore = false;
+    }
+
+    public void updateHasStore(String storeName, String cnpj, boolean hasStore) {
+        this.storeName = storeName;
+        this.cnpj = cnpj;
+        this.hasStore = hasStore;
     }
 
     // Getters
@@ -50,16 +54,20 @@ public final class Session {
         return storeName;
     }
 
-    public boolean isBuyerLogged() {
-        return buyerLogged;
+    public boolean isLogged() {
+        return logged;
     }
 
-    public boolean isSellerLogged() {
-        return sellerLogged;
+    public boolean hasStore() {
+        return hasStore;
     }
 
     // Setters
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setHasStore(boolean hasStore) {
+        this.hasStore = hasStore;
     }
 }
