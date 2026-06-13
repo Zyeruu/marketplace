@@ -88,6 +88,9 @@ public final class StoreUserPage {
 
                                     do {
                                         choice = InputReader.readInt();
+
+                                        if (choice != 1)
+                                            System.out.println("[!] Invalid option. Try again,");
                                     } while (choice != 1);
                                 }
 
@@ -122,6 +125,9 @@ public final class StoreUserPage {
 
                                 do {
                                     choice = InputReader.readInt();
+
+                                    if (choice != 1)
+                                        System.out.println("[!] Invalid option. Try again,");
                                 } while (choice != 1);
 
                                 choice = 0;
@@ -154,6 +160,9 @@ public final class StoreUserPage {
 
                                         do {
                                             choice = InputReader.readInt();
+
+                                            if (choice != 1)
+                                                System.out.println("[!] Invalid option. Try again,");
                                         } while (choice != 1);
                                     }
 
@@ -183,6 +192,9 @@ public final class StoreUserPage {
 
                                         do {
                                             choice = InputReader.readInt();
+
+                                            if (choice != 1)
+                                                System.out.println("[!] Invalid option. Try again,");
                                         } while (choice != 1);
                                     }
 
@@ -215,6 +227,9 @@ public final class StoreUserPage {
 
                                         do {
                                             choice = InputReader.readInt();
+
+                                            if (choice != 1)
+                                                System.out.println("[!] Invalid option. Try again,");
                                         } while (choice != 1);
                                     }
                                 } while (choice != 3);
@@ -254,6 +269,9 @@ public final class StoreUserPage {
 
                             do {
                                 choice = InputReader.readInt();
+
+                                if (choice != 1)
+                                    System.out.println("[!] Invalid option. Try again,");
                             } while (choice != 1);
                         }
 

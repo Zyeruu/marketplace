@@ -23,9 +23,10 @@ public final class MarketplaceApplication {
             if (!session.isLogged())
                 loginAndRegister.page();
 
-            if (session.hasStore())
+            if (session.hasStore() && session.isLogged())
                 storeUser.page();
-            else
+
+            if(!session.hasStore() && session.isLogged())
                 user.page();
 
             if (!running) {

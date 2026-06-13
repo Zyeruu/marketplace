@@ -4,6 +4,8 @@ import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.exceptions.EmptyCatalogException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.enums.ProductType;
+import main.java.com.example.marketplace.shared.utils.Normalizer;
+import main.java.com.example.marketplace.shared.utils.Validator;
 import main.java.com.example.marketplace.user.store.dto.UpdateProductRequest;
 import main.java.com.example.marketplace.user.store.dto.CatalogResponse;
 import main.java.com.example.marketplace.user.store.model.Product;
@@ -75,10 +77,18 @@ public final class CatalogController {
         Product product = view.getProductData();
 
         try {
+            product.setName(Normalizer.normalizeName(product.getName()));
+            Validator.isValidProductName(product.getName());
+
+            if (product.getType() == ProductType.MISCELLANEOUS) {
+                product.setBrand(Normalizer.normalizeBrandName(product.getBrand()));
+                Validator.isValidBrandName(product.getBrand());
+            }
+
             repository.saveProduct(product);
             view.printMessage("[+] Product added to catalog.");
         }
-        catch (NotFoundException | AlreadyExistsException e) {
+        catch (NotFoundException | AlreadyExistsException | IllegalArgumentException e) {
             view.printMessage(e.getMessage());
         }
     }
@@ -101,7 +111,7 @@ public final class CatalogController {
         view.printMessageWithOutLn("-------| UPDATE A PRODUCT |--------");
         view.printMessageWithOutLn("[1] Update name\n[2] Update type\n[3] Update brand\n[4] Update price\n[5] Update weight\n[6] Update stock\n[7] Update warranty");
         view.printMessageWithOutLn("-----------------------------------");
-        int choice = view.readTypeChoice();
+        int choice = view.readChoice();
 
         switch (choice) {
             case 1 -> updateProductName();
@@ -118,9 +128,13 @@ public final class CatalogController {
 
         String productId = view.getProductId();
         String productName = view.getProductName();
-        UpdateProductRequest updateProductRequest = UpdateProductRequest.withName(productId,productName);
 
         try {
+            productName = Normalizer.normalizeName(productName);
+            Validator.isValidProductName(productName);
+
+            UpdateProductRequest updateProductRequest = UpdateProductRequest.withName(productId,productName);
+
             repository.updateProductName(updateProductRequest);
             view.printMessage("[*] Name updated.");
         }
@@ -131,7 +145,7 @@ public final class CatalogController {
 
     public void updateProductType() {
 
-        String productId = view.getProductBrand();
+        String productId = view.getProductId();
         ProductType productType = view.getProductType();
         UpdateProductRequest updateProductRequest = UpdateProductRequest.withType(productId, productType);
 
@@ -139,7 +153,7 @@ public final class CatalogController {
             repository.updateProductType(updateProductRequest);
             view.printMessage("[*] Type updated.");
         }
-        catch (NotFoundException | AlreadyExistsException e) {
+        catch (NotFoundException | IllegalArgumentException e) {
             view.printMessage(e.getMessage());
         }
     }
@@ -147,10 +161,14 @@ public final class CatalogController {
     public void updateProductBrand() {
 
         String productId = view.getProductId();
-        String productBrand = view.getProductBrand();
-        UpdateProductRequest updateProductRequest = UpdateProductRequest.withBrand(productId, productBrand);
+        String productBrandName = view.getProductBrand();
 
         try {
+            productBrandName = Normalizer.normalizeBrandName(productBrandName);
+            Validator.isValidBrandName(productBrandName);
+
+            UpdateProductRequest updateProductRequest = UpdateProductRequest.withBrand(productId, productBrandName);
+
             repository.updateProductBrand(updateProductRequest);
             view.printMessage("[*] Brand updated.");
         }

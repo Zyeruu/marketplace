@@ -22,6 +22,9 @@ public final class AuthRepository {
         if (dataBase.existsUserByEmail(user.getEmail()))
             throw new AlreadyExistsException("[!] E-mail already registered.");
 
+        if (user.getPassword().equalsIgnoreCase(user.getEmail()))
+            throw new IllegalArgumentException("[!] Your password cannot be the same as your e-mail address.");
+
         dataBase.saveUser(user);
     }
 

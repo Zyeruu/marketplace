@@ -39,15 +39,19 @@ public final class StoreRepository {
         String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
 
-        if (user.getStoreName().equals(storeName))
-            throw new IllegalArgumentException("[!] The new name must be different from the current name.");
+        if (user.getStoreName().equalsIgnoreCase(storeName)) {
+            if (user.getStoreName().equals(storeName))
+                throw new IllegalArgumentException("[!] The new name must be different from the current name.");
+        }
+        else
+            verifyStoreName(storeName);
 
         user.setStoreName(storeName);
     }
 
     public void verifyStoreName(String storeName) {
 
-        if (dataBase.existsSellerByStoreName(storeName))
+        if (dataBase.existsSellerByStoreNameIgnoreCase(storeName))
             throw new AlreadyExistsException("[!] Store name already registered.");
     }
 

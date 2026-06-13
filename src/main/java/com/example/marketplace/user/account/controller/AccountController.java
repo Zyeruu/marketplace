@@ -37,7 +37,7 @@ public final class AccountController {
     public void createStore() {
 
         String storeName = view.getStoreName();
-        storeName = Normalizer.normalizeName(storeName);
+        storeName = Normalizer.normalizeStoreName(storeName);
 
         try {
             Validator.isValidStoreName(storeName);

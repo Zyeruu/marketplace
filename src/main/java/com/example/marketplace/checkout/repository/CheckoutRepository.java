@@ -214,7 +214,7 @@ public final class CheckoutRepository {
             if (cartProductList.get(i).getQuantity() > product.getStock())
                 cartProductList.get(i).setQuantity(product.getStock());
 
-            if (cartProductList.get(i).getWarranty() != product.getWarranty())
+            if (cartProductList.get(i).getWarranty().equals(product.getWarranty()))
                 cartProductList.get(i).setWarranty(product.getWarranty());
 
             if (!cartProductList.get(i).getStoreName().equals(product.getStoreName()))

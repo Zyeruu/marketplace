@@ -24,7 +24,7 @@ public final class SearchView {
         System.out.printf("Unit Price: R$%.2f\n", product.getUnitPrice());
         System.out.printf("Weight: %.1fKg\n", product.getWeight());
         System.out.print("Stock: " + product.getStock());
-        if (product.getWarranty() != 0)
+        if (product.getWarranty() != null)
             System.out.print("\nWarranty: " + product.getWarranty() + " months");
         System.out.println("\n");
     }

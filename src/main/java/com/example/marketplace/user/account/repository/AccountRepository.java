@@ -72,6 +72,9 @@ public final class AccountRepository {
         if (dataBase.existsUserByEmail(newEmail))
             throw new AlreadyExistsException("[!] E-mail already registered.");
 
+        if (user.getPassword().equalsIgnoreCase(newEmail))
+            throw new IllegalArgumentException("[!] Your e-mail cannot be the same as your password address.");
+
         user.setEmail(newEmail);
     }
 
@@ -85,6 +88,9 @@ public final class AccountRepository {
 
         if (user.getPassword().equals(newPassword))
             throw new IllegalArgumentException("[!] The new password must be different from the current password.");
+
+        if (user.getEmail().equalsIgnoreCase(newPassword))
+            throw new IllegalArgumentException("[!] Your password cannot be the same as your e-mail address.");
 
         user.setPassword(newPassword);
     }
@@ -105,7 +111,7 @@ public final class AccountRepository {
 
     public void verifyStoreName(String storeName) {
 
-        if (dataBase.existsSellerByStoreName(storeName))
+        if (dataBase.existsSellerByStoreNameIgnoreCase(storeName))
             throw new AlreadyExistsException("[!] Store name already registered.");
     }
 

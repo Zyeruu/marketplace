@@ -12,10 +12,10 @@ public final class CartProduct {
     private float unitPrice;
     private float weight;
     private int quantity;
-    private int warranty;
+    private Integer warranty;
     private boolean selected;
 
-    public CartProduct(String name, String id, String storeName, ProductType type, String brand, float unitPrice, float weight, int quantity, int warranty) {
+    public CartProduct(String name, String id, String storeName, ProductType type, String brand, float unitPrice, float weight, int quantity, Integer warranty) {
         this.name = name;
         this.id = id;
         this.storeName = storeName;
@@ -74,7 +74,7 @@ public final class CartProduct {
         return quantity;
     }
 
-    public int getWarranty() {
+    public Integer getWarranty() {
         return warranty;
     }
 

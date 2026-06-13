@@ -47,13 +47,13 @@ public final class CartView {
 
         System.out.printf("\nTotal cost: R$%.2f\n", cart.totalCost());
 
-        if (cart.totalFood() > 0)
+        if (cart.totalFood() != null)
             System.out.println("Total Food: " + cart.totalFood());
 
-        if (cart.totalMisc() > 0)
+        if (cart.totalMisc() != null)
             System.out.println("Total Miscellaneous: " + cart.totalMisc());
 
-        if (cart.totalProducts() > 0)
+        if (cart.totalProducts() != null)
             System.out.println("Total Products: " + cart.totalProducts());
 
         System.out.println();
@@ -72,7 +72,7 @@ public final class CartView {
         System.out.println("Quantity: " + cartProduct.getQuantity());
         System.out.printf("Unit Price: R$%.2f\n", cartProduct.getUnitPrice());
         System.out.printf("Weight: %.1fKg\n", cartProduct.getWeight());
-        if (cartProduct.getWarranty() > 0)
+        if (cartProduct.getWarranty() != null)
             System.out.print("Warranty: " + cartProduct.getWarranty() + " months");
         System.out.println("\n");
     }
@@ -83,7 +83,7 @@ public final class CartView {
         System.out.flush();
         String productId = scanner.nextLine();
 
-        System.out.print("Enter the stock: ");
+        System.out.print("Enter the quantity: ");
         System.out.flush();
         int quantity = readInt();
 

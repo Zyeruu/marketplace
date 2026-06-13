@@ -32,7 +32,7 @@ public final class SearchRepository {
     public List<Product> findByName(String productName) {
 
         List<Product> productList = dataBase.getProductList().stream()
-                .filter(product -> product.getName().equalsIgnoreCase(productName))
+                .filter(product -> product.getName().toLowerCase().contains(productName.toLowerCase()))
                 .map(Product::new)
                 .collect(Collectors.toList());
 
@@ -61,7 +61,7 @@ public final class SearchRepository {
         ProductType type = searchRequest.getProductType();
 
         List<Product> productList = dataBase.getProductList().stream()
-                .filter(product -> product.getName().equalsIgnoreCase(name) && product.getType() == type)
+                .filter(product -> product.getName().toLowerCase().contains(name.toLowerCase()) && product.getType() == type)
                 .map(Product::new)
                 .collect(Collectors.toList());
 

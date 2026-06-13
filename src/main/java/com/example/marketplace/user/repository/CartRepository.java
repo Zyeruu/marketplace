@@ -150,11 +150,11 @@ public final class CartRepository {
 
         if (productType == ProductType.FOOD) {
             int totalFood = user.getCartTotalFood();
-            return new CartResponse(cartProductListCopy, totalCost, shipping, 0, totalFood, 0);
+            return new CartResponse(cartProductListCopy, totalCost, shipping, null, totalFood, null);
         }
         else {
             int totalMisc = user.getCartTotalMisc();
-            return new CartResponse(cartProductListCopy, totalCost, shipping, 0, 0, totalMisc);
+            return new CartResponse(cartProductListCopy, totalCost, shipping, null, null, totalMisc);
         }
     }
 
@@ -177,7 +177,7 @@ public final class CartRepository {
         int totalMisc = 0;
 
         for (CartProduct product : user.getCartProductList()) {
-            if (product.getName().equalsIgnoreCase(productName)) {
+            if (product.getName().toLowerCase().contains(productName.toLowerCase())) {
 
                 cartProductListCopy.add(new CartProduct(product));
                 totalCost += product.getUnitPrice() * product.getQuantity();
@@ -210,9 +210,7 @@ public final class CartRepository {
         if (user.getCartProductList().isEmpty())
             throw new EmptyCartException("[!] Your cart is empty.");
 
-        CartProduct cartProduct = null;
-
-        cartProduct = user.getCartProductList().stream()
+        CartProduct cartProduct = user.getCartProductList().stream()
                 .filter(product -> product.getId().equals(productId))
                 .map(CartProduct::new)
                 .findFirst()

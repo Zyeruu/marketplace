@@ -12,7 +12,7 @@ public final class Product {
     private float unitPrice;
     private float weight;
     private int stock;
-    private int warranty;
+    private Integer warranty;
 
     // Food type
     public Product(String name, String id, String storeName, float unitPrice, float weight, int stock) {
@@ -24,7 +24,7 @@ public final class Product {
         this.unitPrice = unitPrice;
         this.weight = weight;
         this.stock = stock;
-        this.warranty = 0;
+        this.warranty = null;
     }
 
     // Miscellaneous type
@@ -85,7 +85,7 @@ public final class Product {
         return stock;
     }
 
-    public int getWarranty() {
+    public Integer getWarranty() {
         return warranty;
     }
 

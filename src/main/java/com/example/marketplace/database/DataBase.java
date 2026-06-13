@@ -72,7 +72,12 @@ public final class DataBase {
                 .anyMatch(user -> user.getStoreName().equals(storeName));
     }
 
+    public boolean existsSellerByStoreNameIgnoreCase(String storeName) {
 
+        return userList.stream()
+                .filter(user -> user.getStore() != null)
+                .anyMatch(user -> user.getStoreName().equalsIgnoreCase(storeName));
+    }
     // =================================================| PRODUCT LIST |================================================
 
     public void addToProductList(Product product) {

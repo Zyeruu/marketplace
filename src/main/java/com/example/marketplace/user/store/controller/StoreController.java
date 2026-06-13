@@ -37,9 +37,8 @@ public final class StoreController {
             repository.verifyPassword(password);
 
             String storeName = view.getStoreName();
-            storeName = Normalizer.normalizeName(storeName);
+            storeName = Normalizer.normalizeStoreName(storeName);
             Validator.isValidStoreName(storeName);
-            repository.verifyStoreName(storeName);
             repository.updateStoreName(storeName);
             repository.updateProductStoreName();
             view.printMessage("[*] Store name successfully changed!");

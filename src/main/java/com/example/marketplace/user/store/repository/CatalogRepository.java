@@ -40,6 +40,8 @@ public final class CatalogRepository {
                 .map(Product::new)
                 .collect(Collectors.toList());
 
+        user.updateCatalog();
+
         int totalProducts = user.getCatalogTotalProducts();
         int totalFood = user.getCatalogTotalFood();
         int totalMisc = user.getCatalogTotalMisc();
@@ -66,13 +68,15 @@ public final class CatalogRepository {
         if (productListCopy.isEmpty())
             throw new NotFoundException("[!] No results were found.");
 
+        user.updateCatalog();
+
         if (productType == ProductType.FOOD) {
             int totalFood = user.getCatalogTotalFood();
-            return new CatalogResponse(productListCopy, 0, totalFood, 0);
+            return new CatalogResponse(productListCopy, null, totalFood, null);
         }
         else {
             int totalMisc = user.getCatalogTotalMisc();
-            return new CatalogResponse(productListCopy, 0, 0, totalMisc);
+            return new CatalogResponse(productListCopy, null, null, totalMisc);
         }
     }
 
@@ -94,7 +98,7 @@ public final class CatalogRepository {
         int totalMisc = 0;
 
         for (Product product : user.getCatalogProductList()) {
-            if (product.getName().equalsIgnoreCase(productName)) {
+            if (product.getName().toLowerCase().contains(productName.toLowerCase())) {
                 productListCopy.add(new Product(product));
 
                 if (product.getType() == ProductType.FOOD)
@@ -143,7 +147,8 @@ public final class CatalogRepository {
         if (user == null)
             throw new NotFoundException("[!] User not found.");
 
-        if (user.getCatalogProductList().stream().anyMatch(p -> p.getName().equalsIgnoreCase(product.getName())))
+        if (user.getCatalogProductList().stream()
+                .anyMatch(p -> p.getName().equalsIgnoreCase(product.getName())))
             throw new AlreadyExistsException("[!] The product you want to add already exists in your catalog.");
 
         product.setStoreName(session.getStoreName());
@@ -193,9 +198,10 @@ public final class CatalogRepository {
             throw new NotFoundException("[!] Product with ID \"" + updateProductRequest.getId() + "\" not found.");
 
         if (product.getName().equals(updateProductRequest.getName()))
-            throw new IllegalArgumentException("[!] ten new product name must be different from current name.");
+            throw new IllegalArgumentException("[!] The new product name must be different from current name.");
 
         product.setName(updateProductRequest.getName());
+        user.updateCatalog();
     }
 
     public void updateProductType(UpdateProductRequest updateProductRequest) {
@@ -218,6 +224,7 @@ public final class CatalogRepository {
             throw new IllegalArgumentException("[!] The new product type must be different from the current type.");
 
         product.setType(updateProductRequest.getType());
+        user.updateCatalog();
     }
 
     public void updateProductBrand(UpdateProductRequest updateProductRequest) {
@@ -236,10 +243,15 @@ public final class CatalogRepository {
         if (product == null)
             throw new NotFoundException("[!] Product with ID \"" + updateProductRequest.getId() + "\" not found.");
 
+        if (product.getType() == ProductType.FOOD)
+            throw new IllegalArgumentException("[!] The product with ID \"" + updateProductRequest.getId() +
+                    "\" is a Food item, so it does not have a brand.");
+
         if (product.getBrand().equals(updateProductRequest.getBrand()))
             throw new IllegalArgumentException("[!] The new product brand must be different from the current brand.");
 
         product.setBrand(updateProductRequest.getBrand());
+        user.updateCatalog();
     }
 
     public void updateProductPrice(UpdateProductRequest updateProductRequest) {
@@ -262,6 +274,7 @@ public final class CatalogRepository {
             throw new IllegalArgumentException("[!] The new stock mus be different from the current stock.");
 
         product.setUnitPrice(updateProductRequest.getUnitPrice());
+        user.updateCatalog();
     }
 
     public void updateProductWeight(UpdateProductRequest updateProductRequest) {
@@ -284,6 +297,7 @@ public final class CatalogRepository {
             throw new IllegalArgumentException("[!] The new weight must be different from the current weight.");
 
         product.setWeight(updateProductRequest.getWeight());
+        user.updateCatalog();
     }
 
     public void updateProductStock(UpdateProductRequest updateProductRequest) {
@@ -306,6 +320,7 @@ public final class CatalogRepository {
             throw new IllegalArgumentException("[!] The new stock mus be different from the current stock.");
 
         product.setStock(updateProductRequest.getStock());
+        user.updateCatalog();
     }
 
     public void updateProductWarranty(UpdateProductRequest updateProductRequest) {
@@ -324,9 +339,14 @@ public final class CatalogRepository {
         if (product == null)
             throw new NotFoundException("[!] Product with ID \"" + updateProductRequest.getId() + "\" not found.");
 
-        if (product.getWarranty() == updateProductRequest.getWarranty())
+        if (product.getType() == ProductType.FOOD)
+            throw new IllegalArgumentException("[!] The product with ID \"" + updateProductRequest.getId() +
+                    "\" is a Food item, so it does not have warranty coverage.");
+
+        if (product.getWarranty().equals(updateProductRequest.getWarranty()))
             throw new IllegalArgumentException("[!] The product warranty must be different from the current warranty.");
 
         product.setWarranty(updateProductRequest.getWarranty());
+        user.updateCatalog();
     }
 }

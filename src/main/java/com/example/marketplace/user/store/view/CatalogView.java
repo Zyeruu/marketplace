@@ -47,8 +47,8 @@ public final class CatalogView {
         System.out.printf("Unit Price: R$%.2f\n", product.getUnitPrice());
         System.out.printf("Weight: %.1fKg\n", product.getWeight());
         System.out.print("Stock: " + product.getStock());
-        if (product.getWarranty() > 0)
-            System.out.print("\nWarranty: " + product.getWarranty() + " months");
+        if (product.getWarranty() != null)
+            System.out.print("\nWarranty: " + product.getWarranty() + " month(s)");
         System.out.println("\n");
     }
 
@@ -141,7 +141,7 @@ public final class CatalogView {
 
     public float getProductPrice() {
 
-        System.out.println("Enter the new product price: ");
+        System.out.print("Enter the new product price: ");
         System.out.flush();
         return readFloat();
     }

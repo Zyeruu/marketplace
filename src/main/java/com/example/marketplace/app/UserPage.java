@@ -58,6 +58,9 @@ public final class UserPage {
 
                                 do {
                                     choice = InputReader.readInt();
+
+                                    if (choice != 1)
+                                        System.out.println("[!] Invalid option. Try again,");
                                 } while (choice != 1);
 
                                 break;
@@ -65,15 +68,18 @@ public final class UserPage {
                             case 2:
                                 account.createStore();
 
+                                if (session.hasStore())
+                                    return;
+
                                 System.out.println("-----------------------------------");
                                 System.out.println("[1] <- Back");
                                 System.out.println("-----------------------------------");
 
-                                if (session.hasStore())
-                                    return;
-
                                 do {
                                     choice = InputReader.readInt();
+
+                                    if (choice != 1)
+                                        System.out.println("[!] Invalid option. Try again,");
                                 } while (choice != 1);
 
                                 break;
@@ -93,20 +99,26 @@ public final class UserPage {
                                         case 4 -> System.out.print("");
                                         default -> System.out.println("[!] Invalid option. Try again.");
                                     }
+
+                                    if (!session.isLogged())
+                                        return;
+
+                                    if (choice >= 1 && choice <= 3) {
+                                        System.out.println("-----------------------------------");
+                                        System.out.println("[1] <- Back");
+                                        System.out.println("-----------------------------------");
+
+                                        do {
+                                            choice = InputReader.readInt();
+
+                                            if (choice != 1)
+                                                System.out.println("[!] Invalid option. Try again,");
+                                        } while (choice != 1);
+
+                                        choice = 0;
+                                    }
+
                                 } while (choice < 1 || choice > 4);
-
-                                if (!session.isLogged())
-                                    return;
-
-                                if (choice != 4) {
-                                    System.out.println("-----------------------------------");
-                                    System.out.println("[1] <- Back");
-                                    System.out.println("-----------------------------------");
-
-                                    do {
-                                        choice = InputReader.readInt();
-                                    } while (choice != 1);
-                                }
 
                                 choice = 0;
                                 break;
@@ -143,6 +155,9 @@ public final class UserPage {
 
                             do {
                                 choice = InputReader.readInt();
+
+                                if (choice != 1)
+                                    System.out.println("[!] Invalid option. Try again,");
                             } while (choice != 1);
                         }
 
