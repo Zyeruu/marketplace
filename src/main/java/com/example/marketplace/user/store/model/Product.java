@@ -4,15 +4,15 @@ import main.java.com.example.marketplace.shared.enums.ProductType;
 
 public final class Product {
 
-    private final String name;
+    private String name;
     private final String id;
     private String storeName;
-    private final ProductType type;
-    private final String brand;
+    private ProductType type;
+    private String brand;
     private float unitPrice;
-    private final float weight;
+    private float weight;
     private int stock;
-    private final int warranty;
+    private int warranty;
 
     // Food type
     public Product(String name, String id, String storeName, float unitPrice, float weight, int stock) {
@@ -90,15 +90,35 @@ public final class Product {
     }
 
     // Setters
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
-    public void setPrice(float unitPrice) {
-        this.unitPrice = unitPrice;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setStoreName(String storeName) {
         this.storeName = storeName;
+    }
+
+    public void setType(ProductType type) {
+        this.type = type;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public void setUnitPrice(float unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    public void setWarranty(int warranty) {
+        this.warranty = warranty;
     }
 }

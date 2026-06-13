@@ -27,8 +27,7 @@ public final class CheckoutController {
             repository.updateBuyerCartAndSellerCatalog();
             view.printMessage("[✓] Purchase confirmed!");
         }
-        catch (EmptyCartException | NotFoundException | InsufficientStockException | OutdatedPriceException |
-               OutdatedStoreNameException e) {
+        catch (EmptyCartException | NotFoundException | InsufficientStockException | OutdatedProductException e) {
             repository.updateCart();
             view.printMessage(e.getMessage());
         }

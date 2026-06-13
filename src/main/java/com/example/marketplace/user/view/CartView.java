@@ -83,7 +83,7 @@ public final class CartView {
         System.out.flush();
         String productId = scanner.nextLine();
 
-        System.out.print("Enter the quantity: ");
+        System.out.print("Enter the stock: ");
         System.out.flush();
         int quantity = readInt();
 

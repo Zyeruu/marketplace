@@ -8,7 +8,7 @@ import main.java.com.example.marketplace.user.model.User;
 import main.java.com.example.marketplace.user.store.dto.StoreResponse;
 import main.java.com.example.marketplace.user.store.model.Product;
 
-public class StoreRepository {
+public final class StoreRepository {
 
     private final DataBase dataBase;
     private final Session session;
@@ -38,6 +38,9 @@ public class StoreRepository {
 
         String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
+
+        if (user.getStoreName().equals(storeName))
+            throw new IllegalArgumentException("[!] The new name must be different from the current name.");
 
         user.setStoreName(storeName);
     }

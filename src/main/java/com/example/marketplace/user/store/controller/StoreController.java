@@ -8,7 +8,7 @@ import main.java.com.example.marketplace.user.store.dto.StoreResponse;
 import main.java.com.example.marketplace.user.store.repository.StoreRepository;
 import main.java.com.example.marketplace.user.store.view.StoreView;
 
-public class StoreController {
+public final class StoreController {
 
     private final StoreView view;
     private final StoreRepository repository;
@@ -35,6 +35,7 @@ public class StoreController {
 
         try {
             repository.verifyPassword(password);
+
             String storeName = view.getStoreName();
             storeName = Normalizer.normalizeName(storeName);
             Validator.isValidStoreName(storeName);

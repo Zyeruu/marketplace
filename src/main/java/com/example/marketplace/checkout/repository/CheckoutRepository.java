@@ -41,22 +41,37 @@ public final class CheckoutRepository {
 
         List<CartProduct> cartProductList = buyer.getCartProductList();
 
-        for (CartProduct item : cartProductList) {
+        for (CartProduct cartProduct : cartProductList) {
 
-            if (item.isSelected()) {
-                Product product = dataBase.findProductById(item.getId());
+            if (cartProduct.isSelected()) {
+                Product product = dataBase.findProductById(cartProduct.getId());
 
                 if (product == null)
                     throw new NotFoundException("[!] Your cart contained product(s) that were unavailable. Your cart has been updated.");
 
-                if (item.getQuantity() > product.getStock())
+                if (!cartProduct.getName().equals(product.getName()))
+                    throw new OutdatedProductException("[!] Your car contained product(s) with outdated name(s). Your cart has been updated.");
+
+                if (cartProduct.getType() != product.getType())
+                    throw new OutdatedProductException("[!] Your cart contained product(s) with outdated type(s). Your cart has been updated.");
+
+                if (!cartProduct.getBrand().equals(product.getBrand()))
+                    throw new OutdatedProductException("[!] Your cart contained product(s) with outdated brand(s). Your cart has been updated.");
+
+                if (cartProduct.getUnitPrice() != product.getUnitPrice())
+                    throw new OutdatedProductException("[!] Your cart contained product(s) with outdated price(s). Your cart has been updated.");
+
+                if (cartProduct.getWeight() != product.getWeight())
+                    throw new OutdatedProductException("[!] Your cart contained product(s) with outdated weight(s). Your cart has been updated.");
+
+                if (cartProduct.getQuantity() > product.getStock())
                     throw new InsufficientStockException("[!] Your cart contained more product(s) than were available. Your cart has been updated.");
 
-                if (product.getUnitPrice() != item.getUnitPrice())
-                    throw new OutdatedPriceException("[!] Your cart contained product(s) with outdated prices. Your cart has been updated.");
+                if (cartProduct.getWarranty() != product.getWarranty())
+                    throw new OutdatedProductException("[!] Your cart contained product(s) with an outdated warranty(ies). Your cart has been updated.");
 
-                if (!item.getStoreName().equals(product.getStoreName()))
-                    throw new OutdatedStoreNameException("[!] Your cart contained product(s) with an outdated store name. Your cart has been updated.");
+                if (!cartProduct.getStoreName().equals(product.getStoreName()))
+                    throw new OutdatedProductException("[!] Your cart contained product(s) with an outdated store name(s). Your cart has been updated.");
             }
         }
     }
@@ -181,11 +196,26 @@ public final class CheckoutRepository {
                 continue;
             }
 
-            if (cartProductList.get(i).getQuantity() > product.getStock())
-                cartProductList.get(i).setQuantity(product.getStock());
+            if (!cartProductList.get(i).getName().equals(product.getName()))
+                cartProductList.get(i).setName(product.getName());
+
+            if (cartProductList.get(i).getType() != product.getType())
+                cartProductList.get(i).setType(product.getType());
+
+            if (cartProductList.get(i).getBrand().equals(product.getBrand()))
+                cartProductList.get(i).setBrand(product.getBrand());
 
             if (cartProductList.get(i).getUnitPrice() != product.getUnitPrice())
                 cartProductList.get(i).setUnitPrice(product.getUnitPrice());
+
+            if (cartProductList.get(i).getWeight() != product.getWeight())
+                cartProductList.get(i).setWeight(product.getWeight());
+
+            if (cartProductList.get(i).getQuantity() > product.getStock())
+                cartProductList.get(i).setQuantity(product.getStock());
+
+            if (cartProductList.get(i).getWarranty() != product.getWarranty())
+                cartProductList.get(i).setWarranty(product.getWarranty());
 
             if (!cartProductList.get(i).getStoreName().equals(product.getStoreName()))
                 cartProductList.get(i).setStoreName(product.getStoreName());

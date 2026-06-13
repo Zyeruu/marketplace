@@ -6,7 +6,7 @@ import main.java.com.example.marketplace.exceptions.EmptyCatalogException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.enums.ProductType;
 import main.java.com.example.marketplace.shared.session.Session;
-import main.java.com.example.marketplace.user.store.dto.CatalogRequest;
+import main.java.com.example.marketplace.user.store.dto.UpdateProductRequest;
 import main.java.com.example.marketplace.user.store.dto.CatalogResponse;
 import main.java.com.example.marketplace.user.store.model.Product;
 import main.java.com.example.marketplace.user.model.User;
@@ -176,26 +176,73 @@ public final class CatalogRepository {
         user.updateCatalog();
     }
 
-    public void updateProductStock(CatalogRequest catalogRequest) {
+    public void updateProductName(UpdateProductRequest updateProductRequest) {
 
         String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
 
         if (user == null)
-            throw new NotFoundException("[!] User not found.");
+            throw new NotFoundException("[!] user not found.");
 
         Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(catalogRequest.getId()))
+                .filter(p -> p.getId().equals(updateProductRequest.getId()))
                 .findFirst()
                 .orElse(null);
 
         if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + catalogRequest.getId() + "\" not found.");
+            throw new NotFoundException("[!] Product with ID \"" + updateProductRequest.getId() + "\" not found.");
 
-        product.setStock(catalogRequest.getQuantity());
+        if (product.getName().equals(updateProductRequest.getName()))
+            throw new IllegalArgumentException("[!] ten new product name must be different from current name.");
+
+        product.setName(updateProductRequest.getName());
     }
 
-    public void updateProductPrice(CatalogRequest catalogRequest) {
+    public void updateProductType(UpdateProductRequest updateProductRequest) {
+
+        String email = session.getEmail();
+        User user = dataBase.findUserByEmail(email);
+
+        if (user == null)
+            throw new NotFoundException("[!] user not found.");
+
+        Product product = user.getCatalogProductList().stream()
+                .filter(p -> p.getId().equals(updateProductRequest.getId()))
+                .findFirst()
+                .orElse(null);
+
+        if (product == null)
+            throw new NotFoundException("[!] Product with ID \"" + updateProductRequest.getId() + "\" not found.");
+
+        if (product.getType() == updateProductRequest.getType())
+            throw new IllegalArgumentException("[!] The new product type must be different from the current type.");
+
+        product.setType(updateProductRequest.getType());
+    }
+
+    public void updateProductBrand(UpdateProductRequest updateProductRequest) {
+
+        String email = session.getEmail();
+        User user = dataBase.findUserByEmail(email);
+
+        if (user == null)
+            throw new NotFoundException("[!] user not found.");
+
+        Product product = user.getCatalogProductList().stream()
+                .filter(p -> p.getId().equals(updateProductRequest.getId()))
+                .findFirst()
+                .orElse(null);
+
+        if (product == null)
+            throw new NotFoundException("[!] Product with ID \"" + updateProductRequest.getId() + "\" not found.");
+
+        if (product.getBrand().equals(updateProductRequest.getBrand()))
+            throw new IllegalArgumentException("[!] The new product brand must be different from the current brand.");
+
+        product.setBrand(updateProductRequest.getBrand());
+    }
+
+    public void updateProductPrice(UpdateProductRequest updateProductRequest) {
 
         String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
@@ -204,13 +251,82 @@ public final class CatalogRepository {
             throw new NotFoundException("[!] User not found.");
 
         Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(catalogRequest.getId()))
+                .filter(p -> p.getId().equals(updateProductRequest.getId()))
                 .findFirst()
                 .orElse(null);
 
         if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + catalogRequest.getId() + "\" not found.");
+            throw new NotFoundException("[!] Product with ID \"" + updateProductRequest.getId() + "\" not found.");
 
-        product.setPrice(catalogRequest.getPrice());
+        if (product.getUnitPrice() == updateProductRequest.getUnitPrice())
+            throw new IllegalArgumentException("[!] The new stock mus be different from the current stock.");
+
+        product.setUnitPrice(updateProductRequest.getUnitPrice());
+    }
+
+    public void updateProductWeight(UpdateProductRequest updateProductRequest) {
+
+        String email = session.getEmail();
+        User user = dataBase.findUserByEmail(email);
+
+        if (user == null)
+            throw new NotFoundException("[!] User not found.");
+
+        Product product = user.getCatalogProductList().stream()
+                .filter(p -> p.getId().equals(updateProductRequest.getId()))
+                .findFirst()
+                .orElse(null);
+
+        if (product == null)
+            throw new NotFoundException("[!] Product with ID \"" + updateProductRequest.getId() + "\" not found.");
+
+        if (product.getWeight() == updateProductRequest.getWeight())
+            throw new IllegalArgumentException("[!] The new weight must be different from the current weight.");
+
+        product.setWeight(updateProductRequest.getWeight());
+    }
+
+    public void updateProductStock(UpdateProductRequest updateProductRequest) {
+
+        String email = session.getEmail();
+        User user = dataBase.findUserByEmail(email);
+
+        if (user == null)
+            throw new NotFoundException("[!] User not found.");
+
+        Product product = user.getCatalogProductList().stream()
+                .filter(p -> p.getId().equals(updateProductRequest.getId()))
+                .findFirst()
+                .orElse(null);
+
+        if (product == null)
+            throw new NotFoundException("[!] Product with ID \"" + updateProductRequest.getId() + "\" not found.");
+
+        if (product.getStock() == updateProductRequest.getStock())
+            throw new IllegalArgumentException("[!] The new stock mus be different from the current stock.");
+
+        product.setStock(updateProductRequest.getStock());
+    }
+
+    public void updateProductWarranty(UpdateProductRequest updateProductRequest) {
+
+        String email = session.getEmail();
+        User user = dataBase.findUserByEmail(email);
+
+        if (user == null)
+            throw new NotFoundException("[!] User not found.");
+
+        Product product = user.getCatalogProductList().stream()
+                .filter(p -> p.getId().equals(updateProductRequest.getId()))
+                .findFirst()
+                .orElse(null);
+
+        if (product == null)
+            throw new NotFoundException("[!] Product with ID \"" + updateProductRequest.getId() + "\" not found.");
+
+        if (product.getWarranty() == updateProductRequest.getWarranty())
+            throw new IllegalArgumentException("[!] The product warranty must be different from the current warranty.");
+
+        product.setWarranty(updateProductRequest.getWarranty());
     }
 }

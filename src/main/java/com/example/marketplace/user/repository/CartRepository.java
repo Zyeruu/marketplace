@@ -244,7 +244,7 @@ public final class CartRepository {
                 throw new OwnProductException("[!] You cannot add your own product.");
 
         if (quantToBeAdded > catalogProduct.getStock())
-            throw new InsufficientStockException("[!] Insufficient stock for the requested quantity.");
+            throw new InsufficientStockException("[!] Insufficient stock for the requested stock.");
 
         CartProduct cartProduct = user.getCartProductList().stream()
                 .filter(product -> product.getId().equals(productId))
@@ -254,7 +254,7 @@ public final class CartRepository {
         if (cartProduct != null) {
 
             if (cartProduct.getQuantity() + cartRequest.quantity() > catalogProduct.getStock())
-                throw new InsufficientStockException("[!] Insufficient stock for the requested quantity.");
+                throw new InsufficientStockException("[!] Insufficient stock for the requested stock.");
 
             cartProduct.setQuantity(cartProduct.getQuantity() + cartRequest.quantity());
             return;

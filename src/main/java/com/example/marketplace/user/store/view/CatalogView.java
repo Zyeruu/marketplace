@@ -2,7 +2,7 @@ package main.java.com.example.marketplace.user.store.view;
 
 import main.java.com.example.marketplace.shared.enums.ProductType;
 import main.java.com.example.marketplace.shared.utils.IdGenerator;
-import main.java.com.example.marketplace.user.store.dto.CatalogRequest;
+import main.java.com.example.marketplace.user.store.dto.UpdateProductRequest;
 import main.java.com.example.marketplace.user.store.dto.CatalogResponse;
 import main.java.com.example.marketplace.user.store.model.Product;
 
@@ -61,7 +61,7 @@ public final class CatalogView {
         System.out.println("Select the product type:");
         System.out.println("[1] Food\n[2] Miscellaneous");
         System.out.flush();
-        choice = readChoice();
+        choice = readTypeChoice();
 
         System.out.print("Product name: ");
         System.out.flush();
@@ -96,6 +96,20 @@ public final class CatalogView {
             }
     }
 
+    public String getProductId() {
+
+        System.out.print("Enter the product ID: ");
+        System.out.flush();
+        return scanner.nextLine();
+    }
+
+    public String getProductName() {
+
+        System.out.print("Enter the product name: ");
+        System.out.flush();
+        return scanner.nextLine();
+    }
+
     public ProductType getProductType() {
 
         ProductType productType = null;
@@ -118,44 +132,38 @@ public final class CatalogView {
         return productType;
     }
 
-    public String getProductName() {
+    public String getProductBrand() {
 
-        System.out.print("Enter the product name: ");
+        System.out.print("Enter the new product brand: ");
         System.out.flush();
         return scanner.nextLine();
     }
 
-    public String getProductId() {
+    public float getProductPrice() {
 
-        System.out.print("Enter the product ID: ");
+        System.out.println("Enter the new product price: ");
         System.out.flush();
-        return scanner.nextLine();
+        return readFloat();
     }
 
-    public CatalogRequest getProductIdAndStock() {
+    public float getProductWeight() {
 
-        System.out.print("Enter the product ID: ");
+        System.out.print("Enter the new product weight: ");
         System.out.flush();
-        String id = scanner.nextLine();
-
-        System.out.print("Enter the new stock: ");
-        System.out.flush();
-        int stock = readInt();
-
-        return new CatalogRequest(id, stock);
+        return readFloat();
     }
 
-    public CatalogRequest getProductIdAndPrice() {
+    public int getProductStock() {
 
-        System.out.print("Enter the product ID: ");
+        System.out.print("Enter the new product stock: ");
         System.out.flush();
-        String id = scanner.nextLine();
+        return readInt();
+    }
 
-        System.out.print("Enter the new price: ");
+    public int getProductWarranty() {
+        System.out.print("Enter the new product warranty: ");
         System.out.flush();
-        float price = readFloat();
-
-        return new CatalogRequest(id, price);
+        return readInt();
     }
 
     public int readInt() {
@@ -204,7 +212,7 @@ public final class CatalogView {
         }
     }
 
-    public int readChoice() {
+    public int readTypeChoice() {
 
         while (true) {
             try {
@@ -225,7 +233,32 @@ public final class CatalogView {
         }
     }
 
+    public int readChoice() {
+
+        while (true) {
+            try {
+                System.out.print(">> ");
+                System.out.flush();
+                int choice = Integer.parseInt(scanner.nextLine());
+
+                if (choice < 1 || choice > 7) {
+                    printMessage("[!] Invalid option. Try again.");
+                    continue;
+                }
+
+                return choice;
+            }
+            catch (NumberFormatException e) {
+                printMessage("[!] Invalid input. Please enter a number.");
+            }
+        }
+    }
+
     public void printMessage(String message) {
         System.out.println("\n" + message + "\n");
+    }
+
+    public void printMessageWithOutLn(String message) {
+        System.out.println(message);
     }
 }
