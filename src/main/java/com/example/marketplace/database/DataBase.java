@@ -14,9 +14,9 @@ public final class DataBase {
     private final List<Product> productList = new ArrayList<>();
 
 
-    // =============================================| BUYER METHODS |=============================================
+    // ================================================| BUYER METHODS |================================================
 
-    // ---------------------------------------------| AUTH | ACCOUNT |--------------------------------------------
+    // ------------------------------------------------| AUTH | ACCOUNT |-----------------------------------------------
 
     public void saveUser(User user) {
         userList.add(user);
@@ -26,7 +26,7 @@ public final class DataBase {
         userList.remove(user);
     }
 
-    // ---------------------------------------------| OTHERS METHODS |---------------------------------------------
+    // ------------------------------------------------| OTHERS METHODS |-----------------------------------------------
 
     public boolean existsUserByEmail(String email) {
 
@@ -49,12 +49,9 @@ public final class DataBase {
     }
 
 
-    // ==============================================| SELLER METHODS |==============================================
+    // ================================================| SELLER METHODS |===============================================
 
-    // ----------------------------------------------| AUTH | ACCOUNT |----------------------------------------------
-
-
-    // --------------------------------------------| CHECKOUT METHODS |--------------------------------------------
+    // -----------------------------------------------| CHECKOUT METHODS |----------------------------------------------
 
     public User findSellerByStoreName(String storeName) {
 
@@ -66,16 +63,17 @@ public final class DataBase {
     }
 
 
-    // --------------------------------------------| OTHERS METHODS |--------------------------------------------
+    // ------------------------------------------------| OTHERS METHODS |-----------------------------------------------
 
     public boolean existsSellerByStoreName(String storeName) {
 
         return userList.stream()
-                .filter(user -> user.getStore() != null).anyMatch(user -> user.getStoreName().equals(storeName));
+                .filter(user -> user.getStore() != null)
+                .anyMatch(user -> user.getStoreName().equals(storeName));
     }
 
 
-    // =============================================| PRODUCT LIST |=============================================
+    // =================================================| PRODUCT LIST |================================================
 
     public void addToProductList(Product product) {
         productList.add(product);

@@ -5,7 +5,7 @@ import main.java.com.example.marketplace.config.DependencyInjector;
 import main.java.com.example.marketplace.shared.session.Session;
 import main.java.com.example.marketplace.shared.utils.InputReader;
 
-public class MarketplaceApplication {
+public final class MarketplaceApplication {
 
     private static boolean running = true;
 

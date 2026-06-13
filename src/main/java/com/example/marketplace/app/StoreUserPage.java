@@ -12,7 +12,7 @@ import main.java.com.example.marketplace.user.store.controller.CatalogController
 import main.java.com.example.marketplace.user.store.controller.SalesMenuController;
 import main.java.com.example.marketplace.user.store.controller.StoreController;
 
-public class StoreUserPage {
+public final class StoreUserPage {
 
     private final AuthController auth;
     private final AccountController account;

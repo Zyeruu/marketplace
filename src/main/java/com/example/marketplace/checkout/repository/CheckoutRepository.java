@@ -50,7 +50,7 @@ public final class CheckoutRepository {
                     throw new NotFoundException("[!] Your cart contained product(s) that were unavailable. Your cart has been updated.");
 
                 if (!cartProduct.getName().equals(product.getName()))
-                    throw new OutdatedProductException("[!] Your car contained product(s) with outdated name(s). Your cart has been updated.");
+                    throw new OutdatedProductException("[!] Your cart contained product(s) with outdated name(s). Your cart has been updated.");
 
                 if (cartProduct.getType() != product.getType())
                     throw new OutdatedProductException("[!] Your cart contained product(s) with outdated type(s). Your cart has been updated.");

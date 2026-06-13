@@ -30,7 +30,7 @@ import main.java.com.example.marketplace.checkout.view.CheckoutView;
 import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.shared.session.Session;
 
-public class DependencyInjector {
+public final class DependencyInjector {
 
     private final DataBase dataBase;
 
