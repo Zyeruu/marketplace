@@ -1,6 +1,9 @@
 package main.java.com.example.marketplace.user.store.model;
 
 import main.java.com.example.marketplace.shared.enums.ProductType;
+import main.java.com.example.marketplace.shared.model.Review;
+
+import java.util.List;
 
 public final class Product {
 
@@ -13,6 +16,8 @@ public final class Product {
     private float weight;
     private int stock;
     private Integer warranty;
+    private boolean available;
+    private final Reputation reputation;
 
     // Food type
     public Product(String name, String id, String storeName, float unitPrice, float weight, int stock) {
@@ -25,6 +30,8 @@ public final class Product {
         this.weight = weight;
         this.stock = stock;
         this.warranty = null;
+        this.available = true;
+        this.reputation = new Reputation();
     }
 
     // Miscellaneous type
@@ -38,6 +45,8 @@ public final class Product {
         this.weight = weight;
         this.stock = stock;
         this.warranty = warranty;
+        this.available = true;
+        this.reputation = new Reputation();
     }
 
     public Product(Product product) {
@@ -50,6 +59,12 @@ public final class Product {
         this.weight = product.weight;
         this.stock = product.stock;
         this.warranty = product.warranty;
+        this.available = product.available;
+        this.reputation = new Reputation(product.getReputation());
+    }
+
+    public void updateReputation() {
+        reputation.updateReputation();
     }
 
     // Getters
@@ -89,6 +104,50 @@ public final class Product {
         return warranty;
     }
 
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public Reputation getReputation() {
+        return reputation;
+    }
+
+    public List<Review> getReviewList() {
+        return reputation.getReviewList();
+    }
+
+    public float getReputationRating() {
+        return reputation.getReputationRating();
+    }
+
+    public int getTotalReviews() {
+        return reputation.getTotalReviews();
+    }
+
+    public int getTotalRating() {
+        return reputation.getTotalRating();
+    }
+
+    public int getTotal1Star() {
+        return reputation.getTotal1Star();
+    }
+
+    public int getTotal2Stars() {
+        return reputation.getTotal2Stars();
+    }
+
+    public int getTotal3Stars() {
+        return reputation.getTotal3Stars();
+    }
+
+    public int getTotal4Stars() {
+        return reputation.getTotal4Stars();
+    }
+
+    public int getTotal5Stars() {
+        return reputation.getTotal5Stars();
+    }
+
     // Setters
     public void setName(String name) {
         this.name = name;
@@ -120,5 +179,9 @@ public final class Product {
 
     public void setWarranty(int warranty) {
         this.warranty = warranty;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 }

@@ -2,6 +2,7 @@ package main.java.com.example.marketplace.user.store.controller;
 
 import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.exceptions.EmptyCatalogException;
+import main.java.com.example.marketplace.exceptions.InsufficientStockException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.enums.ProductType;
 import main.java.com.example.marketplace.shared.utils.Normalizer;
@@ -9,6 +10,7 @@ import main.java.com.example.marketplace.shared.utils.Validator;
 import main.java.com.example.marketplace.user.store.dto.UpdateProductRequest;
 import main.java.com.example.marketplace.user.store.dto.CatalogResponse;
 import main.java.com.example.marketplace.user.store.model.Product;
+import main.java.com.example.marketplace.user.store.model.Reputation;
 import main.java.com.example.marketplace.user.store.repository.CatalogRepository;
 import main.java.com.example.marketplace.user.store.view.CatalogView;
 
@@ -22,40 +24,72 @@ public final class CatalogController {
         this.repository = repository;
     }
 
-    public void printCatalog() {
+    public boolean printCatalog() {
 
         try {
             CatalogResponse catalogResponse = repository.findByEmail();
             view.printCatalog(catalogResponse);
+            return true;
         }
         catch (NotFoundException | EmptyCatalogException e) {
             view.printMessage(e.getMessage());
+            return false;
         }
     }
 
-    public void printCatalogByProductType() {
+    public boolean printAvailableCatalog() {
+
+        try {
+            CatalogResponse catalogResponse = repository.findAvailableCatalog();
+            view.printCatalog(catalogResponse);
+            return true;
+        }
+        catch (NotFoundException | EmptyCatalogException e) {
+            view.printMessage(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean printUnavailableCatalog() {
+
+        try {
+            CatalogResponse catalogResponse = repository.findUnavailableCatalog();
+            view.printCatalog(catalogResponse);
+            return true;
+        }
+        catch (NotFoundException | EmptyCatalogException e) {
+            view.printMessage(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean printCatalogByProductType() {
 
         ProductType productType = view.getProductType();
 
         try {
             CatalogResponse catalogResponse = repository.findByEmailAndProductType(productType);
             view.printCatalog(catalogResponse);
+            return true;
         }
         catch (NotFoundException | EmptyCatalogException e) {
             view.printMessage(e.getMessage());
+            return false;
         }
     }
 
-    public void printCatalogByProductName() {
+    public boolean printCatalogByProductName() {
 
         String productName = view.getProductName();
 
         try {
             CatalogResponse catalogResponse = repository.findByEmailAndProductName(productName);
             view.printCatalog(catalogResponse);
+            return true;
         }
         catch (NotFoundException | EmptyCatalogException e) {
             view.printMessage(e.getMessage());
+            return false;
         }
     }
 
@@ -93,13 +127,19 @@ public final class CatalogController {
         }
     }
 
-    public void removeCatalogProduct() {
+    public void deleteCatalogProduct() {
 
         String productId = view.getProductId();
 
         try {
-            repository.removeProduct(productId);
-            view.printMessage("[-] Product deleted.");
+            Product product = repository.findProductById(productId);
+
+            if (view.getFinalDecision()) {
+                repository.removeProduct(product);
+                view.printMessage("[-] Product deleted.");
+            }
+            else
+                view.printMessage("[X] Action canceled.");
         }
         catch (NotFoundException | EmptyCatalogException e) {
             view.printMessage(e.getMessage());
@@ -109,9 +149,16 @@ public final class CatalogController {
     public void updateCatalogProduct() {
 
         view.printMessageWithOutLn("-------| UPDATE A PRODUCT |--------");
-        view.printMessageWithOutLn("[1] Update name\n[2] Update type\n[3] Update brand\n[4] Update price\n[5] Update weight\n[6] Update stock\n[7] Update warranty");
+        view.printMessageWithOutLn("[1] Update name");
+        view.printMessageWithOutLn("[2] Update type");
+        view.printMessageWithOutLn("[3] Update brand");
+        view.printMessageWithOutLn("[4] Update price");
+        view.printMessageWithOutLn("[5] Update weight");
+        view.printMessageWithOutLn("[6] Update stock");
+        view.printMessageWithOutLn("[7] Update warranty");
+        view.printMessageWithOutLn("[8] Update availability");
         view.printMessageWithOutLn("-----------------------------------");
-        int choice = view.readChoice();
+        int choice = view.readUpdateProductChoice();
 
         switch (choice) {
             case 1 -> updateProductName();
@@ -121,6 +168,7 @@ public final class CatalogController {
             case 5 -> updateProductWeight();
             case 6 -> updateProductStock();
             case 7 -> updateProductWarranty();
+            case 8 -> updateProductAvailability();
         }
     }
 
@@ -133,12 +181,12 @@ public final class CatalogController {
             productName = Normalizer.normalizeName(productName);
             Validator.isValidProductName(productName);
 
-            UpdateProductRequest updateProductRequest = UpdateProductRequest.withName(productId,productName);
+            UpdateProductRequest updateName = UpdateProductRequest.withName(productId,productName);
 
-            repository.updateProductName(updateProductRequest);
+            repository.updateProductName(updateName);
             view.printMessage("[*] Name updated.");
         }
-        catch (NotFoundException | IllegalArgumentException e) {
+        catch (NotFoundException | IllegalArgumentException | EmptyCatalogException e) {
             view.printMessage(e.getMessage());
         }
     }
@@ -147,10 +195,10 @@ public final class CatalogController {
 
         String productId = view.getProductId();
         ProductType productType = view.getProductType();
-        UpdateProductRequest updateProductRequest = UpdateProductRequest.withType(productId, productType);
+        UpdateProductRequest updateType = UpdateProductRequest.withType(productId, productType);
 
         try {
-            repository.updateProductType(updateProductRequest);
+            repository.updateProductType(updateType);
             view.printMessage("[*] Type updated.");
         }
         catch (NotFoundException | IllegalArgumentException e) {
@@ -167,9 +215,9 @@ public final class CatalogController {
             productBrandName = Normalizer.normalizeBrandName(productBrandName);
             Validator.isValidBrandName(productBrandName);
 
-            UpdateProductRequest updateProductRequest = UpdateProductRequest.withBrand(productId, productBrandName);
+            UpdateProductRequest updateBrand = UpdateProductRequest.withBrand(productId, productBrandName);
 
-            repository.updateProductBrand(updateProductRequest);
+            repository.updateProductBrand(updateBrand);
             view.printMessage("[*] Brand updated.");
         }
         catch (NotFoundException | IllegalArgumentException e) {
@@ -181,10 +229,10 @@ public final class CatalogController {
 
         String productId = view.getProductId();
         float productPrice = view.getProductPrice();
-        UpdateProductRequest updateProductRequest = UpdateProductRequest.withPrice(productId, productPrice);
+        UpdateProductRequest updatePrice = UpdateProductRequest.withPrice(productId, productPrice);
 
         try {
-            repository.updateProductPrice(updateProductRequest);
+            repository.updateProductPrice(updatePrice);
             view.printMessage("[*] Price updated.");
         }
         catch (NotFoundException | IllegalArgumentException e) {
@@ -196,10 +244,10 @@ public final class CatalogController {
 
         String productId = view.getProductId();
         float productWeight = view.getProductWeight();
-        UpdateProductRequest updateProductRequest = UpdateProductRequest.withWeight(productId, productWeight);
+        UpdateProductRequest updateWeight = UpdateProductRequest.withWeight(productId, productWeight);
 
         try {
-            repository.updateProductWeight(updateProductRequest);
+            repository.updateProductWeight(updateWeight);
             view.printMessage("[*] Weight updated.");
         }
         catch (NotFoundException | IllegalArgumentException e) {
@@ -212,10 +260,10 @@ public final class CatalogController {
 
         String productId = view.getProductId();
         int productStock = view.getProductStock();
-        UpdateProductRequest updateProductRequest = UpdateProductRequest.withStock(productId, productStock);
+        UpdateProductRequest updateStock = UpdateProductRequest.withStock(productId, productStock);
 
         try {
-            repository.updateProductStock(updateProductRequest);
+            repository.updateProductStock(updateStock);
             view.printMessage("[*] Stock updated.");
         }
         catch (NotFoundException | IllegalArgumentException e) {
@@ -227,13 +275,59 @@ public final class CatalogController {
 
         String productId = view.getProductId();
         int productWarranty = view.getProductWarranty();
-        UpdateProductRequest updateProductRequest = UpdateProductRequest.withWarranty(productId, productWarranty);
+        UpdateProductRequest updateWarranty = UpdateProductRequest.withWarranty(productId, productWarranty);
 
         try {
-            repository.updateProductWarranty(updateProductRequest);
+            repository.updateProductWarranty(updateWarranty);
             view.printMessage("[*] Warranty updated.");
         }
         catch (NotFoundException | IllegalArgumentException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void updateProductAvailability() {
+
+        String productId = view.getProductId();
+        boolean availability = view.getAvailability();
+        UpdateProductRequest updateProductRequest = UpdateProductRequest.withAvailable(productId, availability);
+
+        try {
+            repository.updateAvailability(updateProductRequest);
+
+            if (availability)
+                view.printMessage("[*] Product marked as available.");
+            else
+                view.printMessage("[*] Product marked as unavailable.");
+        }
+        catch (NotFoundException | IllegalArgumentException e) {
+            view.printMessage(e.getMessage());
+        }
+        catch (InsufficientStockException e) {
+
+            view.printMessage(e.getMessage());
+
+            int productStock = view.getProductStock();
+            UpdateProductRequest updateStock = UpdateProductRequest.withStock(productId, productStock);
+
+            try {
+                repository.updateProductStock(updateStock);
+            }
+            catch (NotFoundException | IllegalArgumentException ex) {
+                view.printMessage(ex.getMessage());
+            }
+        }
+    }
+
+    public void searchForProductReview() {
+
+        String productId = view.getProductId();
+
+        try {
+            Reputation productReputation = repository.findProductReviewByProductId(productId);
+            view.printReviews(productReputation);
+        }
+        catch (NotFoundException | EmptyCatalogException e) {
             view.printMessage(e.getMessage());
         }
     }

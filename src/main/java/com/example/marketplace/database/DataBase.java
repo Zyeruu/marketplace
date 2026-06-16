@@ -14,7 +14,7 @@ public final class DataBase {
     private final List<Product> productList = new ArrayList<>();
 
 
-    // ================================================| BUYER METHODS |================================================
+    // ================================================| USER METHODS |================================================
 
     // ------------------------------------------------| AUTH | ACCOUNT |-----------------------------------------------
 
@@ -42,6 +42,10 @@ public final class DataBase {
                 .orElse(null);
     }
 
+    public List<User> getUserList() {
+        return userList;
+    }
+
     public boolean existsUserByEmailAndPassword(String email, String password) {
 
         return userList.stream()
@@ -57,7 +61,7 @@ public final class DataBase {
 
         return userList.stream()
                 .filter(user -> user.getStore() != null)
-                .filter(user -> user.getStoreName().equals(storeName))
+                .filter(seller -> seller.getStoreName().equals(storeName))
                 .findFirst()
                 .orElse(null);
     }
@@ -65,19 +69,30 @@ public final class DataBase {
 
     // ------------------------------------------------| OTHERS METHODS |-----------------------------------------------
 
-    public boolean existsSellerByStoreName(String storeName) {
-
-        return userList.stream()
-                .filter(user -> user.getStore() != null)
-                .anyMatch(user -> user.getStoreName().equals(storeName));
-    }
 
     public boolean existsSellerByStoreNameIgnoreCase(String storeName) {
 
         return userList.stream()
-                .filter(user -> user.getStore() != null)
+                .filter(seller -> seller.getStore() != null)
                 .anyMatch(user -> user.getStoreName().equalsIgnoreCase(storeName));
     }
+
+    public User findSellerByStoreNameIgnoreCase(String storeName) {
+
+        return userList.stream()
+                .filter(seller -> seller.getStore() != null)
+                .filter(user -> user.getStoreName().equalsIgnoreCase(storeName))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public User findSellerByCnpj(String cnpj) {
+
+        return userList.stream()
+                .filter(seller -> seller.getStore() != null)
+                .filter(seller -> seller.getCnpj().equals(cnpj)).findFirst().orElse(null);
+    }
+
     // =================================================| PRODUCT LIST |================================================
 
     public void addToProductList(Product product) {
@@ -86,6 +101,15 @@ public final class DataBase {
 
     public void deleteFromProductList(Product product) {
         productList.remove(product);
+    }
+
+    public Product findAvailableProductById(String productId) {
+
+        return productList.stream()
+                .filter(Product::isAvailable)
+                .filter(product -> product.getId().equals(productId))
+                .findFirst()
+                .orElse(null);
     }
 
     public Product findProductById(String productId) {

@@ -27,13 +27,14 @@ public final class MarketplaceApplication {
                 storeUser.page();
 
             if(!session.hasStore() && session.isLogged())
-                user.page();
+                user.page2();
 
             if (!running) {
 
                 System.out.print("Are you sure you want to close the program? ");
                 System.out.println("If you close the program, all data will be permanently deleted.");
-                System.out.println("[1] Yes, exit\n[2] No, don't close the program");
+                System.out.println("[1] Yes, exit");
+                System.out.println("[2] No, don't close the program");
 
                 do {
                     choice = InputReader.readInt();

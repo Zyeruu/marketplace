@@ -44,7 +44,7 @@ public final class CheckoutRepository {
         for (CartProduct cartProduct : cartProductList) {
 
             if (cartProduct.isSelected()) {
-                Product product = dataBase.findProductById(cartProduct.getId());
+                Product product = dataBase.findAvailableProductById(cartProduct.getId());
 
                 if (product == null)
                     throw new NotFoundException("[!] Your cart contained product(s) that were unavailable. Your cart has been updated.");
@@ -55,8 +55,9 @@ public final class CheckoutRepository {
                 if (cartProduct.getType() != product.getType())
                     throw new OutdatedProductException("[!] Your cart contained product(s) with outdated type(s). Your cart has been updated.");
 
-                if (!cartProduct.getBrand().equals(product.getBrand()))
-                    throw new OutdatedProductException("[!] Your cart contained product(s) with outdated brand(s). Your cart has been updated.");
+                if (cartProduct.getBrand() != null)
+                    if (!cartProduct.getBrand().equals(product.getBrand()))
+                        throw new OutdatedProductException("[!] Your cart contained product(s) with outdated brand(s). Your cart has been updated.");
 
                 if (cartProduct.getUnitPrice() != product.getUnitPrice())
                     throw new OutdatedProductException("[!] Your cart contained product(s) with outdated price(s). Your cart has been updated.");
@@ -67,8 +68,9 @@ public final class CheckoutRepository {
                 if (cartProduct.getQuantity() > product.getStock())
                     throw new InsufficientStockException("[!] Your cart contained more product(s) than were available. Your cart has been updated.");
 
-                if (cartProduct.getWarranty() != product.getWarranty())
-                    throw new OutdatedProductException("[!] Your cart contained product(s) with an outdated warranty(ies). Your cart has been updated.");
+                if (cartProduct.getWarranty() != null)
+                    if (!cartProduct.getWarranty().equals(product.getWarranty()))
+                        throw new OutdatedProductException("[!] Your cart contained product(s) with an outdated warranty(ies). Your cart has been updated.");
 
                 if (!cartProduct.getStoreName().equals(product.getStoreName()))
                     throw new OutdatedProductException("[!] Your cart contained product(s) with an outdated store name(s). Your cart has been updated.");
@@ -96,7 +98,7 @@ public final class CheckoutRepository {
 
             List<OrderedProduct> buyerOrderedProductList = selectedProducts.stream()
                     .filter(p -> p.getStoreName().equals(name))
-                    .map(p -> new OrderedProduct(p.getName(), p.getId(), p.getType(), p.getQuantity(), p.getUnitPrice()))
+                    .map(p -> new OrderedProduct(p.getName(), p.getId(), seller.getCnpj(), p.getType(), p.getQuantity(), p.getUnitPrice()))
                     .collect(Collectors.toList());
 
             List<OrderedProduct> sellerOrderedProductList = selectedProducts.stream()
@@ -113,11 +115,17 @@ public final class CheckoutRepository {
             float shipping = buyer.getSelectedShipping() / storeNames.size();
             float buyerTotalCost = sellerRevenue + shipping;
 
-            TaxReceipt buyerTaxReceipt = new TaxReceipt(orderId, name, buyer.getName(), paymentMethod, buyerTotalCost, shipping, buyerOrderedProductList);
-            TaxReceipt sellerTaxReceipt = new TaxReceipt(orderId, name, buyer.getName(), paymentMethod, sellerRevenue, 0,  sellerOrderedProductList);
+            TaxReceipt buyerTaxReceipt = new TaxReceipt(orderId, name, seller.getCnpj(), buyer.getName(), paymentMethod, buyerTotalCost, shipping, buyerOrderedProductList);
+            TaxReceipt sellerTaxReceipt = new TaxReceipt(orderId, name, seller.getCnpj(), buyer.getName(), paymentMethod, sellerRevenue, null,  sellerOrderedProductList);
 
-            buyer.setOrdersMenuTaxReceiptList(buyerTaxReceipt);
-            seller.setSalesMenuTaxReceiptList(sellerTaxReceipt);
+            for (OrderedProduct product : buyerOrderedProductList)
+                buyer.getOrdersMenuOrderedProductList().add(product);
+
+            for (OrderedProduct product : sellerOrderedProductList)
+                seller.getSalesMenuOrderedProductList().add(product);
+
+            buyer.getOrdersMenuTaxReceiptList().add(buyerTaxReceipt);
+            seller.getSalesMenuTaxReceiptList().add(sellerTaxReceipt);
         }
     }
 
@@ -159,8 +167,8 @@ public final class CheckoutRepository {
 
                     if (cart.get(i).getQuantity() == products.get(j).getStock()) {
 
-                        dataBase.deleteFromProductList(products.get(j));
-                        products.remove(products.get(j));
+                        products.get(j).setStock(0);
+                        products.get(j).setAvailable(false);
                     }
                     else
                         products.get(j).setStock(products.get(j).getStock() - cart.get(i).getQuantity());
@@ -171,6 +179,7 @@ public final class CheckoutRepository {
             }
 
             seller.updateCatalog();
+            seller.updateAvailableCatalog();
         }
 
         buyer.updateCart();
@@ -188,7 +197,7 @@ public final class CheckoutRepository {
 
         for (int i = 0; i < cartProductList.size(); i++) {
 
-            Product product = dataBase.findProductById(cartProductList.get(i).getId());
+            Product product = dataBase.findAvailableProductById(cartProductList.get(i).getId());
 
             if (product == null) {
                 cartProductList.remove(i);
@@ -202,8 +211,9 @@ public final class CheckoutRepository {
             if (cartProductList.get(i).getType() != product.getType())
                 cartProductList.get(i).setType(product.getType());
 
-            if (cartProductList.get(i).getBrand().equals(product.getBrand()))
-                cartProductList.get(i).setBrand(product.getBrand());
+            if (cartProductList.get(i).getBrand() != null)
+                if (cartProductList.get(i).getBrand().equals(product.getBrand()))
+                    cartProductList.get(i).setBrand(product.getBrand());
 
             if (cartProductList.get(i).getUnitPrice() != product.getUnitPrice())
                 cartProductList.get(i).setUnitPrice(product.getUnitPrice());
@@ -214,8 +224,9 @@ public final class CheckoutRepository {
             if (cartProductList.get(i).getQuantity() > product.getStock())
                 cartProductList.get(i).setQuantity(product.getStock());
 
-            if (cartProductList.get(i).getWarranty().equals(product.getWarranty()))
-                cartProductList.get(i).setWarranty(product.getWarranty());
+            if (cartProductList.get(i).getWarranty() != null)
+                if (cartProductList.get(i).getWarranty().equals(product.getWarranty()))
+                    cartProductList.get(i).setWarranty(product.getWarranty());
 
             if (!cartProductList.get(i).getStoreName().equals(product.getStoreName()))
                 cartProductList.get(i).setStoreName(product.getStoreName());

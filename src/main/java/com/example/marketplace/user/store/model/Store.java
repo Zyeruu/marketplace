@@ -4,12 +4,14 @@ public final class Store {
 
     private String name;
     private final String cnpj;
+    private Reputation reputation;
     private final Catalog catalog;
     private final SalesMenu salesMenu;
 
     public Store(String name, String cnpj) {
         this.name = name;
         this.cnpj = cnpj;
+        this.reputation = new Reputation();
         this.catalog = new Catalog();
         this.salesMenu = new SalesMenu();
     }
@@ -21,6 +23,10 @@ public final class Store {
 
     public String getCnpj() {
         return cnpj;
+    }
+
+    public Reputation getReputation() {
+        return reputation;
     }
 
     public Catalog getCatalog() {

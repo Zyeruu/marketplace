@@ -47,6 +47,7 @@ public final class StoreRepository {
             verifyStoreName(storeName);
 
         user.setStoreName(storeName);
+        session.setStoreName(storeName);
     }
 
     public void verifyStoreName(String storeName) {

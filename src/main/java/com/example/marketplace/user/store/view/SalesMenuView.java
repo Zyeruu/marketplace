@@ -2,6 +2,7 @@ package main.java.com.example.marketplace.user.store.view;
 
 import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
+import main.java.com.example.marketplace.shared.utils.LocalDateTimeFormatter;
 import main.java.com.example.marketplace.user.store.dto.SalesMenuResponse;
 
 import java.time.format.DateTimeFormatter;
@@ -31,13 +32,12 @@ public final class SalesMenuView {
 
     public void printOrder(TaxReceipt taxReceipt) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        String formattedDate = taxReceipt.getDateTime().format(formatter);
+        String formattedDate = LocalDateTimeFormatter.formatDateTime(taxReceipt.getDateTime());
 
         System.out.println("----------| TAX RECEIPT |----------");
         System.out.println("Order ID: " + taxReceipt.getOrderId());
         System.out.println("Buyer name: " + taxReceipt.getBuyerName());
-        System.out.println("Seller name: " + taxReceipt.getSellerName());
+        System.out.println("Seller's store name: " + taxReceipt.getSellerName());
         System.out.println("Date: " + formattedDate);
         System.out.printf("Total: R$%.2f\n\n", taxReceipt.getTotalCost());
 

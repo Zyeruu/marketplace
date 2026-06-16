@@ -18,75 +18,88 @@ public final class CartController {
         this.repository = repository;
     }
 
-    public void printCart() {
+    public boolean printCart() {
 
         try {
             CartResponse cartResponse = repository.findByEmail();
             view.printBuyerCart(cartResponse);
+            return true;
         }
         catch (NotFoundException | EmptyCartException e) {
             view.printMessage(e.getMessage());
+            return false;
         }
     }
 
-    public void printSelected() {
+    public boolean printSelected() {
 
         try {
             CartResponse cartResponse = repository.findByEmailAndSelected();
             view.printBuyerCart(cartResponse);
+            return true;
         }
         catch (NotFoundException | EmptyCartException e) {
             view.printMessage(e.getMessage());
+            return false;
         }
     }
 
-    public void printDeselected() {
+    public boolean printDeselected() {
 
         try {
             CartResponse cartResponse = repository.findByEmailAndDeselected();
             view.printBuyerCart(cartResponse);
+            return true;
         }
         catch (NotFoundException | EmptyCartException e) {
             view.printMessage(e.getMessage());
+            return false;
         }
     }
 
-    public void printCartByProductType() {
+    public boolean printCartByProductType() {
 
         ProductType productType = view.getProductType();
 
         try {
             CartResponse cartResponse = repository.findByEmailAndProductType(productType);
             view.printBuyerCart(cartResponse);
+            return true;
         }
         catch (NotFoundException | EmptyCartException e) {
             view.printMessage(e.getMessage());
+            return false;
         }
     }
 
-    public void printCartByProductName() {
+    public boolean printCartByProductName() {
 
         String productName = view.getProductName();
 
         try {
             CartResponse cartResponse = repository.findByEmailAndProductName(productName);
             view.printBuyerCart(cartResponse);
+            return true;
         }
         catch (NotFoundException | EmptyCartException e) {
             view.printMessage(e.getMessage());
+            return false;
         }
     }
 
-    public void printAllProductDetails() {
+    public boolean printAllProductDetails() {
 
         String productId = view.getProductId();
 
         try {
             CartProduct cartProduct = repository.findByEmailAndProductId(productId);
             view.printCartProduct(cartProduct);
+
+            return repository.existsReviewByProductId(productId);
         }
         catch (NotFoundException | EmptyCartException e) {
             view.printMessage(e.getMessage());
+            return false;
         }
     }
 
@@ -103,6 +116,19 @@ public final class CartController {
         }
     }
 
+    public void addProductByStoreNameAndProductId() {
+
+        CartRequest cartRequest = view.getProductData();
+
+        try {
+            repository.addProductByStoreNameAndProductId(cartRequest);
+            view.printMessage("[+] Product added.");
+        }
+        catch (NotFoundException | InsufficientStockException | EmptyCatalogException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
     public void removeProduct() {
 
         CartRequest cartRequest = view.getProductData();
@@ -111,7 +137,7 @@ public final class CartController {
             repository.removeProduct(cartRequest);
             view.printMessage("[-] Product removed.");
         }
-        catch (NotFoundException e) {
+        catch (NotFoundException | EmptyCartException e) {
             view.printMessage(e.getMessage());
         }
     }

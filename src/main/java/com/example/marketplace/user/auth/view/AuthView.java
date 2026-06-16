@@ -10,7 +10,7 @@ public final class AuthView {
 
     public AuthRequest collectRegistrationData() {
 
-        System.out.println("\n------| REGISTER |------");
+        System.out.println("\n-----------| REGISTER |------------");
 
         System.out.print("E-mail: ");
         System.out.flush();
@@ -29,7 +29,7 @@ public final class AuthView {
 
     public AuthRequest collectEmailAndPassword() {
 
-        System.out.println("\n--------| LOGIN |--------");
+        System.out.println("\n-------------| LOGIN |-------------");
 
         System.out.print("E-mail: ");
         System.out.flush();

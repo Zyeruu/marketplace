@@ -21,7 +21,9 @@ public final class LoginAndRegisterPage {
 
         do {
             System.out.println("--------| LOGIN | SIGN UP |--------");
-            System.out.println("[1] Log in\n[2] Sign up\n[3] Exit");
+            System.out.println("[1] Log in");
+            System.out.println("[2] Sign up");
+            System.out.println("[3] Exit");
             System.out.println("-----------------------------------");
 
             choice = InputReader.readInt();

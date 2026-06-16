@@ -1,6 +1,8 @@
 package main.java.com.example.marketplace.user.model;
 
+import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
+import main.java.com.example.marketplace.shared.model.Review;
 import main.java.com.example.marketplace.user.store.model.Product;
 import main.java.com.example.marketplace.user.store.model.Store;
 
@@ -98,6 +100,10 @@ public final class User {
 
     // =================================================| STORE |=================================================
 
+    public void updateReputation() {
+        store.getReputation().updateReputation();
+    }
+
     // Getters
     public Store getStore() {
         return store;
@@ -111,15 +117,51 @@ public final class User {
         return store.getName();
     }
 
+    public List<Review> getStoreReviewList() {
+        return store.getReputation().getReviewList();
+    }
+
+    public int getTotalReviews() {
+        return store.getReputation().getTotalReviews();
+    }
+
+    public int getTotalRating() {
+        return store.getReputation().getTotalRating();
+    }
+
+    public float getReputationRating() {
+        return store.getReputation().getReputationRating();
+    }
+
     // Setters
     public void setStore(Store store) {
         this.store = store;
+    }
+
+    public void setTotalReviews(int totalReviews) {
+        store.getReputation().setTotalReviews(totalReviews);
+    }
+
+    public void setTotalRating(int totalRating) {
+        this.store.getReputation().setTotalRating(totalRating);
+    }
+
+    public void setReputationRating(float reputation) {
+        this.store.getReputation().setReputationRating(reputation);
     }
 
     // ================================================| CATALOG |================================================
 
     public void updateCatalog() {
         store.getCatalog().updateCatalog();
+    }
+
+    public void updateAvailableCatalog() {
+        store.getCatalog().updateAvailableCatalog();
+    }
+
+    public void updateUnavailableCatalog() {
+        store.getCatalog().updateUnavailableCatalog();
     }
 
     // Getters
@@ -139,6 +181,30 @@ public final class User {
         return store.getCatalog().getTotalMisc();
     }
 
+    public int getCatalogAvailableTotalProducts() {
+        return store.getCatalog().getAvailableTotalProducts();
+    }
+
+    public int getCatalogAvailableTotalFood() {
+        return store.getCatalog().getAvailableTotalFood();
+    }
+
+    public int getCatalogAvailableTotalMisc() {
+        return store.getCatalog().getAvailableTotalMisc();
+    }
+
+    public int getCatalogUnavailableTotalProducts() {
+        return store.getCatalog().getUnavailableTotalProducts();
+    }
+
+    public int getCatalogUnavailableTotalFood() {
+        return store.getCatalog().getUnavailableTotalFood();
+    }
+
+    public int getCatalogUnavailableTotalMisc() {
+        return store.getCatalog().getUnavailableTotalMisc();
+    }
+
     // ==============================================| ORDERS MENU |==============================================
 
     // Getters
@@ -146,9 +212,12 @@ public final class User {
         return ordersMenu.getTaxReceiptList();
     }
 
-    // Setters
-    public void setOrdersMenuTaxReceiptList(TaxReceipt taxReceipt) {
-        ordersMenu.setTaxReceiptList(taxReceipt);
+    public List<OrderedProduct> getOrdersMenuOrderedProductList() {
+        return ordersMenu.getOrderedProductList();
+    }
+
+    public List<Review> getOrdersMenuReviewList() {
+        return ordersMenu.getReviewList();
     }
 
     // ==============================================| SALES MENU |===============================================
@@ -158,12 +227,11 @@ public final class User {
         return store.getSalesMenu().getTaxReceiptList();
     }
 
-    public float getTotalRevenue() {
-        return store.getSalesMenu().getRevenue();
+    public List<OrderedProduct> getSalesMenuOrderedProductList() {
+        return store.getSalesMenu().getOrderedProductList();
     }
 
-    // Setters
-    public void setSalesMenuTaxReceiptList(TaxReceipt taxReceipt) {
-        store.getSalesMenu().setTaxReceiptList(taxReceipt);
+    public float getTotalRevenue() {
+        return store.getSalesMenu().getRevenue();
     }
 }

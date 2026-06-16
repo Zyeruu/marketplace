@@ -1,10 +1,12 @@
 package main.java.com.example.marketplace.user.store.view;
 
 import main.java.com.example.marketplace.shared.enums.ProductType;
+import main.java.com.example.marketplace.shared.model.Review;
 import main.java.com.example.marketplace.shared.utils.IdGenerator;
-import main.java.com.example.marketplace.user.store.dto.UpdateProductRequest;
+import main.java.com.example.marketplace.shared.utils.LocalDateTimeFormatter;
 import main.java.com.example.marketplace.user.store.dto.CatalogResponse;
 import main.java.com.example.marketplace.user.store.model.Product;
+import main.java.com.example.marketplace.user.store.model.Reputation;
 
 import java.util.Scanner;
 
@@ -19,6 +21,7 @@ public final class CatalogView {
         for (Product p : catalog.productList()) {
             System.out.println("Name: " + p.getName());
             System.out.println("ID: " + p.getId());
+            System.out.println(p.isAvailable() ? "Status: Available" : "Status: Unavailable");
             System.out.printf("Unit Price: R$%.2f\n", p.getUnitPrice());
             System.out.println("Stock: " + p.getStock() + "\n");
         }
@@ -41,6 +44,7 @@ public final class CatalogView {
 
         System.out.println("Name: " + product.getName());
         System.out.println("ID: " + product.getId());
+        System.out.println(product.isAvailable() ? "Status: Available" : "Status: Unavailable");
         System.out.println("Type: " + product.getType().getName());
         if (product.getBrand() != null)
             System.out.println("Brand: " + product.getBrand());
@@ -52,6 +56,34 @@ public final class CatalogView {
         System.out.println("\n");
     }
 
+    public void printReviews(Reputation reputation) {
+
+        System.out.println("------------| REVIEWS |------------");
+        System.out.println(reputation.getTotalReviews() + " review(s)\n");
+
+        System.out.printf("***** (%d)\n", reputation.getTotal5Stars());
+        System.out.printf("****  (%d)\n", reputation.getTotal4Stars());
+        System.out.printf("***   (%d)\n", reputation.getTotal3Stars());
+        System.out.printf("**    (%d)\n", reputation.getTotal2Stars());
+        System.out.printf("*     (%d)\n\n", reputation.getTotal1Star());
+
+        int i = 0;
+
+        for (Review review : reputation.getReviewList()) {
+
+            System.out.print(i + "\nRating: ");
+            for (int j = 0; j < review.getRating(); j++)
+                System.out.print("*");
+
+            System.out.println("\t" + LocalDateTimeFormatter.formatDateTime(review.getDate()));
+
+            if (review.getMessage() != null)
+                System.out.print("Review: " + review.getMessage());
+
+            System.out.println("\n");
+        }
+    }
+
     public Product getProductData() {
 
         int choice;
@@ -61,7 +93,7 @@ public final class CatalogView {
         System.out.println("Select the product type:");
         System.out.println("[1] Food\n[2] Miscellaneous");
         System.out.flush();
-        choice = readTypeChoice();
+        choice = readProductTypeChoice();
 
         System.out.print("Product name: ");
         System.out.flush();
@@ -79,10 +111,10 @@ public final class CatalogView {
 
         System.out.print("Product stock: ");
         System.out.flush();
-        int stock = readInt();
+        int stock = readProductDataInt();
 
         if (choice == 1)
-            return new Product(name, id, "", unitPrice, weight, stock);
+            return new Product(name, id, null, unitPrice, weight, stock);
         else {
             System.out.print("Product brand: ");
             System.out.flush();
@@ -90,9 +122,9 @@ public final class CatalogView {
 
             System.out.print("Product warranty: ");
             System.out.flush();
-            int warranty = readInt();
+            int warranty = readProductDataInt();
 
-            return new Product(name, id, "", brand, unitPrice, weight, stock, warranty);
+            return new Product(name, id, null, brand, unitPrice, weight, stock, warranty);
             }
     }
 
@@ -120,7 +152,7 @@ public final class CatalogView {
         do {
             System.out.print("[1] Food\n[2] Miscellaneous\n>> ");
             System.out.flush();
-            choice = readInt();
+            choice = readProductDataInt();
 
             switch (choice){
                 case 1 -> productType = ProductType.FOOD;
@@ -157,16 +189,57 @@ public final class CatalogView {
 
         System.out.print("Enter the new product stock: ");
         System.out.flush();
-        return readInt();
+        return readProductDataInt();
     }
 
     public int getProductWarranty() {
+
         System.out.print("Enter the new product warranty: ");
         System.out.flush();
-        return readInt();
+        return readProductDataInt();
     }
 
-    public int readInt() {
+    public boolean getAvailability() {
+
+        System.out.println("[1] Mark product as available\n[2] Mark product as unavailable");
+        System.out.flush();
+        return readBoolean();
+    }
+
+    public boolean getFinalDecision() {
+
+        System.out.println("Are you sure you want to remove this product? All data related to this product will be lost.");
+        System.out.println("[1] Yes, I'm sure");
+        System.out.println("[2] No, cancel");
+        return readBoolean();
+    }
+
+    public boolean readBoolean() {
+
+        while (true) {
+            try {
+                System.out.print(">> ");
+                int choice = Integer.parseInt(scanner.nextLine());
+
+                switch (choice) {
+                    case 1:
+                        return true;
+                    case 2:
+                        return false;
+                    default:
+                        System.out.println("[!] Invalid option. Try again.");
+                        break;
+                }
+            }
+            catch (NumberFormatException e) {
+                printMessage("[!] Invalid input. Please enter a number.");
+                System.out.print(">> ");
+                System.out.flush();
+            }
+        }
+    }
+
+    public int readProductDataInt() {
 
         while (true) {
             try {
@@ -212,7 +285,7 @@ public final class CatalogView {
         }
     }
 
-    public int readTypeChoice() {
+    public int readProductTypeChoice() {
 
         while (true) {
             try {
@@ -233,7 +306,7 @@ public final class CatalogView {
         }
     }
 
-    public int readChoice() {
+    public int readUpdateProductChoice() {
 
         while (true) {
             try {
@@ -241,7 +314,7 @@ public final class CatalogView {
                 System.out.flush();
                 int choice = Integer.parseInt(scanner.nextLine());
 
-                if (choice < 1 || choice > 7) {
+                if (choice < 1 || choice > 8) {
                     printMessage("[!] Invalid option. Try again.");
                     continue;
                 }

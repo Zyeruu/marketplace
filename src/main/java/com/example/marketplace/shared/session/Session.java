@@ -7,6 +7,8 @@ public final class Session {
     private String storeName;
     private boolean logged;
     private boolean hasStore;
+    private String lastStoreViewed;
+    private String lastProductViewed;
 
     public Session() {
         this.email = null;
@@ -41,6 +43,14 @@ public final class Session {
         this.hasStore = hasStore;
     }
 
+    public void updateLastStoreViewed(String storeName) {
+        this.lastStoreViewed = storeName;
+    }
+
+    public void updateLastProductViewed(String productId) {
+        this.lastProductViewed = productId;
+    }
+
     // Getters
     public String getCnpj() {
         return cnpj;
@@ -62,9 +72,21 @@ public final class Session {
         return hasStore;
     }
 
+    public String getLastStoreViewed() {
+        return lastStoreViewed;
+    }
+
+    public String getLastProductViewed() {
+        return lastProductViewed;
+    }
+
     // Setters
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
     }
 
     public void setHasStore(boolean hasStore) {

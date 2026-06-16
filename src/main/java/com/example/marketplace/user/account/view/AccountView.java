@@ -48,10 +48,11 @@ public final class AccountView {
         return scanner.nextLine().toLowerCase();
     }
 
-    public boolean getFinalResponse() {
+    public boolean getFinalDecision() {
 
         System.out.println("[!] Do you confirm this action? Once it's done, there's no going back.");
-        System.out.println("[1] Yes, I confirm\n[2] No, I changed my mind");
+        System.out.println("[1] Yes, I confirm");
+        System.out.println("[2] No, I changed my mind");
 
         int choice;
         boolean response = false;

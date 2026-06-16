@@ -5,6 +5,7 @@ public final class IdGenerator {
     private static int sellerCounter = 0;
     private static int productCounter = 0;
     private static int orderCounter = 0;
+    private static int reviewCounter = 0;
 
     public static String generateCnpj() {
 
@@ -23,5 +24,11 @@ public final class IdGenerator {
 
         orderCounter++;
         return String.format("%05d", orderCounter);
+    }
+
+    public static String generateReviewId() {
+
+        reviewCounter++;
+        return String.format("%05d", reviewCounter);
     }
 }

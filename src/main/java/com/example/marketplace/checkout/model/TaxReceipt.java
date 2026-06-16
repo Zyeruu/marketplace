@@ -7,16 +7,18 @@ import java.util.stream.Collectors;
 public final class TaxReceipt {
     private final String orderId;
     private final String sellerName;
+    private final String storeCnpj;
     private final String buyerName;
     private final PaymentMethod paymentMethod;
     private final LocalDateTime dateTime;
     private final float totalCost;
-    private final float shipping;
+    private final Float shipping;
     private final List<OrderedProduct> orderedProductList;
 
-    public TaxReceipt(String orderId, String sellerName, String buyerName, PaymentMethod paymentMethod, float totalCost, float shipping, List<OrderedProduct> orderedProductList) {
+    public TaxReceipt(String orderId, String sellerName, String storeCnpj, String buyerName, PaymentMethod paymentMethod, float totalCost, Float shipping, List<OrderedProduct> orderedProductList) {
         this.orderId = orderId;
         this.sellerName = sellerName;
+        this.storeCnpj = storeCnpj;
         this.buyerName = buyerName;
         this.paymentMethod = paymentMethod;
         this.dateTime = LocalDateTime.now();
@@ -28,8 +30,9 @@ public final class TaxReceipt {
     public TaxReceipt(TaxReceipt taxReceiptPointer) {
 
         this.orderId = taxReceiptPointer.orderId;
-        this.buyerName = taxReceiptPointer.buyerName;
         this.sellerName = taxReceiptPointer.sellerName;
+        this.storeCnpj = taxReceiptPointer.storeCnpj;
+        this.buyerName = taxReceiptPointer.buyerName;
         this.paymentMethod = taxReceiptPointer.paymentMethod;
         this.dateTime = taxReceiptPointer.dateTime;
         this.totalCost = taxReceiptPointer.totalCost;
@@ -48,12 +51,16 @@ public final class TaxReceipt {
         return orderId;
     }
 
-    public String getBuyerName() {
-        return buyerName;
-    }
-
     public String getSellerName() {
         return sellerName;
+    }
+
+    public String getStoreCnpj() {
+        return storeCnpj;
+    }
+
+    public String getBuyerName() {
+        return buyerName;
     }
 
     public LocalDateTime getDateTime() {

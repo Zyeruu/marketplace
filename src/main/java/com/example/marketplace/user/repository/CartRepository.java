@@ -204,11 +204,15 @@ public final class CartRepository {
         String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
 
-        if (user == null)
+        if (user == null) {
+            session.updateLastProductViewed(null);
             throw new NotFoundException("[!] User not found.");
+        }
 
-        if (user.getCartProductList().isEmpty())
+        if (user.getCartProductList().isEmpty()) {
+            session.updateLastProductViewed(null);
             throw new EmptyCartException("[!] Your cart is empty.");
+        }
 
         CartProduct cartProduct = user.getCartProductList().stream()
                 .filter(product -> product.getId().equals(productId))
@@ -216,10 +220,22 @@ public final class CartRepository {
                 .findFirst()
                 .orElse(null);
 
-        if (cartProduct == null)
+        if (cartProduct == null) {
+            session.updateLastProductViewed(null);
             throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
+        }
+
+        session.updateLastProductViewed(productId);
 
         return cartProduct;
+    }
+
+    public boolean existsReviewByProductId(String productId) {
+
+        return dataBase.getProductList().stream()
+                .filter(Product::isAvailable)
+                .filter(product -> product.getId().equals(productId))
+                .anyMatch(product -> !product.getReviewList().isEmpty());
     }
 
     public void addProduct(CartRequest cartRequest) {
@@ -232,7 +248,8 @@ public final class CartRepository {
 
         String productId = cartRequest.id();
         int quantToBeAdded = cartRequest.quantity();
-        Product catalogProduct = dataBase.findProductById(productId);
+
+        Product catalogProduct = dataBase.findAvailableProductById(productId);
 
         if (catalogProduct == null)
             throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
@@ -242,7 +259,7 @@ public final class CartRepository {
                 throw new OwnProductException("[!] You cannot add your own product.");
 
         if (quantToBeAdded > catalogProduct.getStock())
-            throw new InsufficientStockException("[!] Insufficient stock for the requested stock.");
+            throw new InsufficientStockException("[!] Insufficient stock for the requested quantity.");
 
         CartProduct cartProduct = user.getCartProductList().stream()
                 .filter(product -> product.getId().equals(productId))
@@ -252,7 +269,68 @@ public final class CartRepository {
         if (cartProduct != null) {
 
             if (cartProduct.getQuantity() + cartRequest.quantity() > catalogProduct.getStock())
-                throw new InsufficientStockException("[!] Insufficient stock for the requested stock.");
+                throw new InsufficientStockException("[!] Insufficient stock for the requested quantity.");
+
+            cartProduct.setQuantity(cartProduct.getQuantity() + cartRequest.quantity());
+            return;
+        }
+
+        user.getCartProductList().add(new CartProduct(
+                catalogProduct.getName(),
+                productId,
+                catalogProduct.getStoreName(),
+                catalogProduct.getType(),
+                catalogProduct.getBrand(),
+                catalogProduct.getUnitPrice(),
+                catalogProduct.getWeight(),
+                cartRequest.quantity(),
+                catalogProduct.getWarranty()));
+
+        user.updateCart();
+    }
+
+    public void addProductByStoreNameAndProductId(CartRequest cartRequest) {
+
+        String email = session.getEmail();
+        User user = dataBase.findUserByEmail(email);
+
+        if (user == null)
+            throw new NotFoundException("[!] User not found.");
+
+        User seller = dataBase.findSellerByStoreName(session.getLastStoreViewed());
+
+        if (seller == null)
+            throw new NotFoundException("[!] Seller named \"" + session.getLastStoreViewed() + "\" not found.");
+
+        if (seller.getStore() == null)
+            throw new NotFoundException("[!] " + session.getLastStoreViewed() + "'s catalog could not be found.");
+
+        if (seller.getCatalogProductList().isEmpty())
+            throw new EmptyCatalogException(session.getLastStoreViewed() + " has no products listed.");
+
+        String productId = cartRequest.id();
+        int quantToBeAdded = cartRequest.quantity();
+
+        Product catalogProduct = seller.getCatalogProductList().stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElse(null);
+
+        if (catalogProduct == null)
+            throw new NotFoundException("Product with ID \"" + productId + "\" not found in " + session.getLastStoreViewed() + "'s catalog.");
+
+        if (quantToBeAdded > catalogProduct.getStock())
+            throw new InsufficientStockException("[!] Insufficient stock for the requested quantity.");
+
+        CartProduct cartProduct = user.getCartProductList().stream()
+                .filter(product -> product.getId().equals(productId))
+                .findFirst()
+                .orElse(null);
+
+        if (cartProduct != null) {
+
+            if (cartProduct.getQuantity() + cartRequest.quantity() > catalogProduct.getStock())
+                throw new InsufficientStockException("[!] Insufficient stock for the requested quantity.");
 
             cartProduct.setQuantity(cartProduct.getQuantity() + cartRequest.quantity());
             return;
@@ -279,6 +357,9 @@ public final class CartRepository {
 
         if (user == null)
             throw new NotFoundException("[!] User not found.");
+
+        if (user.getCartProductList().isEmpty())
+            throw new EmptyCartException("[!] Your cart is empty.");
 
         CartProduct cartProduct = user.getCartProductList().stream()
                 .filter(product -> product.getId().equals(cartRequest.id()))

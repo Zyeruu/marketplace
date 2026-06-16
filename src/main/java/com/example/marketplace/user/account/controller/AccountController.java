@@ -62,7 +62,7 @@ public final class AccountController {
         try {
             repository.verifyPassword(password);
 
-            if (view.getFinalResponse()) {
+            if (view.getFinalDecision()) {
                 repository.deleteStore();
                 session.updateHasStore(null, null, false);
                 view.printMessage("[-] Store successfully deleted!");

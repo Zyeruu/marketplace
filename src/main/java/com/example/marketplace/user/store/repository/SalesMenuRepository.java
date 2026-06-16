@@ -47,6 +47,9 @@ public final class SalesMenuRepository {
         if (user == null)
             throw new NotFoundException("[!] User not found.");
 
+        if (user.getSalesMenuTaxReceiptList().isEmpty())
+            throw new NotFoundException("[!] You have no sales history.");
+
         TaxReceipt taxReceiptCopy = user.getSalesMenuTaxReceiptList().stream()
                 .filter(taxReceipt -> taxReceipt.getOrderId().equals(orderId))
                 .findFirst()

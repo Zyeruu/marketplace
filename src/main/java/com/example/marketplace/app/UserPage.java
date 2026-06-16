@@ -29,274 +29,507 @@ public final class UserPage {
         this.session = session;
     }
 
-    public void page() {
+    // ==================================================| MAIN |==================================================
+
+    public void page2() {
 
         int choice;
 
         do {
             System.out.println("----------| MAIN PAGE |----------");
-            System.out.println("[1] My Account\n[2] My Purchases\n[3] My Cart\n[4] Search for products\n[5] Log out");
+            System.out.println("[1] My Account");
+            System.out.println("[2] My Purchases");
+            System.out.println("[3] My Cart");
+            System.out.println("[4] Search for products");
+            System.out.println("[5] Search for sellers");
+            System.out.println("[6] Log out");
+            System.out.println("---------------------------------");
 
             choice = InputReader.readInt();
 
             switch (choice) {
-                case 1:
+                case 1 -> myAccount();
+                case 2 -> myPurchases();
+                case 3 -> myCart();
+                case 4 -> searchForProducts();
+                case 5 -> searchForSellers();
+                case 6 -> auth.logout();
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+        } while (session.isLogged() && !session.hasStore());
+    }
+
+    public void myAccount() {
+
+        int choice;
+
+        do {
+            System.out.println("------------| PROFILE |------------");
+            System.out.println("[1] Show profile");
+            System.out.println("[2] Open a store");
+            System.out.println("[3] Settings");
+            System.out.println("[4] <- Back");
+            System.out.println("-----------------------------------");
+
+            choice = InputReader.readInt();
+
+            switch (choice) {
+                case 1 -> account.printProfile();
+                case 2 -> account.createStore();
+                case 3 -> myAccountSetting();
+                case 4 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if (!session.isLogged() || session.hasStore())
+                return;
+
+            if (choice == 1 || choice == 2)
+                back();
+
+        } while (choice != 4);
+    }
+
+    public void myPurchases() {
+
+        int choice;
+
+        do {
+            System.out.println("-----------| PURCHASES |-----------");
+            System.out.println("[1] Show my purchases");
+            System.out.println("[2] Show specific purchase");
+            System.out.println("[3] My reviews");
+            System.out.println("[4] <- Back");
+            System.out.println("-----------------------------------");
+
+            choice = InputReader.readInt();
+
+            switch (choice) {
+                case 1 -> ordersMenu.printOrders();
+                case 2 -> ordersMenu.printOrder();
+                case 3 -> myPurchasesReviews();
+                case 4 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if (choice == 1 || choice == 2)
+                back();
+
+        } while (choice != 4);
+    }
+
+    public void myCart() {
+
+        int choice1, choice2;
+        boolean found = false;
+
+        do {
+            System.out.println("-------------| CART |-------------");
+            System.out.println("[1] Show my cart");
+            System.out.println("[2] Show selected products");
+            System.out.println("[3] Show deselected products");
+            System.out.println("[4] Show all details of a product");
+            System.out.println("[5] Remove product");
+            System.out.println("[6] Checkout");
+            System.out.println("[7] <- Back");
+            System.out.println("----------------------------------");
+
+            choice1 = InputReader.readInt();
+
+            switch (choice1) {
+                case 1 -> showMyCart();
+                case 2 -> found = cart.printSelected();
+                case 3 -> found = cart.printDeselected();
+                case 4 -> found = cart.printAllProductDetails();
+                case 5 -> cart.removeProduct();
+                case 6 -> checkout.checkout();
+                case 7 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if (choice1 == 2 && found) {
+                do {
+                    System.out.println("------------| DESELECT |-----------");
+                    System.out.println("[1] Deselect a product");
+                    System.out.println("[2] <- Back");
+                    System.out.println("-----------------------------------");
+
+                    choice2 = InputReader.readInt();
+
+                    switch (choice2) {
+                        case 1 -> cart.deselectProduct();
+                        case 2 -> System.out.print("");
+                        default -> System.out.println("[!] Invalid option. Try again.");
+                    }
+                } while (choice2 != 2);
+            }
+
+            if (choice1 == 3 && found) {
+                do {
+                    System.out.println("-------------| SELECT |------------");
+                    System.out.println("[1] Select a product");
+                    System.out.println("[2] <- Back");
+                    System.out.println("-----------------------------------");
+
+                    choice2 = InputReader.readInt();
+
+                    switch (choice2) {
+                        case 1 -> cart.selectProduct();
+                        case 2 -> System.out.print("");
+                        default -> System.out.println("[!] Invalid option. Try again.");
+                    }
+                } while (choice2 != 2);
+            }
+
+            if (choice1 == 4 && found) {
+                System.out.println("------------| REVIEWS |------------");
+                System.out.println("[1] Show reviews");
+                System.out.println("[2] <- Back");
+                System.out.println("-----------------------------------");
+
+                do {
+                    choice2 = InputReader.readInt();
+
+                    switch (choice2) {
+                        case 1 -> search.searchForLastProductViewedReview();
+                        case 2 -> System.out.print("");
+                        default -> System.out.println("[!] Invalid option. Try again.");
+                    }
+                } while (choice2 != 1 && choice2 != 2);
+            }
+
+            if (((choice1 == 5 || choice1 == 6) || (choice1 != 1 && !found)) && choice1 != 7)
+                back();
+
+        } while (choice1 != 7);
+    }
+
+    public void searchForProducts() {
+
+        int choice1, choice2;
+        boolean found = false;
+
+        do {
+            System.out.println("------------| SEARCH |------------");
+            System.out.println("[1] Search for all");
+            System.out.println("[2] Search by name");
+            System.out.println("[3] Search by type");
+            System.out.println("[4] Search by name and type");
+            System.out.println("[5] <- Back");
+            System.out.println("----------------------------------");
+
+            choice1 = InputReader.readInt();
+
+            switch (choice1) {
+                case 1 -> found = search.searchAll();
+                case 2 -> found = search.searchByName();
+                case 3 -> found = search.searchByType();
+                case 4 -> found = search.searchByNameAndType();
+                case 5 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if (choice1 >= 1 && choice1 <= 4 && found) {
+                do {
+                    System.out.println("--------| CART | DETAILS |--------");
+                    System.out.println("[1] Add a product to the cart");
+                    System.out.println("[2] Show all details of a product");
+                    System.out.println("[3] Show a product review");
+                    System.out.println("[4] <- Back");
+                    System.out.println("----------------------------------");
+
+                    choice2 = InputReader.readInt();
+
+                    switch (choice2) {
+                        case 1 -> cart.addProduct();
+                        case 2 -> showAllDetails();
+                        case 3 -> search.searchForProductReview();
+                        case 4 -> System.out.print("");
+                        default -> System.out.println("[!] Invalid option. Try again.");
+                    }
+
+                } while (choice2 != 4);
+
+            }
+
+            if (choice1 >= 1 && choice1 <= 4 && !found)
+                back();
+
+        } while (choice1 != 5);
+    }
+
+    public void searchForSellers() {
+
+        int choice;
+        boolean found = false;
+
+        do {
+            System.out.println("------| SEARCH FOR SELLERS |------");
+            System.out.println("[1] All sellers");
+            System.out.println("[2] Sellers with catalog");
+            System.out.println("[3] <- Back");
+            System.out.println("----------------------------------");
+
+            choice = InputReader.readInt();
+
+            switch (choice) {
+                case 1 -> found = search.searchForSellers();
+                case 2 -> found = search.searchForSellersWithCatalog();
+                case 3 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if ((choice == 1 || choice == 2) && found)
+                showSellerCatalog();
+
+            if ((choice == 1 || choice == 2) && !found)
+                back();
+
+        } while (choice != 3);
+    }
+
+    public void back() {
+
+        int choice;
+
+        System.out.println("-----------------------------------");
+        System.out.println("[1] <- Back");
+        System.out.println("-----------------------------------");
+
+        do {
+            choice = InputReader.readInt();
+
+            if (choice != 1)
+                System.out.println("[!] Invalid option. Try again.");
+        } while (choice != 1);
+    }
+
+    // =================================================| MY ACCOUNT |=================================================
+
+    public void myAccountSetting() {
+
+        int choice;
+
+        do {
+            System.out.println("------------| SETTINGS |------------");
+            System.out.println("[1] Change e-mail");
+            System.out.println("[2] Change password");
+            System.out.println("[3] Delete account");
+            System.out.println("[4] <- Back");
+            System.out.println("------------------------------------");
+
+            choice = InputReader.readInt();
+
+            switch (choice) {
+                case 1 -> account.changeEmail();
+                case 2 -> account.changePassword();
+                case 3 -> account.deleteAccount();
+                case 4 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if (!session.isLogged())
+                return;
+
+            if (choice >= 1 && choice <= 3) {
+                back();
+            }
+
+        } while (choice != 4);
+    }
+
+    // ================================================| MY PURCHASES |================================================
+
+    public void myPurchasesReviews() {
+
+        int choice1, choice2;
+        boolean found = false;
+
+        do {
+            System.out.println("-----------| MY REVIEWS |----------");
+            System.out.println("[1] Show my reviews");
+            System.out.println("[2] Show my unrated purchases");
+            System.out.println("[3] Review a product");
+            System.out.println("[4] Delete a review");
+            System.out.println("[5] Update a review");
+            System.out.println("[6] <- Back");
+            System.out.println("-----------------------------------");
+
+            choice1 = InputReader.readInt();
+
+            switch (choice1) {
+                case 1 -> found = ordersMenu.printReviewList();
+                case 2 -> found = ordersMenu.printUnratedProducts();
+                case 3 -> ordersMenu.reviewProduct();
+                case 4 -> ordersMenu.deleteReview();
+                case 5 -> ordersMenu.updateReview();
+                case 6 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+
+            if (choice1 == 1 && found) {
+                do {
+                    System.out.println("--------| DELETE | UPDATE |--------");
+                    System.out.println("[1] Delete a review");
+                    System.out.println("[2] Update a review");
+                    System.out.println("[3] <- Back");
+                    System.out.println("-----------------------------------");
+
+                    choice2 = InputReader.readInt();
+
+                    switch (choice2) {
+                        case 1 -> ordersMenu.deleteReview();
+                        case 2 -> ordersMenu.updateReview();
+                        case 3 -> System.out.print("");
+                        default -> System.out.println("[!] Invalid option. Try again.");
+                    }
+
+                } while (choice2 != 3);
+            }
+
+            if (choice1 == 2 && found) {
+                do {
+                    System.out.println("-------------| REVIEW |------------");
+                    System.out.println("[1] Review a product");
+                    System.out.println("[2] <- Back");
+                    System.out.println("-----------------------------------");
+
+                    choice2 = InputReader.readInt();
+
+                    switch (choice2) {
+                        case 1 -> ordersMenu.reviewProduct();
+                        case 2 -> System.out.print("");
+                        default -> System.out.println("[!] Invalid option. Try again.");
+                    }
+                } while (choice2 != 2);
+            }
+
+            if ((choice1 >= 1 && choice1 <= 5 && !found))
+                back();
+
+        } while (choice1 != 6);
+    }
+
+    // ==================================================| MY CART |==================================================
+
+    public void showMyCart() {
+
+        int choice;
+        boolean found = false;
+
+        do {
+            System.out.println("---------| SHOW MY CART |---------");
+            System.out.println("[1] Show all my cart items");
+            System.out.println("[2] Show by name");
+            System.out.println("[3] Show by type");
+            System.out.println("[4] <- Back");
+            System.out.println("----------------------------------");
+
+            choice = InputReader.readInt();
+
+            switch (choice) {
+                case 1 -> found = cart.printCart();
+                case 2 -> found = cart.printCartByProductName();
+                case 3 -> found = cart.printCartByProductType();
+                case 4 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if (choice >= 1 && choice <= 3 && found) {
+                do {
+                    System.out.println("-------| SELECT | DESELECT |-------");
+                    System.out.println("[1] Select a product");
+                    System.out.println("[2] Deselect a product");
+                    System.out.println("[3] <- Back");
+                    System.out.println("-----------------------------------");
+
+                    choice = InputReader.readInt();
+
+                    switch (choice) {
+                        case 1 -> cart.selectProduct();
+                        case 2 -> cart.deselectProduct();
+                        case 3 -> System.out.print("");
+                        default -> System.out.println("[!] Invalid option. Try again.");
+                    }
+                } while (choice != 3);
+            }
+
+            if (choice != 4 && !found)
+                back();
+
+        } while (choice != 4);
+    }
+
+    // ============================================| SEARCH FOR PRODUCTS |============================================
+
+    public void showAllDetails() {
+
+        int choice;
+        boolean found = search.printAllProductDetails();
+
+        if (session.getLastProductViewed() != null && found) {
+            System.out.println("------------| REVIEWS |------------");
+            System.out.println("[1] Show reviews");
+            System.out.println("[2] <- Back");
+            System.out.println("-----------------------------------");
+
+            do {
+                choice = InputReader.readInt();
+
+                switch (choice) {
+                    case 1 -> search.searchForLastProductViewedReview();
+                    case 2 -> System.out.print("");
+                    default -> System.out.println("[!] Invalid option. Try again.");
+                }
+            } while (choice != 1 && choice != 2);
+        }
+    }
+
+    // ============================================| SEARCH FOR SELLERS |=============================================
+
+    public void showSellerCatalog() {
+
+        int choice;
+
+        do {
+            System.out.println("---------| SELLER CATALOG |--------");
+            System.out.println("[1] Show a seller's catalog");
+            System.out.println("[2] <- Back");
+            System.out.println("-----------------------------------");
+
+            choice = InputReader.readInt();
+
+            switch (choice) {
+                case 1 -> search.searchCatalogByStoreName();
+                case 2 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if (choice == 1) {
+                if (session.getLastStoreViewed() != null && !session.getLastStoreViewed().equals(session.getStoreName())) {
                     do {
-                        System.out.println("------------| PROFILE |------------");
-                        System.out.println("[1] Show profile\n[2] Open a store\n[3] Settings\n[4] <- Back");
+                        System.out.println("------| " + session.getLastStoreViewed().toUpperCase() + " CATALOG |------");
+                        System.out.println("[1] Add a " + session.getLastStoreViewed() + " product to cart");
+                        System.out.println("[2] Show a " + session.getLastStoreViewed() + " product review");
+                        System.out.println("[3] <- Back");
                         System.out.println("-----------------------------------");
 
                         choice = InputReader.readInt();
 
                         switch (choice) {
-                            case 1:
-                                account.printProfile();
-
-                                System.out.println("-----------------------------------");
-                                System.out.println("[1] <- Back");
-                                System.out.println("-----------------------------------");
-
-                                do {
-                                    choice = InputReader.readInt();
-
-                                    if (choice != 1)
-                                        System.out.println("[!] Invalid option. Try again,");
-                                } while (choice != 1);
-
-                                break;
-
-                            case 2:
-                                account.createStore();
-
-                                if (session.hasStore())
-                                    return;
-
-                                System.out.println("-----------------------------------");
-                                System.out.println("[1] <- Back");
-                                System.out.println("-----------------------------------");
-
-                                do {
-                                    choice = InputReader.readInt();
-
-                                    if (choice != 1)
-                                        System.out.println("[!] Invalid option. Try again,");
-                                } while (choice != 1);
-
-                                break;
-
-                            case 3:
-                                do {
-                                    System.out.println("------------| SETTINGS |------------");
-                                    System.out.println("[1] Change e-mail\n[2] Change password\n[3] Delete account\n[4] <- Back");
-                                    System.out.println("------------------------------------");
-
-                                    choice = InputReader.readInt();
-
-                                    switch (choice) {
-                                        case 1 -> account.changeEmail();
-                                        case 2 -> account.changePassword();
-                                        case 3 -> account.deleteAccount();
-                                        case 4 -> System.out.print("");
-                                        default -> System.out.println("[!] Invalid option. Try again.");
-                                    }
-
-                                    if (!session.isLogged())
-                                        return;
-
-                                    if (choice >= 1 && choice <= 3) {
-                                        System.out.println("-----------------------------------");
-                                        System.out.println("[1] <- Back");
-                                        System.out.println("-----------------------------------");
-
-                                        do {
-                                            choice = InputReader.readInt();
-
-                                            if (choice != 1)
-                                                System.out.println("[!] Invalid option. Try again,");
-                                        } while (choice != 1);
-
-                                        choice = 0;
-                                    }
-
-                                } while (choice < 1 || choice > 4);
-
-                                choice = 0;
-                                break;
-                            case 4:
-                                System.out.print("");
-                                break;
-                            default:
-                                System.out.println("[!] Invalid option. Try again.");
-                                break;
-                        }
-                    } while (choice != 4);
-                    choice = 0;
-                    break;
-
-                case 2:
-                    do {
-                        System.out.println("-----------| PURCHASES |-----------");
-                        System.out.println("[1] Show my purchases\n[2] Show specific purchase\n[3] <- Back");
-                        System.out.println("-----------------------------------");
-
-                        choice = InputReader.readInt();
-
-                        switch (choice) {
-                            case 1 -> ordersMenu.printOrders();
-                            case 2 -> ordersMenu.printOrder();
+                            case 1 -> cart.addProductByStoreNameAndProductId();
+                            case 2 -> search.searchForProductReviewByProductIdAndStoreName();
                             case 3 -> System.out.print("");
                             default -> System.out.println("[!] Invalid option. Try again.");
                         }
-
-                        if (choice != 3) {
-                            System.out.println("-----------------------------------");
-                            System.out.println("[1] <- Back");
-                            System.out.println("-----------------------------------");
-
-                            do {
-                                choice = InputReader.readInt();
-
-                                if (choice != 1)
-                                    System.out.println("[!] Invalid option. Try again,");
-                            } while (choice != 1);
-                        }
-
                     } while (choice != 3);
-                    choice = 0;
-                    break;
+                }
 
-                case 3:
-                    do {
-                        System.out.println("-------------| CART |-------------");
-                        System.out.println("[1] Show cart\n[2] Show cart by name\n[3] Show cart by type\n[4] Show selected products\n[5] Show deselected products\n[6] Show all details of a product\n[7] Remove product\n[8] Checkout\n[9] <- Back");
-                        System.out.println("-----------------------------------");
-
-                        choice = InputReader.readInt();
-
-                        switch (choice) {
-                            case 1 -> cart.printCart();
-                            case 2 -> cart.printCartByProductName();
-                            case 3 -> cart.printCartByProductType();
-                            case 4 -> cart.printSelected();
-                            case 5 -> cart.printDeselected();
-                            case 6 -> cart.printAllProductDetails();
-                            case 7 -> cart.removeProduct();
-                            case 8 -> checkout.checkout();
-                            case 9 -> System.out.print("");
-                            default -> System.out.println("[!] Invalid option. Try again.");
-                        }
-
-                        if (choice >= 1 && choice <= 3) {
-                            do {
-                                System.out.println("-----------------------------------");
-                                System.out.println("[1] Select a product\n[2] Deselect a product\n[3] <- Back");
-                                System.out.println("-----------------------------------");
-
-                                choice = InputReader.readInt();
-
-                                switch (choice) {
-                                    case 1 -> cart.selectProduct();
-                                    case 2 -> cart.deselectProduct();
-                                    case 3 -> System.out.print("");
-                                    default -> System.out.println("[!] Invalid option. Try again.");
-                                }
-                            } while (choice != 3);
-                        }
-
-                        if (choice == 4) {
-                            do {
-                                System.out.println("-----------------------------------");
-                                System.out.println("[1] Deselect a product\n[2] <- Back");
-                                System.out.println("-----------------------------------");
-
-                                choice = InputReader.readInt();
-
-                                switch (choice) {
-                                    case 1 -> cart.deselectProduct();
-                                    case 2 -> System.out.print("");
-                                    default -> System.out.println("[!] Invalid option. Try again.");
-                                }
-                            } while (choice != 2);
-                        }
-
-                        if (choice == 5) {
-                            do {
-                                System.out.println("-----------------------------------");
-                                System.out.println("[1] Select a product\n[2] <- Back");
-                                System.out.println("-----------------------------------");
-
-                                choice = InputReader.readInt();
-
-                                switch (choice) {
-                                    case 1 -> cart.selectProduct();
-                                    case 2 -> System.out.print("");
-                                    default -> System.out.println("[!] Invalid option. Try again.");
-                                }
-                            } while (choice != 2);
-                        }
-
-                        if (choice >= 6 && choice <= 8) {
-                            System.out.println("-----------------------------------");
-                            System.out.println("[1] <- Back");
-                            System.out.println("-----------------------------------");
-
-                            do {
-                                choice = InputReader.readInt();
-
-                                if (choice != 1)
-                                    System.out.println("[!] Invalid option. Try again.");
-                            } while (choice != 1);
-                        }
-
-                    } while (choice != 9);
-                    choice = 0;
-                    break;
-
-                case 4:
-                    do {
-                        System.out.println("------------| SEARCH |------------");
-                        System.out.println("[1] Search all\n[2] Search by name\n[3] Search by type\n[4] Search by name and type\n[5] <- Back");
-                        System.out.println("-----------------------------------");
-
-                        choice = InputReader.readInt();
-
-                        switch (choice) {
-                            case 1 -> search.searchAll();
-                            case 2 -> search.searchByName();
-                            case 3 -> search.searchByType();
-                            case 4 -> search.searchByNameAndType();
-                            case 5 -> System.out.print("");
-                            default -> System.out.println("[!] Invalid option. Try again.");
-                        }
-
-                        if (choice != 5) {
-                            do {
-                                System.out.println("--------| CART | DETAILS |--------");
-                                System.out.println("[1] Add a product to the cart\n[2] Show all details of a product\n[3] <- Back");
-                                System.out.println("-----------------------------------");
-
-                                choice = InputReader.readInt();
-
-                                switch (choice) {
-                                    case 1 -> cart.addProduct();
-                                    case 2 -> search.printAllProductDetails();
-                                    case 3 -> System.out.print("");
-                                    default -> System.out.println("[!] Invalid option. Try again.");
-                                }
-                            } while (choice != 3);
-                        }
-                    } while (choice != 5);
-                    choice = 0;
-                    break;
-
-                case 5:
-                    auth.logout();
-                    break;
-
-                default:
-                    System.out.println("[!] Invalid option. Try again.");
-                    break;
+                if (choice != 3)
+                    back();
             }
-        } while (choice != 5);
+        } while (choice != 2);
     }
 }

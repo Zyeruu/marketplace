@@ -70,7 +70,7 @@ public final class DependencyInjector {
         this.storeRepository = new StoreRepository(dataBase, session);
         this.salesMenuRepository = new SalesMenuRepository(dataBase, session);
         this.catalogRepository = new CatalogRepository(dataBase, session);
-        this.searchRepository = new SearchRepository(dataBase);
+        this.searchRepository = new SearchRepository(dataBase, session);
 
         this.authController = new AuthController(new AuthView(), authRepository, session);
         this.accountController = new AccountController(new AccountView(), accountRepository, session);
