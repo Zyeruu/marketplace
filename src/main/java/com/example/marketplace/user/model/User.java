@@ -156,14 +156,6 @@ public final class User {
         store.getCatalog().updateCatalog();
     }
 
-    public void updateAvailableCatalog() {
-        store.getCatalog().updateAvailableCatalog();
-    }
-
-    public void updateUnavailableCatalog() {
-        store.getCatalog().updateUnavailableCatalog();
-    }
-
     // Getters
     public List<Product> getCatalogProductList() {
         return store.getCatalog().getProductList();

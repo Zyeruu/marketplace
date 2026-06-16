@@ -18,51 +18,36 @@ public final class Catalog {
     private int unavailableTotalFood = 0;
     private int unavailableTotalMisc = 0;
 
+
     public void updateCatalog() {
 
-        this.totalFood = 0;
-        this.totalMisc = 0;
+        availableTotalFood = 0;
+        availableTotalMisc = 0;
+        unavailableTotalFood = 0;
+        unavailableTotalMisc = 0;
 
         for (Product product : productList) {
-            if (product.getType() == ProductType.FOOD)
-                this.totalFood++;
-            else
-                this.totalMisc++;
-        }
-
-        this.totalProducts = this.totalFood + this.totalMisc;
-    }
-
-    public void updateAvailableCatalog() {
-
-        this.availableTotalFood = 0;
-        this.availableTotalMisc = 0;
-
-        for (Product product : productList) {
-            if (product.isAvailable())
-                if (product.getType() == ProductType.FOOD)
-                    this.availableTotalFood++;
+            if (product.getType() == ProductType.FOOD) {
+                if (product.isAvailable()) {
+                    availableTotalFood++;
+                }
                 else
-                    this.availableTotalMisc++;
-        }
-
-        this.availableTotalProducts = this.availableTotalFood + this.availableTotalMisc;
-    }
-
-    public void updateUnavailableCatalog() {
-
-        this.unavailableTotalFood = 0;
-        this.unavailableTotalMisc = 0;
-
-        for (Product product : productList) {
-            if (!product.isAvailable())
-                if (product.getType() == ProductType.FOOD)
-                    this.unavailableTotalFood++;
+                    unavailableTotalFood++;
+            }
+            else {
+                if (product.isAvailable()) {
+                    availableTotalMisc++;
+                }
                 else
-                    this.unavailableTotalMisc++;
+                    unavailableTotalMisc++;
+            }
         }
 
-        this.unavailableTotalProducts = this.unavailableTotalFood + this.unavailableTotalMisc;
+        availableTotalProducts = availableTotalFood + availableTotalMisc;
+        unavailableTotalProducts = unavailableTotalFood + unavailableTotalMisc;
+        totalProducts = availableTotalProducts + unavailableTotalProducts;
+        totalFood = availableTotalFood + unavailableTotalFood;
+        totalMisc = availableTotalMisc + unavailableTotalMisc;
     }
 
     // Getters

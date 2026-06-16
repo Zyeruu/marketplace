@@ -161,7 +161,7 @@ public final class SearchRepository {
                 .map(Product::new)
                 .collect(Collectors.toList());
 
-        seller.updateAvailableCatalog();
+        seller.updateCatalog();
 
         int totalProducts = seller.getCatalogAvailableTotalProducts();
         int totalFoods = seller.getCatalogAvailableTotalFood();

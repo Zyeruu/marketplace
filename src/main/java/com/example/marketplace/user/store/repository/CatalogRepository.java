@@ -70,7 +70,7 @@ public final class CatalogRepository {
         if (productList.isEmpty())
             throw new NotFoundException("[!] No results were found.");
 
-        user.updateAvailableCatalog();;
+        user.updateCatalog();;
 
         int totalProducts = user.getCatalogAvailableTotalProducts();
         int totalFood = user.getCatalogAvailableTotalFood();
@@ -98,7 +98,7 @@ public final class CatalogRepository {
         if (productList.isEmpty())
             throw new NotFoundException("[!] No results were found.");
 
-        user.updateUnavailableCatalog();
+        user.updateCatalog();
 
         int totalProducts = user.getCatalogUnavailableTotalProducts();
         int totalFood = user.getCatalogUnavailableTotalFood();
@@ -151,7 +151,6 @@ public final class CatalogRepository {
 
         List<Product> productListCopy = new ArrayList<>();
 
-        int totalProducts;
         int totalFood = 0;
         int totalMisc = 0;
 
@@ -166,10 +165,10 @@ public final class CatalogRepository {
             }
         }
 
-        totalProducts = totalFood + totalMisc;
-
         if (productListCopy.isEmpty())
             throw new NotFoundException("[!] No results were found.");
+
+        int totalProducts = totalFood + totalMisc;
 
         return new CatalogResponse(productListCopy, totalProducts, totalFood, totalMisc);
     }
@@ -426,7 +425,7 @@ public final class CatalogRepository {
         }
         
         product.setAvailable(updateAvailability.getAvailable());
-        user.updateAvailableCatalog();
+        user.updateCatalog();
     }
 
     public Reputation findProductReviewByProductId(String productId) {

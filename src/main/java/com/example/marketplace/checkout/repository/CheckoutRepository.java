@@ -179,7 +179,6 @@ public final class CheckoutRepository {
             }
 
             seller.updateCatalog();
-            seller.updateAvailableCatalog();
         }
 
         buyer.updateCart();
