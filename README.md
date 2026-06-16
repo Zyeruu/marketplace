@@ -16,31 +16,33 @@ This project was developed with pure Java, no external frameworks, to practice a
 -----------------------------------
 >> 2
 
-------| REGISTER |------
+------------| REGISTER |-----------
 E-mail: example@domain.com
 Password: Password
 Your name: Your Name
 
 [+] Account successfully created!
 
-----------| MAIN PAGE |----------
+-----------| MAIN PAGE |-----------
 [1] My Account
 [2] My Purchases
 [3] My Cart
 [4] Search for products
-[5] Log out
+[5] Search for sellers
+[6] Log out
 ```
 
 After opening a store, the main page expands with store management options:
 
 ```
-----------| MAIN PAGE |----------
+-----------| MAIN PAGE |-----------
 [1] My Account
 [2] My Store
 [3] My Purchases
 [4] My Cart
 [5] Search for products
-[6] Log out
+[6] Search for sellers
+[7] Log out
 ```
 
 ## Features
@@ -51,16 +53,19 @@ After opening a store, the main page expands with store management options:
 - Change email and password
 - Delete account
 - Search products by name, type, name & type or view all
-- View full details of a specific product
+- Search sellers and view their catalogs
+- View full details of a specific product and its reviews
 - Add and remove products from cart
 - View cart by name, type or view all
 - Select and deselect cart products for checkout
 - Checkout with payment method selection
 - View purchase history and specific purchase details
+- Review purchased products, edit and delete reviews
+- View list of unreviewed purchases
 
 ### Store owner
 - Open, update and delete store
-- List, update and delete products in catalog
+- List, update, delete and toggle availability of products in catalog
 - View catalog by name, type or view all
 - View full details of a specific product
 - View sales history and specific sale details
@@ -107,6 +112,7 @@ src/
 │   └── view/
 └── shared/
     ├── enums/
+    ├── model/
     ├── session/
     └── utils/
 ```
