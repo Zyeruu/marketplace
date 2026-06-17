@@ -167,4 +167,26 @@ public final class CartController {
             view.printMessage(e.getMessage());
         }
     }
+
+    public void selectAll() {
+
+        try {
+            repository.selectAll();
+            view.printMessage("[+] All products were selected.");
+        }
+        catch (NotFoundException | IllegalArgumentException | EmptyCartException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
+
+    public void deselectAll() {
+
+        try {
+            repository.deselectAll();
+            view.printMessage("[-] All products were deselected.");
+        }
+        catch (NotFoundException | IllegalArgumentException | EmptyCartException e) {
+            view.printMessage(e.getMessage());
+        }
+    }
 }

@@ -426,4 +426,40 @@ public final class CartRepository {
 
         cartProduct.setSelected(false);
     }
+
+    public void selectAll() {
+
+        String email = session.getEmail();
+        User user = dataBase.findUserByEmail(email);
+
+        if (user == null)
+            throw new NotFoundException("[!] User not found.");
+
+        if (user.getCartProductList().isEmpty())
+            throw new EmptyCartException("[!] Your cart is empty.");
+
+        if (user.getCartProductList().stream().allMatch(CartProduct::isSelected))
+            throw new IllegalArgumentException("[!] All products are already selected.");
+
+        for (CartProduct product : user.getCartProductList())
+            product.setSelected(true);
+    }
+
+    public void deselectAll() {
+
+        String email = session.getEmail();
+        User user = dataBase.findUserByEmail(email);
+
+        if (user == null)
+            throw new NotFoundException("[!] User not found.");
+
+        if (user.getCartProductList().isEmpty())
+            throw new EmptyCartException("[!] Your cart is empty.");
+
+        if (user.getCartProductList().stream().noneMatch(CartProduct::isSelected))
+            throw new IllegalArgumentException("[!] All products are already deselected.");
+
+        for (CartProduct product : user.getCartProductList())
+            product.setSelected(false);
+    }
 }

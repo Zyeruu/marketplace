@@ -611,7 +611,7 @@ public final class StoreUserPage {
 
     public void showMyCart() {
 
-        int choice;
+        int choice1, choice2;
         boolean found = false;
 
         do {
@@ -622,9 +622,9 @@ public final class StoreUserPage {
             System.out.println("[4] <- Back");
             System.out.println("----------------------------------");
 
-            choice = InputReader.readInt();
+            choice1 = InputReader.readInt();
 
-            switch (choice) {
+            switch (choice1) {
                 case 1 -> found = cart.printCart();
                 case 2 -> found = cart.printCartByProductName();
                 case 3 -> found = cart.printCartByProductType();
@@ -632,29 +632,33 @@ public final class StoreUserPage {
                 default -> System.out.println("[!] Invalid option. Try again.");
             }
 
-            if (choice >= 1 && choice <= 3 && found) {
+            if (choice1 >= 1 && choice1 <= 3 && found) {
                 do {
                     System.out.println("-------| SELECT | DESELECT |-------");
                     System.out.println("[1] Select a product");
                     System.out.println("[2] Deselect a product");
-                    System.out.println("[3] <- Back");
+                    System.out.println("[3] Select all");
+                    System.out.println("[4] Deselect all");
+                    System.out.println("[5] <- Back");
                     System.out.println("-----------------------------------");
 
-                    choice = InputReader.readInt();
+                    choice2 = InputReader.readInt();
 
-                    switch (choice) {
+                    switch (choice2) {
                         case 1 -> cart.selectProduct();
                         case 2 -> cart.deselectProduct();
-                        case 3 -> System.out.print("");
+                        case 3 -> cart.selectAll();
+                        case 4 -> cart.deselectAll();
+                        case 5 -> System.out.print("");
                         default -> System.out.println("[!] Invalid option. Try again.");
                     }
-                } while (choice != 3);
+                } while (choice2 != 5);
             }
 
-            if (choice != 4 && !found)
+            if (choice1 != 4 && !found)
                 back();
 
-        } while (choice != 4);
+        } while (choice1 != 4);
     }
 
     // ============================================| SEARCH FOR PRODUCTS |============================================
