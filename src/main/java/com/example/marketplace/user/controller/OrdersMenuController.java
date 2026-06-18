@@ -2,7 +2,6 @@ package main.java.com.example.marketplace.user.controller;
 
 import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
-import main.java.com.example.marketplace.shared.model.Review;
 import main.java.com.example.marketplace.shared.utils.Validator;
 import main.java.com.example.marketplace.user.dto.ProductReviewRequest;
 import main.java.com.example.marketplace.user.dto.UpdateReviewRequest;

@@ -67,8 +67,8 @@ public final class SearchRepository {
 
     public List<Product> findByNameAndType(SearchRequest searchRequest) {
 
-        String name = searchRequest.getProductName();
-        ProductType type = searchRequest.getProductType();
+        String name = searchRequest.productName();
+        ProductType type = searchRequest.productType();
 
         List<Product> productList = dataBase.getProductList().stream()
                 .filter(Product::isAvailable)

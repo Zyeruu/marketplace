@@ -5,7 +5,6 @@ import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.shared.utils.LocalDateTimeFormatter;
 import main.java.com.example.marketplace.user.store.dto.SalesMenuResponse;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public final class SalesMenuView {

@@ -2,7 +2,6 @@ package main.java.com.example.marketplace.user.view;
 
 import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
-import main.java.com.example.marketplace.shared.model.Review;
 import main.java.com.example.marketplace.shared.utils.InputReader;
 import main.java.com.example.marketplace.shared.utils.LocalDateTimeFormatter;
 import main.java.com.example.marketplace.user.dto.ProductReviewRequest;

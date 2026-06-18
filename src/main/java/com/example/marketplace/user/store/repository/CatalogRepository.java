@@ -236,17 +236,17 @@ public final class CatalogRepository {
             throw new EmptyCatalogException("[!] Your catalog is empty.");
 
         Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateName.getId()))
+                .filter(p -> p.getId().equals(updateName.id()))
                 .findFirst()
                 .orElse(null);
 
         if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateName.getId() + "\" not found.");
+            throw new NotFoundException("[!] Product with ID \"" + updateName.id() + "\" not found.");
 
-        if (product.getName().equals(updateName.getName()))
+        if (product.getName().equals(updateName.name()))
             throw new IllegalArgumentException("[!] The new product name must be different from current name.");
 
-        product.setName(updateName.getName());
+        product.setName(updateName.name());
         user.updateCatalog();
     }
 
@@ -259,17 +259,17 @@ public final class CatalogRepository {
             throw new NotFoundException("[!] user not found.");
 
         Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateType.getId()))
+                .filter(p -> p.getId().equals(updateType.id()))
                 .findFirst()
                 .orElse(null);
 
         if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateType.getId() + "\" not found.");
+            throw new NotFoundException("[!] Product with ID \"" + updateType.id() + "\" not found.");
 
-        if (product.getType() == updateType.getType())
+        if (product.getType() == updateType.type())
             throw new IllegalArgumentException("[!] The new product type must be different from the current type.");
 
-        product.setType(updateType.getType());
+        product.setType(updateType.type());
         user.updateCatalog();
     }
 
@@ -282,21 +282,21 @@ public final class CatalogRepository {
             throw new NotFoundException("[!] user not found.");
 
         Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateBrand.getId()))
+                .filter(p -> p.getId().equals(updateBrand.id()))
                 .findFirst()
                 .orElse(null);
 
         if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateBrand.getId() + "\" not found.");
+            throw new NotFoundException("[!] Product with ID \"" + updateBrand.id() + "\" not found.");
 
         if (product.getType() == ProductType.FOOD)
-            throw new IllegalArgumentException("[!] The product with ID \"" + updateBrand.getId() +
+            throw new IllegalArgumentException("[!] The product with ID \"" + updateBrand.id() +
                     "\" is a Food item, so it does not have a brand.");
 
-        if (product.getBrand().equals(updateBrand.getBrand()))
+        if (product.getBrand().equals(updateBrand.brand()))
             throw new IllegalArgumentException("[!] The new product brand must be different from the current brand.");
 
-        product.setBrand(updateBrand.getBrand());
+        product.setBrand(updateBrand.brand());
         user.updateCatalog();
     }
 
@@ -309,17 +309,17 @@ public final class CatalogRepository {
             throw new NotFoundException("[!] User not found.");
 
         Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updatePrice.getId()))
+                .filter(p -> p.getId().equals(updatePrice.id()))
                 .findFirst()
                 .orElse(null);
 
         if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updatePrice.getId() + "\" not found.");
+            throw new NotFoundException("[!] Product with ID \"" + updatePrice.id() + "\" not found.");
 
-        if (product.getUnitPrice() == updatePrice.getUnitPrice())
+        if (product.getUnitPrice() == updatePrice.unitPrice())
             throw new IllegalArgumentException("[!] The new stock mus be different from the current stock.");
 
-        product.setUnitPrice(updatePrice.getUnitPrice());
+        product.setUnitPrice(updatePrice.unitPrice());
         user.updateCatalog();
     }
 
@@ -332,17 +332,17 @@ public final class CatalogRepository {
             throw new NotFoundException("[!] User not found.");
 
         Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateWeight.getId()))
+                .filter(p -> p.getId().equals(updateWeight.id()))
                 .findFirst()
                 .orElse(null);
 
         if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateWeight.getId() + "\" not found.");
+            throw new NotFoundException("[!] Product with ID \"" + updateWeight.id() + "\" not found.");
 
-        if (product.getWeight() == updateWeight.getWeight())
+        if (product.getWeight() == updateWeight.weight())
             throw new IllegalArgumentException("[!] The new weight must be different from the current weight.");
 
-        product.setWeight(updateWeight.getWeight());
+        product.setWeight(updateWeight.weight());
         user.updateCatalog();
     }
 
@@ -355,17 +355,17 @@ public final class CatalogRepository {
             throw new NotFoundException("[!] User not found.");
 
         Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateStock.getId()))
+                .filter(p -> p.getId().equals(updateStock.id()))
                 .findFirst()
                 .orElse(null);
 
         if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateStock.getId() + "\" not found.");
+            throw new NotFoundException("[!] Product with ID \"" + updateStock.id() + "\" not found.");
 
-        if (product.getStock() == updateStock.getStock())
+        if (product.getStock() == updateStock.stock())
             throw new IllegalArgumentException("[!] The new stock must be different from the current stock.");
 
-        product.setStock(updateStock.getStock());
+        product.setStock(updateStock.stock());
         user.updateCatalog();
     }
 
@@ -378,21 +378,21 @@ public final class CatalogRepository {
             throw new NotFoundException("[!] User not found.");
 
         Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateWarranty.getId()))
+                .filter(p -> p.getId().equals(updateWarranty.id()))
                 .findFirst()
                 .orElse(null);
 
         if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateWarranty.getId() + "\" not found.");
+            throw new NotFoundException("[!] Product with ID \"" + updateWarranty.id() + "\" not found.");
 
         if (product.getType() == ProductType.FOOD)
-            throw new IllegalArgumentException("[!] The product with ID \"" + updateWarranty.getId() +
+            throw new IllegalArgumentException("[!] The product with ID \"" + updateWarranty.id() +
                     "\" is a Food item, so it does not have warranty coverage.");
 
-        if (product.getWarranty().equals(updateWarranty.getWarranty()))
+        if (product.getWarranty().equals(updateWarranty.warranty()))
             throw new IllegalArgumentException("[!] The product warranty must be different from the current warranty.");
 
-        product.setWarranty(updateWarranty.getWarranty());
+        product.setWarranty(updateWarranty.warranty());
         user.updateCatalog();
     }
 
@@ -405,14 +405,14 @@ public final class CatalogRepository {
             throw new NotFoundException("[!] User not found.");
 
         Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateAvailability.getId()))
+                .filter(p -> p.getId().equals(updateAvailability.id()))
                 .findFirst()
                 .orElse(null);
 
         if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateAvailability.getId() + "\" not found.");
+            throw new NotFoundException("[!] Product with ID \"" + updateAvailability.id() + "\" not found.");
 
-        if (product.isAvailable() == updateAvailability.getAvailable()) {
+        if (product.isAvailable() == updateAvailability.available()) {
             if (product.isAvailable()) {
                 throw new IllegalArgumentException("[!] The product is already available.");
             }
@@ -420,11 +420,11 @@ public final class CatalogRepository {
                 throw new IllegalArgumentException("[!] The product is already unavailable.");
         }
         else {
-            if (updateAvailability.getAvailable() && product.getStock() == 0)
+            if (updateAvailability.available() && product.getStock() == 0)
                 throw new InsufficientStockException("[!] The product you want to make available is out of stock. Update the stock first.");
         }
         
-        product.setAvailable(updateAvailability.getAvailable());
+        product.setAvailable(updateAvailability.available());
         user.updateCatalog();
     }
 
