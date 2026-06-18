@@ -13,8 +13,7 @@ public final class MarketplaceApplication {
 
         final DependencyInjector injector = new DependencyInjector();
         final LoginAndRegisterPage loginAndRegister = new LoginAndRegisterPage(injector.getAuthController(), injector.getSession());
-        final UserPage user = new UserPage(injector.getAuthController(), injector.getAccountController(), injector.getCartController(), injector.getOrdersMenuController(), injector.getSearchController(), injector.getCheckoutController(), injector.getSession());
-        final StoreUserPage storeUser = new StoreUserPage(injector.getAuthController(), injector.getAccountController(), injector.getCartController(), injector.getCatalogController(), injector.getOrdersMenuController(), injector.getStoreController(), injector.getSalesMenuController(), injector.getSearchController(), injector.getCheckoutController(), injector.getSession());
+        final UserPage storeUser = new UserPage(injector.getAuthController(), injector.getAccountController(), injector.getCartController(), injector.getCatalogController(), injector.getOrdersMenuController(), injector.getStoreController(), injector.getSalesMenuController(), injector.getSearchController(), injector.getCheckoutController(), injector.getSession());
         final Session session = injector.getSession();
         
         int choice;
@@ -23,11 +22,11 @@ public final class MarketplaceApplication {
             if (!session.isLogged())
                 loginAndRegister.page();
 
-            if (session.hasStore() && session.isLogged())
-                storeUser.page();
+            if (!session.hasStore() && session.isLogged())
+                storeUser.userPage();
 
-            if(!session.hasStore() && session.isLogged())
-                user.page2();
+            if (session.hasStore() && session.isLogged())
+                storeUser.storeOwnerPage();
 
             if (!running) {
 

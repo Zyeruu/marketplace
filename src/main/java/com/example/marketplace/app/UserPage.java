@@ -8,30 +8,40 @@ import main.java.com.example.marketplace.user.search.controller.SearchController
 import main.java.com.example.marketplace.checkout.controller.CheckoutController;
 import main.java.com.example.marketplace.shared.session.Session;
 import main.java.com.example.marketplace.shared.utils.InputReader;
+import main.java.com.example.marketplace.user.store.controller.CatalogController;
+import main.java.com.example.marketplace.user.store.controller.SalesMenuController;
+import main.java.com.example.marketplace.user.store.controller.StoreController;
 
 public final class UserPage {
 
     private final AuthController auth;
     private final AccountController account;
     private final CartController cart;
+    private final CatalogController catalog;
     private final OrdersMenuController ordersMenu;
+    private final StoreController store;
+    private final SalesMenuController salesMenu;
     private final SearchController search;
     private final CheckoutController checkout;
     private final Session session;
 
-    public UserPage(AuthController auth, AccountController account, CartController cart, OrdersMenuController ordersMenu, SearchController search, CheckoutController checkout, Session session) {
+    public UserPage(AuthController auth, AccountController account, CartController cart, CatalogController catalog, OrdersMenuController ordersMenu, StoreController store, SalesMenuController salesMenu, SearchController search, CheckoutController checkout, Session session) {
         this.auth = auth;
         this.account = account;
         this.cart = cart;
+        this.catalog = catalog;
         this.ordersMenu = ordersMenu;
+        this.store = store;
+        this.salesMenu = salesMenu;
         this.search = search;
         this.checkout = checkout;
         this.session = session;
     }
 
-    // ==================================================| MAIN |==================================================
 
-    public void page2() {
+    // ===================================================| MAIN |===================================================
+
+    public void userPage() {
 
         int choice;
 
@@ -48,7 +58,7 @@ public final class UserPage {
             choice = InputReader.readInt();
 
             switch (choice) {
-                case 1 -> myAccount();
+                case 1 -> myUserAccount();
                 case 2 -> myPurchases();
                 case 3 -> myCart();
                 case 4 -> searchForProducts();
@@ -60,7 +70,7 @@ public final class UserPage {
         } while (session.isLogged() && !session.hasStore());
     }
 
-    public void myAccount() {
+    public void myUserAccount() {
 
         int choice;
 
@@ -89,6 +99,99 @@ public final class UserPage {
                 back();
 
         } while (choice != 4);
+    }
+
+    public void storeOwnerPage() {
+
+        int choice;
+
+        do {
+            System.out.println("----------| MAIN PAGE |----------");
+            System.out.println("[1] My Account");
+            System.out.println("[2] My Store");
+            System.out.println("[3] My Purchases");
+            System.out.println("[4] My Cart");
+            System.out.println("[5] Search for products");
+            System.out.println("[6] Search for sellers");
+            System.out.println("[7] Log out");
+            System.out.println("-----------------------------------");
+
+            choice = InputReader.readInt();
+
+            switch (choice) {
+                case 1 -> myStoreOwnerAccount();
+                case 2 -> myStore();
+                case 3 -> myPurchases();
+                case 4 -> myCart();
+                case 5 -> searchForProducts();
+                case 6 -> searchForSellers();
+                case 7 -> auth.logout();
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+        } while (session.isLogged() && session.hasStore());
+    }
+
+    public void myStoreOwnerAccount() {
+
+        int choice;
+
+        do {
+            System.out.println("------------| PROFILE |------------");
+            System.out.println("[1] Show profile");
+            System.out.println("[2] Settings");
+            System.out.println("[3] <- Back");
+            System.out.println("-----------------------------------");
+
+            choice = InputReader.readInt();
+
+            switch (choice) {
+                case 1 -> account.printProfile();
+                case 2 -> myAccountSetting();
+                case 3 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if (!session.isLogged() || !session.hasStore())
+                return;
+
+            if (choice == 1)
+                back();
+
+        } while (choice != 3);
+    }
+
+    public void myStore() {
+
+        int choice;
+
+        do {
+            System.out.println("-------------| STORE |--------------");
+            System.out.println("[1] Show my store");
+            System.out.println("[2] My catalog");
+            System.out.println("[3] My sales");
+            System.out.println("[4] Settings");
+            System.out.println("[5] <- Back");
+            System.out.println("------------------------------------");
+
+            choice = InputReader.readInt();
+
+            switch (choice) {
+                case 1 -> store.printStore();
+                case 2 -> myStoreCatalog();
+                case 3 -> myStoreSales();
+                case 4 -> myStoreSettings();
+                case 5 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if (!session.hasStore())
+                return;
+
+            if (choice == 1)
+                back();
+
+        } while (choice != 5);
     }
 
     public void myPurchases() {
@@ -337,6 +440,158 @@ public final class UserPage {
             }
 
         } while (choice != 4);
+    }
+
+    // ==================================================| MY STORE |=================================================
+
+    public void myStoreCatalog() {
+
+        int choice;
+
+        do {
+            System.out.println("-----------| MY CATALOG |----------");
+            System.out.println("[1] Show my catalog");
+            System.out.println("[2] List a product");
+            System.out.println("[3] Delete a product");
+            System.out.println("[4] Update a product");
+            System.out.println("[5] Show all details of a product");
+            System.out.println("[6] Show a product's reviews");
+            System.out.println("[7] <- Back");
+            System.out.println("-----------------------------------");
+
+            choice = InputReader.readInt();
+
+            switch (choice) {
+                case 1 -> showMyCatalog();
+                case 2 -> catalog.addProductToCatalog();
+                case 3 -> catalog.deleteCatalogProduct();
+                case 4 -> catalog.updateCatalogProduct();
+                case 5 -> catalog.printAllProductDetails();
+                case 6 -> catalog.searchForProductReview();
+                case 7 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if (choice != 1 && choice != 7)
+                back();
+
+        } while (choice != 7);
+    }
+
+    public void showMyCatalog() {
+
+        int choice1, choice2;
+        boolean found = false;
+
+        do {
+            System.out.println("----------| SHOW CATALOG |---------");
+            System.out.println("[1] Show my entire catalog");
+            System.out.println("[2] Show available catalog");
+            System.out.println("[3] Show unavailable catalog");
+            System.out.println("[4] Show catalog by name");
+            System.out.println("[5] Show catalog by type");
+            System.out.println("[6] <- Back");
+            System.out.println("-----------------------------------");
+
+            choice1 = InputReader.readInt();
+
+            switch (choice1) {
+                case 1 -> found = catalog.printCatalog();
+                case 2 -> found = catalog.printAvailableCatalog();
+                case 3 -> found = catalog.printUnavailableCatalog();
+                case 4 -> found = catalog.printCatalogByProductName();
+                case 5 -> found = catalog.printCatalogByProductType();
+                case 6 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+
+            if (choice1 >= 1 && choice1 <= 5 && found) {
+                do {
+                    System.out.println("---------| MANAGE | VIEW |---------");
+                    System.out.println("[1] Show all details of a product");
+                    System.out.println("[2] Delete a product");
+                    System.out.println("[3] Update a product");
+                    System.out.println("[4] Show a product's reviews");
+                    System.out.println("[5] <- Back");
+                    System.out.println("-----------------------------------");
+
+                    choice2 = InputReader.readInt();
+
+                    switch (choice2) {
+                        case 1 -> catalog.printAllProductDetails();
+                        case 2 -> catalog.deleteCatalogProduct();
+                        case 3 -> catalog.updateCatalogProduct();
+                        case 4 -> catalog.searchForProductReview();
+                        case 5 -> System.out.print("");
+                        default -> System.out.println("[!] Invalid option. Try again.");
+                    }
+
+                    if (choice2 >= 1 && choice2 <= 4)
+                        back();
+
+                } while (choice2 != 5);
+            }
+
+            if (choice1 >= 1 && choice1 <= 5 && !found)
+                back();
+
+        } while (choice1 != 6);
+    }
+
+    public void myStoreSales() {
+
+        int choice;
+
+        do {
+            System.out.println("-------------| SALES |-------------");
+            System.out.println("[1] Show my sales");
+            System.out.println("[2] Show specific sale");
+            System.out.println("[3] <- Back");
+            System.out.println("-----------------------------------");
+
+            choice = InputReader.readInt();
+
+            switch (choice) {
+                case 1 -> salesMenu.printTaxReceiptList();
+                case 2 -> salesMenu.printTaxReceipt();
+                case 3 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if (choice != 3)
+                back();
+
+        } while (choice != 3);
+    }
+
+    public void myStoreSettings() {
+
+        int choice;
+
+        do {
+            System.out.println("------------| SETTINGS |------------");
+            System.out.println("[1] Change store name");
+            System.out.println("[2] Delete store");
+            System.out.println("[3] <- Back");
+            System.out.println("------------------------------------");
+
+            choice = InputReader.readInt();
+
+            switch (choice) {
+                case 1 -> store.changeStoreName();
+                case 2 -> account.deleteStore();
+                case 3 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if (!session.hasStore())
+                return;
+
+            if (choice != 3)
+                back();
+
+        } while (choice != 3);
     }
 
     // ================================================| MY PURCHASES |================================================
