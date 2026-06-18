@@ -128,3 +128,15 @@ src/
 ## Requirements
 
 - Java 17 or higher
+
+## How to Run
+
+### IDE
+Open the project in any Java-compatible IDE and run `MarketplaceApplication.java`. Navigate using the numbered options displayed in the terminal.
+
+### Terminal
+Download the latest `.jar` file from [Releases](https://github.com/Zyeruu/marketplace/releases) and run:
+
+```
+java -jar marketplace.jar
+```
