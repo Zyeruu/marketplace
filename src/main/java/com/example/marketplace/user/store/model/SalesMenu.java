@@ -31,6 +31,7 @@ public final class SalesMenu {
     }
 
     public float getRevenue() {
+        updateRevenue();
         return revenue;
     }
 }

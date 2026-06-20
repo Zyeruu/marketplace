@@ -145,6 +145,7 @@ public final class SearchService {
     public List<String> formatSellerList(User user, List<String> sellerList) {
 
         for (int i = 0; i < sellerList.size(); i++) {
+
             User seller = accountService.findSellerByStoreName(sellerList.get(i));
 
             if (user.getStore() != null) {

@@ -108,7 +108,7 @@ public final class CatalogController {
         String productId = view.getProductId();
 
         try {
-            Product product = service.findByEmailAndId(email, productId);
+            Product product = service.findAndCopyByEmailAndId(email, productId);
             view.printCatalogProduct(product);
         }
         catch (NotFoundException | EmptyCatalogException e) {

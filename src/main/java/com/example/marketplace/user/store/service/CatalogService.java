@@ -114,6 +114,16 @@ public final class CatalogService {
         return product;
     }
 
+    public Product findAndCopyByEmailAndId(String email, String productId) {
+
+        Product product = repository.findByEmailAndId(email, productId);
+
+        if (product == null)
+            throw new NotFoundException("Product with ID \"" + productId + "\" not found.");
+
+        return new Product(product);
+    }
+
     public void verifyCatalogAndSaveProduct(String email, Product product) {
 
         Catalog catalog = repository.findByEmail(email);

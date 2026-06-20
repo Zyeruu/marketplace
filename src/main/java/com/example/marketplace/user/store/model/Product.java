@@ -124,30 +124,6 @@ public final class Product {
         return reputation.getTotalReviews();
     }
 
-    public int getTotalRating() {
-        return reputation.getTotalRating();
-    }
-
-    public int getTotal1Star() {
-        return reputation.getTotal1Star();
-    }
-
-    public int getTotal2Stars() {
-        return reputation.getTotal2Stars();
-    }
-
-    public int getTotal3Stars() {
-        return reputation.getTotal3Stars();
-    }
-
-    public int getTotal4Stars() {
-        return reputation.getTotal4Stars();
-    }
-
-    public int getTotal5Stars() {
-        return reputation.getTotal5Stars();
-    }
-
     // Setters
     public void setName(String name) {
         this.name = name;

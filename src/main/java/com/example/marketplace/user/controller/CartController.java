@@ -25,7 +25,7 @@ public final class CartController {
         String email = session.getLoggedUserEmail();
 
         try {
-            Cart cart = service.findAllByEmail(email);
+            Cart cart = service.findAndCopyCartByEmail(email);
             view.printBuyerCart(cart);
             return true;
         }

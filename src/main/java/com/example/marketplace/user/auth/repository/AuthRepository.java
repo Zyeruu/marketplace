@@ -1,10 +1,8 @@
 package main.java.com.example.marketplace.user.auth.repository;
 
-import main.java.com.example.marketplace.shared.session.Session;
 import main.java.com.example.marketplace.user.auth.dto.AuthRequest;
 import main.java.com.example.marketplace.user.model.User;
 import main.java.com.example.marketplace.database.DataBase;
-import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 
 public final class AuthRepository {
 

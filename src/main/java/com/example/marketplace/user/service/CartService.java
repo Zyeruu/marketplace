@@ -31,21 +31,30 @@ public final class CartService {
     }
 
     public Cart findCartByEmail(String email) {
+
         User user = accountService.findUserByEmail(email);
 
         if (user.getCartProductList().isEmpty())
             throw new EmptyCartException("[!] Your cart is empty.");
 
+        user.updateCart();
         return user.getCart();
     }
 
-    public Cart findAllByEmail(String email) {
-       return repository.findAllByEmail(email);
+    public Cart findAndCopyCartByEmail(String email) {
+
+        User user = accountService.findUserByEmail(email);
+
+        if (user.getCartProductList().isEmpty())
+            throw new EmptyCartException("[!] Your cart is empty.");
+
+        user.updateCart();
+        return new Cart(user.getCart());
     }
 
     public Cart findSelectedByEmail(String email) {
 
-        Cart cart = findCartByEmail(email);
+        Cart cart = findAndCopyCartByEmail(email);
 
         List<CartProduct> cartProductListCopy = cart.getProductList().stream()
                 .filter(CartProduct::isSelected)
@@ -74,7 +83,7 @@ public final class CartService {
 
     public Cart findDeselectedByEmail(String email) {
 
-        Cart cart = findCartByEmail(email);
+        Cart cart = findAndCopyCartByEmail(email);
 
         List<CartProduct> cartProductListCopy = cart.getProductList().stream()
                 .filter(product -> !product.isSelected())
@@ -235,25 +244,23 @@ public final class CartService {
     public void verifyCartAndSelectProduct(String email, String productId) {
 
         Cart cart = findCartByEmail(email);
-
         CartProduct cartProduct = verifyCartAndFindProductById(cart, productId);
 
         if (cartProduct.isSelected())
             throw new ProductSelectionStateException("[!] Product already selected.");
 
-        repository.selectProduct(cartProduct);
+        repository.updateSelectedStatus(cartProduct, true);
     }
 
     public void verifyCartAndDeselectProduct(String email, String productId) {
 
         Cart cart = findCartByEmail(email);
-
         CartProduct cartProduct = verifyCartAndFindProductById(cart, productId);
 
         if (!cartProduct.isSelected())
             throw new ProductSelectionStateException("[!] Product already deselected.");
 
-        repository.deselectProduct(cartProduct);
+        repository.updateSelectedStatus(cartProduct, false);
     }
 
     public void verifyCartAndSelectAll(String email) {
@@ -263,7 +270,7 @@ public final class CartService {
         if (cart.getProductList().stream().allMatch(CartProduct::isSelected))
             throw new IllegalArgumentException("[!] All products are already selected.");
 
-        repository.selectAll(cart);
+        repository.updateSelectedStatus(cart, true);
     }
 
     public void verifyCartAndDeselectAll(String email) {
@@ -273,7 +280,7 @@ public final class CartService {
         if (cart.getProductList().stream().noneMatch(CartProduct::isSelected))
             throw new IllegalArgumentException("[!] All products are already deselected.");
 
-        repository.deselectAll(cart);
+        repository.updateSelectedStatus(cart, false);
     }
 
     public CartProduct verifyCartAndFindProductById(Cart cart, String productId) {

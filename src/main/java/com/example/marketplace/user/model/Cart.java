@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 public final class Cart {
 
     private final List<CartProduct> productList;
-    private float totalCost = 0;
-    private float shipping = 0;
-    private int totalProducts = 0;
-    private int totalFood = 0;
-    private int totalMisc = 0;
+    private float totalCost;
+    private float shipping;
+    private int totalProducts;
+    private int totalFood;
+    private int totalMisc;
 
     public Cart() {
         this.productList = new ArrayList<>();
@@ -66,10 +66,12 @@ public final class Cart {
         shipping = 0;
 
         for (CartProduct product : productList) {
-            if (product.getType() == ProductType.FOOD)
-                totalCostFood += product.getQuantity() * product.getUnitPrice();
-            else
-                totalCostMisc += product.getQuantity() * product.getUnitPrice();
+            if (product.isSelected()) {
+                if (product.getType() == ProductType.FOOD)
+                    totalCostFood += product.getQuantity() * product.getUnitPrice();
+                else
+                    totalCostMisc += product.getQuantity() * product.getUnitPrice();
+            }
         }
 
         if (totalCostFood > 0 && totalCostFood < 249.9)

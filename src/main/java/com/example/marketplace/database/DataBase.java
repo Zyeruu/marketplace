@@ -68,7 +68,7 @@ public final class DataBase {
 
         return userList.stream()
                 .filter(user -> user.getStore() != null)
-                .filter(seller -> seller.getStoreName().equals(storeName))
+                .filter(seller -> seller.getStoreName().equalsIgnoreCase(storeName))
                 .findFirst()
                 .orElse(null);
     }

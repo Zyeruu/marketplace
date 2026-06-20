@@ -31,7 +31,7 @@ public final class StoreService {
 
         User user = accountService.findUserByEmail(email);
 
-        if (user.getPassword().equals(password))
+        if (!user.getPassword().equals(password))
             throw new NotFoundException("[!] Invalid password.");
     }
 

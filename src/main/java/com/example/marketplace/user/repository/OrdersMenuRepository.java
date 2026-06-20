@@ -29,16 +29,6 @@ public final class OrdersMenuRepository {
         return user.getOrdersMenuOrderedProductList();
     }
 
-    public List<Review> findReviewListByEmail(String email) {
-
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        return user.getOrdersMenuReviewList();
-    }
-
     public List<TaxReceipt> findTaxReceiptListByEmail(String email) {
 
         User user = dataBase.findUserByEmail(email);
@@ -58,15 +48,11 @@ public final class OrdersMenuRepository {
         if (user == null)
             throw new NotFoundException("[!] User not found.");
 
-        TaxReceipt taxReceipt = user.getOrdersMenuTaxReceiptList().stream()
-                .filter(product -> product.getOrderId().equals(orderId))
-                .findFirst()
-                .orElse(null);
+        if (user.getOrdersMenuTaxReceiptList().isEmpty())
+            throw new NotFoundException("[!] No purchase history.");
 
-        if (taxReceipt == null)
-            throw new NotFoundException("[!] Order with ID \"" + orderId + "\" not found.");
-
-        return new TaxReceipt(taxReceipt);
+        return user.getOrdersMenuTaxReceiptList().stream()
+                .filter(product -> product.getOrderId().equals(orderId)).findFirst().orElse(null);
     }
 
     public List<OrderedProduct> findProductsReviewByEmail(String email) {
@@ -103,7 +89,8 @@ public final class OrdersMenuRepository {
         User user = dataBase.findUserByEmail(email);
         OrderedProduct orderedProduct = user.getOrdersMenuOrderedProductList().stream()
                 .filter(product -> product.getId().equals(productId))
-                .findFirst().orElse(null);
+                .findFirst()
+                .orElse(null);
         User seller = dataBase.findSellerByCnpj(orderedProduct.getSellerCnpj());
 
         user.getOrdersMenuReviewList().add(review);

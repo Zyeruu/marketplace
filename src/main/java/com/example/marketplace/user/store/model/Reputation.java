@@ -104,17 +104,4 @@ public final class Reputation {
     public int getTotal5Stars() {
         return total5Stars;
     }
-
-    // Setters
-    public void setReputationRating(float reputationRating) {
-        this.reputationRating = reputationRating;
-    }
-
-    public void setTotalReviews(int totalReviews) {
-        this.totalReview = totalReviews;
-    }
-
-    public void setTotalRating(int totalRating) {
-        this.totalRating = totalRating;
-    }
 }

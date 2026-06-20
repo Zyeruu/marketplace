@@ -45,7 +45,12 @@ public final class OrdersMenuService {
     }
 
     public TaxReceipt findTaxReceiptByEmailAndOrderId(String email, String orderId) {
-        return repository.findTaxReceiptByEmailAndOrderId(email, orderId);
+        TaxReceipt taxReceipt = repository.findTaxReceiptByEmailAndOrderId(email, orderId);
+
+        if (taxReceipt == null)
+            throw new NotFoundException("[!] Order with ID \"" + orderId + "\" not found.");
+
+        return new TaxReceipt(taxReceipt);
     }
 
     public List<OrderedProduct> findProductsWithReviewByEmail(String email) {

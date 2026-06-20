@@ -767,7 +767,7 @@ public final class UserPage {
             }
 
             if (choice == 1) {
-                if (session.getLastStoreViewed() != null && !session.getLastStoreViewed().equals(session.getLoggedUserStoreName())) {
+                if (session.getLastStoreViewed() != null && !session.getLastStoreViewed().equalsIgnoreCase(session.getLoggedUserStoreName())) {
                     do {
                         System.out.println("------| " + session.getLastStoreViewed().toUpperCase() + " CATALOG |------");
                         System.out.println("[1] Add a " + session.getLastStoreViewed() + " product to cart");

@@ -27,10 +27,10 @@ public final class CatalogView {
         }
 
         System.out.println("----------------------------------");
-        if (catalog.totalFood() > 0)
+        if (catalog.totalFood() > 0 && catalog.totalMisc() > 0)
             System.out.println("Total Food: " + catalog.totalFood());
 
-        if (catalog.totalMisc() > 0)
+        if (catalog.totalMisc() > 0 && catalog.totalFood() > 0)
             System.out.println("Total Miscellaneous: " + catalog.totalMisc());
 
         if (catalog.totalProduct() > 0)

@@ -76,24 +76,12 @@ public final class User {
         return cart.getTotalCost();
     }
 
-    public float getSelectedTotalCost() {
-        return cart.getSelectedTotalCost();
-    }
-
     public float getCartShipping() {
         return cart.getShipping();
     }
 
     public float getSelectedShipping() {
         return cart.getSelectedShipping();
-    }
-
-    public float getDeselectedShipping() {
-        return cart.getDeselectedShipping();
-    }
-
-    public int getCartTotalProducts() {
-        return cart.getTotalProducts();
     }
 
     public int getCartTotalFood() {
@@ -127,14 +115,6 @@ public final class User {
         return store.getReputation().getReviewList();
     }
 
-    public int getTotalReviews() {
-        return store.getReputation().getTotalReviews();
-    }
-
-    public int getTotalRating() {
-        return store.getReputation().getTotalRating();
-    }
-
     public float getReputationRating() {
         return store.getReputation().getReputationRating();
     }
@@ -142,18 +122,6 @@ public final class User {
     // Setters
     public void setStore(Store store) {
         this.store = store;
-    }
-
-    public void setTotalReviews(int totalReviews) {
-        store.getReputation().setTotalReviews(totalReviews);
-    }
-
-    public void setTotalRating(int totalRating) {
-        this.store.getReputation().setTotalRating(totalRating);
-    }
-
-    public void setReputationRating(float reputation) {
-        this.store.getReputation().setReputationRating(reputation);
     }
 
     // ================================================| CATALOG |================================================
@@ -171,40 +139,8 @@ public final class User {
         return store.getCatalog().getProductList();
     }
 
-    public int getCatalogTotalProducts() {
-        return store.getCatalog().getTotalProducts();
-    }
-
-    public int getCatalogTotalFood() {
-        return store.getCatalog().getTotalFood();
-    }
-
-    public int getCatalogTotalMisc() {
-        return store.getCatalog().getTotalMisc();
-    }
-
     public int getCatalogAvailableTotalProducts() {
         return store.getCatalog().getAvailableTotalProducts();
-    }
-
-    public int getCatalogAvailableTotalFood() {
-        return store.getCatalog().getAvailableTotalFood();
-    }
-
-    public int getCatalogAvailableTotalMisc() {
-        return store.getCatalog().getAvailableTotalMisc();
-    }
-
-    public int getCatalogUnavailableTotalProducts() {
-        return store.getCatalog().getUnavailableTotalProducts();
-    }
-
-    public int getCatalogUnavailableTotalFood() {
-        return store.getCatalog().getUnavailableTotalFood();
-    }
-
-    public int getCatalogUnavailableTotalMisc() {
-        return store.getCatalog().getUnavailableTotalMisc();
     }
 
     // ==============================================| ORDERS MENU |==============================================

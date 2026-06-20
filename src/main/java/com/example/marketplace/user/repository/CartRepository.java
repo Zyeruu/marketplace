@@ -19,16 +19,6 @@ public final class CartRepository {
         this.dataBase = dataBase;
     }
 
-    public Cart findAllByEmail(String email) {
-
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        return new Cart(user.getCart());
-    }
-
     public Cart findByEmailAndProductType(String email, ProductType productType) {
 
         User user = dataBase.findUserByEmail(email);
@@ -141,24 +131,14 @@ public final class CartRepository {
         cartProduct.setQuantity(cartProduct.getQuantity() - quantity);
     }
 
-    public void selectProduct(CartProduct cartProduct) {
-        cartProduct.setSelected(true);
+    public void updateSelectedStatus(CartProduct cartProduct, boolean selectedStatus) {
+        cartProduct.setSelected(selectedStatus);
     }
 
-    public void deselectProduct(CartProduct cartProduct) {
-        cartProduct.setSelected(false);
-    }
+    public void updateSelectedStatus(Cart cart, boolean selectedStatus) {
 
-    public void selectAll(Cart cart) {
-
-        for (CartProduct product : cart.getProductList())
-            product.setSelected(true);
-    }
-
-    public void deselectAll(Cart cart) {
-
-        for (CartProduct product : cart.getProductList())
-            product.setSelected(false);
+        for (CartProduct cartProduct : cart.getProductList())
+            cartProduct.setSelected(selectedStatus);
     }
 
     public Product findAvailableProductById(String productId) {

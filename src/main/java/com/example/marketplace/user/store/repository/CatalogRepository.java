@@ -77,7 +77,6 @@ public final class CatalogRepository {
 
         return user.getCatalogProductList().stream()
                 .filter(product -> product.getId().equals(productId))
-                .map(Product::new)
                 .findFirst()
                 .orElse(null);
     }

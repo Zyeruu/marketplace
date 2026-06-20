@@ -1,6 +1,5 @@
 package main.java.com.example.marketplace.user.view;
 
-import main.java.com.example.marketplace.user.dto.CartRequest;
 import main.java.com.example.marketplace.user.model.Cart;
 import main.java.com.example.marketplace.user.model.CartProduct;
 import main.java.com.example.marketplace.shared.enums.ProductType;
@@ -47,10 +46,10 @@ public final class CartView {
 
         System.out.printf("\nTotal cost: R$%.2f\n", cart.getTotalCost());
 
-        if (cart.getTotalFood() > 0)
+        if (cart.getTotalFood() > 0 && cart.getTotalMisc() > 0)
             System.out.println("Total Food: " + cart.getTotalFood());
 
-        if (cart.getTotalMisc() > 0)
+        if (cart.getTotalMisc() > 0 && cart.getTotalFood() > 0)
             System.out.println("Total Miscellaneous: " + cart.getTotalMisc());
 
         if (cart.getTotalProducts() > 0)
@@ -75,14 +74,6 @@ public final class CartView {
         if (cartProduct.getWarranty() != null)
             System.out.print("Warranty: " + cartProduct.getWarranty() + " months");
         System.out.println("\n");
-    }
-
-    public CartRequest getProductData() {
-
-        String productId = getProductId();
-        int quantity = getProductQuantity();
-
-        return new CartRequest(productId, quantity);
     }
 
     public ProductType getProductType() {
