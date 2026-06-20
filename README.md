@@ -57,7 +57,7 @@ After opening a store, the main page expands with store management options:
 - View full details of a specific product and its reviews
 - Add and remove products from cart
 - View cart by name, type or view all
-- Select and deselect cart products for checkout
+- Select, deselect, select all and deselect all cart products for checkout
 - Checkout with payment method selection
 - View purchase history and specific purchase details
 - Review purchased products, edit and delete reviews
@@ -79,6 +79,7 @@ src/
 │   ├── controller/
 │   ├── model/
 │   ├── repository/
+│   ├── service/
 │   └── view/
 ├── config/
 ├── database/
@@ -88,11 +89,13 @@ src/
 │   │   ├── controller/
 │   │   ├── dto/
 │   │   ├── repository/
+│   │   ├── service/
 │   │   └── view/
 │   ├── auth/
 │   │   ├── controller/
 │   │   ├── dto/
 │   │   ├── repository/
+│   │   ├── service/
 │   │   └── view/
 │   ├── controller/
 │   ├── dto/
@@ -102,12 +105,15 @@ src/
 │   │   ├── controller/
 │   │   ├── dto/
 │   │   ├── repository/
+│   │   ├── service/
 │   │   └── view/
+│   ├── service/
 │   ├── store/
 │   │   ├── controller/
 │   │   ├── dto/
 │   │   ├── model/
 │   │   ├── repository/
+│   │   ├── service/
 │   │   └── view/
 │   └── view/
 └── shared/
