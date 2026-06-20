@@ -2,10 +2,12 @@ package main.java.com.example.marketplace.user.controller;
 
 import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
-import main.java.com.example.marketplace.shared.utils.Validator;
+import main.java.com.example.marketplace.shared.model.Review;
+import main.java.com.example.marketplace.shared.session.Session;
+import main.java.com.example.marketplace.shared.utils.IdGenerator;
 import main.java.com.example.marketplace.user.dto.ProductReviewRequest;
 import main.java.com.example.marketplace.user.dto.UpdateReviewRequest;
-import main.java.com.example.marketplace.user.repository.OrdersMenuRepository;
+import main.java.com.example.marketplace.user.service.OrdersMenuService;
 import main.java.com.example.marketplace.user.view.OrdersMenuView;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
@@ -15,17 +17,21 @@ import java.util.List;
 public final class OrdersMenuController {
 
     private final OrdersMenuView view;
-    private final OrdersMenuRepository repository;
+    private final OrdersMenuService service;
+    private final Session session;
 
-    public OrdersMenuController(OrdersMenuView view, OrdersMenuRepository repository) {
+    public OrdersMenuController(OrdersMenuView view, OrdersMenuService service, Session session) {
         this.view = view;
-        this.repository = repository;
+        this.service = service;
+        this.session = session;
     }
 
     public void printOrders() {
 
+        String email = session.getLoggedUserEmail();
+
         try {
-            List<TaxReceipt> taxReceiptList = repository.findTaxReceiptListByEmail();
+            List<TaxReceipt> taxReceiptList = service.findAndVerifyTaxReceiptList(email);
             view.printOrders(taxReceiptList);
         }
         catch (NotFoundException e) {
@@ -35,10 +41,11 @@ public final class OrdersMenuController {
 
     public void printOrder() {
 
+        String email = session.getLoggedUserEmail();
         String orderId = view.getOrderId();
 
         try {
-            TaxReceipt taxReceipt = repository.findTaxReceiptByEmailAndOrderId(orderId);
+            TaxReceipt taxReceipt = service.findTaxReceiptByEmailAndOrderId(email, orderId);
             view.printOrder(taxReceipt);
         }
         catch (NotFoundException e) {
@@ -48,9 +55,11 @@ public final class OrdersMenuController {
 
     public boolean printReviewList() {
 
+        String email = session.getLoggedUserEmail();
+
         try {
-            List<OrderedProduct> productListWithReviews = repository.findReviewListByEmail();
-            view.printReviewList(productListWithReviews);
+            List<OrderedProduct> productsWithReviews = service.findProductsWithReviewByEmail(email);
+            view.printReviewList(productsWithReviews);
             return true;
         }
         catch (NotFoundException e) {
@@ -61,8 +70,10 @@ public final class OrdersMenuController {
 
     public boolean printUnratedProducts() {
 
+        String email = session.getLoggedUserEmail();
+
         try {
-            List<OrderedProduct> unratedProductList = repository.findUnratedProductsByEmail();
+            List<OrderedProduct> unratedProductList = service.findUnratedProductsByEmail(email);
             view.printUnratedProductList(unratedProductList);
             return true;
         }
@@ -74,13 +85,16 @@ public final class OrdersMenuController {
 
     public void reviewProduct() {
 
+        String email = session.getLoggedUserEmail();
         ProductReviewRequest reviewRequest = view.getReviewData();
 
         try {
-            if (reviewRequest.message() != null)
-                Validator.isValidMessage(reviewRequest.message());
+            service.validateReviewMessage(reviewRequest.message());
+            service.verifyReviewRequest(email, reviewRequest);
 
-            repository.saveReview(reviewRequest);
+            Review review = new Review(IdGenerator.generateReviewId(), reviewRequest.message(), reviewRequest.rating());
+            service.saveReview(email, review, reviewRequest.productId());
+
             view.printMessage("[+] Review successfully saved!");
         }
         catch (NotFoundException | IllegalArgumentException | AlreadyExistsException e) {
@@ -90,13 +104,14 @@ public final class OrdersMenuController {
 
     public void deleteReview() {
 
+        String email = session.getLoggedUserEmail();
         String reviewId = view.getReviewId();
 
         try {
-            OrderedProduct orderedProduct = repository.findReviewById(reviewId);
+            OrderedProduct orderedProduct = service.findReviewByEmailAndId(email, reviewId);
 
             if (view.getFinalDecision()) {
-                repository.deleteReview(orderedProduct);
+                service.deleteReview(email, orderedProduct);
                 view.printMessage("[-] Review deleted.");
             }
             else
@@ -109,13 +124,13 @@ public final class OrdersMenuController {
 
     public void updateReview() {
 
+        String email = session.getLoggedUserEmail();
         UpdateReviewRequest updateReviewRequest = view.getUpdateReviewRequest();
 
         try {
-            if (updateReviewRequest.message() != null)
-                Validator.isValidMessage(updateReviewRequest.message());
+            service.validateReviewMessage(updateReviewRequest.message());
+            service.verifyReviewRequestAndUpdate(email, updateReviewRequest);
 
-            repository.updateReview(updateReviewRequest);
             view.printMessage("[*] Review updated.");
         }
         catch (NotFoundException | IllegalArgumentException e) {

@@ -1,32 +1,32 @@
 package main.java.com.example.marketplace.user.account.controller;
 
 import main.java.com.example.marketplace.shared.utils.IdGenerator;
-import main.java.com.example.marketplace.shared.utils.Normalizer;
+import main.java.com.example.marketplace.user.account.service.AccountService;
 import main.java.com.example.marketplace.user.store.model.Store;
 import main.java.com.example.marketplace.user.account.dto.AccountResponse;
-import main.java.com.example.marketplace.user.account.repository.AccountRepository;
 import main.java.com.example.marketplace.user.account.view.AccountView;
 import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.session.Session;
-import main.java.com.example.marketplace.shared.utils.Validator;
 
 public final class AccountController {
 
     private final AccountView view;
-    private final AccountRepository repository;
+    private final AccountService service;
     private final Session session;
 
-    public AccountController(AccountView view, AccountRepository repository, Session session) {
+    public AccountController(AccountView view, AccountService service, Session session) {
         this.view = view;
-        this.repository = repository;
+        this.service = service;
         this.session = session;
     }
 
     public void printProfile() {
 
+        String email = session.getLoggedUserEmail();
+
         try {
-            AccountResponse accountResponse = repository.findByEmail();
+            AccountResponse accountResponse = service.findProfileByEmail(email);
             view.printBuyerProfile(accountResponse);
         }
         catch (NotFoundException e) {
@@ -36,18 +36,19 @@ public final class AccountController {
 
     public void createStore() {
 
+        String email = session.getLoggedUserEmail();
         String storeName = view.getStoreName();
-        storeName = Normalizer.normalizeStoreName(storeName);
 
         try {
-            Validator.isValidStoreName(storeName);
-            repository.verifyStoreName(storeName);
+            storeName = service.normalizeAndValidateStoreName(storeName);
+            service.verifyStoreName(storeName);
 
             String cnpj = IdGenerator.generateCnpj();
             Store store = new Store(storeName, cnpj);
 
-            repository.saveStore(store);
+            service.saveStore(email, store);
             session.updateHasStore(storeName, cnpj, true);
+
             view.printMessage("[+] Store successfully created!");
         }
         catch (NotFoundException | IllegalArgumentException | AlreadyExistsException e) {
@@ -57,13 +58,14 @@ public final class AccountController {
 
     public void deleteStore() {
 
+        String email = session.getLoggedUserEmail();
         String password = view.getPassword();
 
         try {
-            repository.verifyPassword(password);
+            service.verifyPassword(email, password);
 
             if (view.getFinalDecision()) {
-                repository.deleteStore();
+                service.deleteStore(email);
                 session.updateHasStore(null, null, false);
                 view.printMessage("[-] Store successfully deleted!");
             }
@@ -77,14 +79,16 @@ public final class AccountController {
 
     public void changeEmail() {
 
+        String email = session.getLoggedUserEmail();
         String password = view.getPassword();
 
         try {
-            repository.verifyPassword(password);
+            service.verifyPassword(email, password);
+
             String newEmail = view.getEmail();
-            Validator.isValidEmail(newEmail);
-            repository.updateEmail(newEmail);
-            session.setEmail(newEmail);
+            service.validateAndUpdateEmail(email, newEmail);
+
+            session.setLoggedUserEmail(newEmail);
             view.printMessage("[*] E-mail successfully changed!");
         }
         catch (NotFoundException | IllegalArgumentException | AlreadyExistsException e) {
@@ -94,13 +98,15 @@ public final class AccountController {
 
     public void changePassword() {
 
+        String email = session.getLoggedUserEmail();
         String password = view.getPassword();
 
         try {
-            repository.verifyPassword(password);
+            service.verifyPassword(email, password);
+
             String newPassword = view.getNewPassword();
-            Validator.isValidPassword(newPassword);
-            repository.updatePassword(newPassword);
+            service.validateAndUpdatePassword(email, newPassword);
+
             view.printMessage("[*] Password successfully changed!");
         }
         catch (NotFoundException | IllegalArgumentException e) {
@@ -110,11 +116,15 @@ public final class AccountController {
 
     public void deleteAccount() {
 
+        String email = session.getLoggedUserEmail();
         String password = view.getPassword();
 
         try {
-            repository.deleteAccount(password);
+            service.verifyPassword(email, password);
+
+            service.deleteAccount(email);
             session.logout();
+
             view.printMessage("[-] Your account has been successfully deleted!");
         }
         catch (NotFoundException e) {

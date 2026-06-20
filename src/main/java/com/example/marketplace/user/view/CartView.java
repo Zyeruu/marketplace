@@ -1,7 +1,7 @@
 package main.java.com.example.marketplace.user.view;
 
 import main.java.com.example.marketplace.user.dto.CartRequest;
-import main.java.com.example.marketplace.user.dto.CartResponse;
+import main.java.com.example.marketplace.user.model.Cart;
 import main.java.com.example.marketplace.user.model.CartProduct;
 import main.java.com.example.marketplace.shared.enums.ProductType;
 
@@ -11,11 +11,11 @@ public final class CartView {
 
     Scanner scanner = new Scanner(System.in);
 
-    public void printBuyerCart(CartResponse cart) {
+    public void printBuyerCart(Cart cart) {
 
         System.out.println("-----------| PRODUCTS |-----------");
 
-        for (CartProduct cartProduct : cart.cartProducts()) {
+        for (CartProduct cartProduct : cart.getProductList()) {
             if (cartProduct.getType() == ProductType.FOOD) {
                 System.out.println("\nName: " + cartProduct.getName());
                 System.out.println("ID: " + cartProduct.getId());
@@ -27,7 +27,7 @@ public final class CartView {
             }
         }
 
-        for (CartProduct cartProduct : cart.cartProducts()) {
+        for (CartProduct cartProduct : cart.getProductList()) {
             if (cartProduct.getType() == ProductType.MISCELLANEOUS) {
                 System.out.println("\nName: " + cartProduct.getName());
                 System.out.println("ID: " + cartProduct.getId());
@@ -39,22 +39,22 @@ public final class CartView {
             }
         }
 
-        if (cart.totalCost() > 0)
-            if (cart.shipping() > 0)
-                System.out.printf("\nShipping: R$%.2f", cart.shipping());
+        if (cart.getTotalCost() > 0)
+            if (cart.getShipping() > 0)
+                System.out.printf("\nShipping: R$%.2f", cart.getShipping());
             else
                 System.out.print("\nShipping: Free");
 
-        System.out.printf("\nTotal cost: R$%.2f\n", cart.totalCost());
+        System.out.printf("\nTotal cost: R$%.2f\n", cart.getTotalCost());
 
-        if (cart.totalFood() != null)
-            System.out.println("Total Food: " + cart.totalFood());
+        if (cart.getTotalFood() > 0)
+            System.out.println("Total Food: " + cart.getTotalFood());
 
-        if (cart.totalMisc() != null)
-            System.out.println("Total Miscellaneous: " + cart.totalMisc());
+        if (cart.getTotalMisc() > 0)
+            System.out.println("Total Miscellaneous: " + cart.getTotalMisc());
 
-        if (cart.totalProducts() != null)
-            System.out.println("Total Products: " + cart.totalProducts());
+        if (cart.getTotalProducts() > 0)
+            System.out.println("Total Products: " + cart.getTotalProducts());
 
         System.out.println();
     }
@@ -79,13 +79,8 @@ public final class CartView {
 
     public CartRequest getProductData() {
 
-        System.out.print("Enter the product ID: ");
-        System.out.flush();
-        String productId = scanner.nextLine();
-
-        System.out.print("Enter the quantity: ");
-        System.out.flush();
-        int quantity = readInt();
+        String productId = getProductId();
+        int quantity = getProductQuantity();
 
         return new CartRequest(productId, quantity);
     }
@@ -112,6 +107,13 @@ public final class CartView {
         return productType;
     }
 
+    public String getProductId() {
+
+        System.out.print("Enter the product ID: ");
+        System.out.flush();
+        return scanner.nextLine();
+    }
+
     public String getProductName() {
 
         System.out.print("Enter the product name: ");
@@ -119,11 +121,11 @@ public final class CartView {
         return scanner.nextLine();
     }
 
-    public String getProductId() {
+    public int getProductQuantity() {
 
-        System.out.print("Enter the product ID: ");
+        System.out.print("Enter the quantity: ");
         System.out.flush();
-        return scanner.nextLine();
+        return readInt();
     }
 
     public int readInt() {

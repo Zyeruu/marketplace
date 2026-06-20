@@ -3,6 +3,7 @@ package main.java.com.example.marketplace.user.model;
 import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.shared.model.Review;
+import main.java.com.example.marketplace.user.store.model.Catalog;
 import main.java.com.example.marketplace.user.store.model.Product;
 import main.java.com.example.marketplace.user.store.model.Store;
 
@@ -62,8 +63,13 @@ public final class User {
     }
 
     // Getters
+
+    public Cart getCart() {
+        return cart;
+    }
+
     public List<CartProduct> getCartProductList() {
-        return cart.getCartProductList();
+        return cart.getProductList();
     }
 
     public float getCartTotalCost() {
@@ -157,6 +163,10 @@ public final class User {
     }
 
     // Getters
+
+    public Catalog getCatalog() {
+        return store.getCatalog();
+    }
     public List<Product> getCatalogProductList() {
         return store.getCatalog().getProductList();
     }

@@ -3,7 +3,7 @@ package main.java.com.example.marketplace.user.store.view;
 import main.java.com.example.marketplace.shared.enums.ProductType;
 import main.java.com.example.marketplace.shared.model.Review;
 import main.java.com.example.marketplace.shared.utils.IdGenerator;
-import main.java.com.example.marketplace.shared.utils.LocalDateTimeFormatter;
+import main.java.com.example.marketplace.shared.utils.Formatter;
 import main.java.com.example.marketplace.user.store.dto.CatalogResponse;
 import main.java.com.example.marketplace.user.store.model.Product;
 import main.java.com.example.marketplace.user.store.model.Reputation;
@@ -75,7 +75,7 @@ public final class CatalogView {
             for (int j = 0; j < review.getRating(); j++)
                 System.out.print("*");
 
-            System.out.println("\t" + LocalDateTimeFormatter.formatDateTime(review.getDate()));
+            System.out.println("\t" + Formatter.formatDateTime(review.getDate()));
 
             if (review.getMessage() != null)
                 System.out.print("Review: " + review.getMessage());

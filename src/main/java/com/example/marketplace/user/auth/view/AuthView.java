@@ -12,17 +12,9 @@ public final class AuthView {
 
         System.out.println("\n-----------| REGISTER |------------");
 
-        System.out.print("E-mail: ");
-        System.out.flush();
-        String email = scanner.nextLine().toLowerCase();
-
-        System.out.print("Password: ");
-        System.out.flush();
-        String password = scanner.nextLine();
-
-        System.out.print("Your name: ");
-        System.out.flush();
-        String name = scanner.nextLine();
+        String email = collectEmail();
+        String password = collectPassword();
+        String name = collectName();
 
         return new AuthRequest(email, password, name);
     }
@@ -31,15 +23,31 @@ public final class AuthView {
 
         System.out.println("\n-------------| LOGIN |-------------");
 
+        String email = collectEmail();
+        String password = collectPassword();
+
+        return new AuthRequest(email, password, null);
+    }
+
+    public String collectEmail() {
+
         System.out.print("E-mail: ");
         System.out.flush();
-        String email = scanner.nextLine();
+        return scanner.nextLine().toLowerCase();
+    }
+
+    public String collectPassword() {
 
         System.out.print("Password: ");
         System.out.flush();
-        String password = scanner.nextLine();
+        return scanner.nextLine();
+    }
 
-        return new AuthRequest(email, password, "");
+    public String collectName() {
+
+        System.out.print("Your name: ");
+        System.out.flush();
+        return scanner.nextLine();
     }
 
     public void printMessage(String message) {

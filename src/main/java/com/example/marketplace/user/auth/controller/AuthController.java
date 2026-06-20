@@ -2,35 +2,32 @@ package main.java.com.example.marketplace.user.auth.controller;
 
 import main.java.com.example.marketplace.shared.utils.Normalizer;
 import main.java.com.example.marketplace.user.auth.dto.AuthRequest;
-import main.java.com.example.marketplace.user.auth.repository.AuthRepository;
+import main.java.com.example.marketplace.user.auth.service.AuthService;
 import main.java.com.example.marketplace.user.auth.view.AuthView;
 import main.java.com.example.marketplace.user.model.User;
 import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.session.Session;
-import main.java.com.example.marketplace.shared.utils.Validator;
 
 public final class AuthController {
 
     private final AuthView view;
-    private final AuthRepository repository;
+    private final AuthService service;
     private final Session session;
 
-    public AuthController(AuthView view, AuthRepository repository, Session session) {
+    public AuthController(AuthView view, AuthService service, Session session) {
         this.view = view;
-        this.repository = repository;
+        this.service = service;
         this.session = session;
     }
 
     public void login() {
 
-        AuthRequest userRequest = view.collectEmailAndPassword();
+        AuthRequest request = view.collectEmailAndPassword();
 
         try {
-            Validator.isValidEmail(userRequest.getEmail());
-            Validator.isValidPassword(userRequest.getPassword());
-
-            User user = repository.login(userRequest);
+            service.validateEmailAndPassword(request);
+            User user = service.verifyEmailAndPassword(request);
 
             if (user.getStore() == null)
                 session.login(user.getEmail());
@@ -46,16 +43,14 @@ public final class AuthController {
 
     public void register() {
 
-        AuthRequest userRequest = view.collectRegistrationData();
-        userRequest.setName(Normalizer.normalizeName(userRequest.getName()));
+        AuthRequest request = view.collectRegistrationData();
+        request.setName(Normalizer.normalizeName(request.getName()));
 
         try {
-            Validator.isValidEmail(userRequest.getEmail());
-            Validator.isValidPassword(userRequest.getPassword());
-            Validator.isValidUserName(userRequest.getName());
+            service.validateEmailAndPasswordAndUserName(request);
 
-            User user = new User(userRequest.getName(), userRequest.getEmail(), userRequest.getPassword());
-            repository.save(user);
+            User user = new User(request.getName(), request.getEmail(), request.getPassword());
+            service.verifyEmailAndSave(user);
 
             session.login(user.getEmail());
             view.printMessage("[+] Account successfully created!");

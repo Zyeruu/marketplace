@@ -70,37 +70,6 @@ public final class UserPage {
         } while (session.isLogged() && !session.hasStore());
     }
 
-    public void myUserAccount() {
-
-        int choice;
-
-        do {
-            System.out.println("------------| PROFILE |------------");
-            System.out.println("[1] Show profile");
-            System.out.println("[2] Open a store");
-            System.out.println("[3] Settings");
-            System.out.println("[4] <- Back");
-            System.out.println("-----------------------------------");
-
-            choice = InputReader.readInt();
-
-            switch (choice) {
-                case 1 -> account.printProfile();
-                case 2 -> account.createStore();
-                case 3 -> myAccountSetting();
-                case 4 -> System.out.print("");
-                default -> System.out.println("[!] Invalid option. Try again.");
-            }
-
-            if (!session.isLogged() || session.hasStore())
-                return;
-
-            if (choice == 1 || choice == 2)
-                back();
-
-        } while (choice != 4);
-    }
-
     public void storeOwnerPage() {
 
         int choice;
@@ -130,6 +99,37 @@ public final class UserPage {
             }
 
         } while (session.isLogged() && session.hasStore());
+    }
+
+    public void myUserAccount() {
+
+        int choice;
+
+        do {
+            System.out.println("------------| PROFILE |------------");
+            System.out.println("[1] Show profile");
+            System.out.println("[2] Open a store");
+            System.out.println("[3] Settings");
+            System.out.println("[4] <- Back");
+            System.out.println("-----------------------------------");
+
+            choice = InputReader.readInt();
+
+            switch (choice) {
+                case 1 -> account.printProfile();
+                case 2 -> account.createStore();
+                case 3 -> myAccountSetting();
+                case 4 -> System.out.print("");
+                default -> System.out.println("[!] Invalid option. Try again.");
+            }
+
+            if (!session.isLogged() || session.hasStore())
+                return;
+
+            if (choice == 1 || choice == 2)
+                back();
+
+        } while (choice != 4);
     }
 
     public void myStoreOwnerAccount() {
@@ -767,7 +767,7 @@ public final class UserPage {
             }
 
             if (choice == 1) {
-                if (session.getLastStoreViewed() != null && !session.getLastStoreViewed().equals(session.getStoreName())) {
+                if (session.getLastStoreViewed() != null && !session.getLastStoreViewed().equals(session.getLoggedUserStoreName())) {
                     do {
                         System.out.println("------| " + session.getLastStoreViewed().toUpperCase() + " CATALOG |------");
                         System.out.println("[1] Add a " + session.getLastStoreViewed() + " product to cart");

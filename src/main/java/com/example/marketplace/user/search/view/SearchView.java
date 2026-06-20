@@ -1,9 +1,9 @@
 package main.java.com.example.marketplace.user.search.view;
 
 import main.java.com.example.marketplace.shared.model.Review;
-import main.java.com.example.marketplace.shared.utils.LocalDateTimeFormatter;
+import main.java.com.example.marketplace.shared.utils.Formatter;
 import main.java.com.example.marketplace.user.search.dto.SearchRequest;
-import main.java.com.example.marketplace.user.search.dto.SearchResponse;
+import main.java.com.example.marketplace.user.store.model.Catalog;
 import main.java.com.example.marketplace.user.store.model.Product;
 import main.java.com.example.marketplace.shared.enums.ProductType;
 import main.java.com.example.marketplace.user.store.model.Reputation;
@@ -67,11 +67,11 @@ public final class SearchView {
         System.out.println();
     }
 
-    public void printCatalog(SearchResponse sellerCatalog) {
+    public void printCatalog(Catalog catalog) {
 
-        System.out.println("------| " + sellerCatalog.catalog().getFirst().getStoreName().toUpperCase() + "'S PRODUCTS |------");
+        System.out.println("------| " + catalog.getProductList().getFirst().getStoreName().toUpperCase() + "'S PRODUCTS |------");
 
-        for (Product product : sellerCatalog.catalog()) {
+        for (Product product : catalog.getProductList()) {
             System.out.println("Name: " + product.getName());
             System.out.println("ID: " + product.getId());
             if (product.getReputationRating() > 0)
@@ -83,14 +83,14 @@ public final class SearchView {
         }
 
         System.out.println("----------------------------------");
-        if (sellerCatalog.totalFoods() > 0)
-            System.out.println("Total Food: " + sellerCatalog.totalFoods());
+        if (catalog.getAvailableTotalFood() > 0)
+            System.out.println("Total Food: " + catalog.getAvailableTotalFood());
 
-        if (sellerCatalog.totalMisc() > 0)
-            System.out.println("Total Miscellaneous: " + sellerCatalog.totalMisc());
+        if (catalog.getAvailableTotalMisc() > 0)
+            System.out.println("Total Miscellaneous: " + catalog.getAvailableTotalMisc());
 
-        if (sellerCatalog.totalProducts() > 0)
-            System.out.println("Total Products: " + sellerCatalog.totalProducts());
+        if (catalog.getAvailableTotalProducts() > 0)
+            System.out.println("Total Products: " + catalog.getAvailableTotalProducts());
         System.out.println("----------------------------------\n");
     }
 
@@ -129,7 +129,7 @@ public final class SearchView {
             for (int j = 0; j < review.getRating(); j++)
                 System.out.print("*");
 
-            System.out.print("\t" + LocalDateTimeFormatter.formatDateTime(review.getDate()));
+            System.out.print("\t" + Formatter.formatDateTime(review.getDate()));
 
             if (review.getMessage() != null)
                 System.out.print("\nReview: " + review.getMessage());

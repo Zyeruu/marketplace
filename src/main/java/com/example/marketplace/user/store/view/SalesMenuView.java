@@ -2,7 +2,7 @@ package main.java.com.example.marketplace.user.store.view;
 
 import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
-import main.java.com.example.marketplace.shared.utils.LocalDateTimeFormatter;
+import main.java.com.example.marketplace.shared.utils.Formatter;
 import main.java.com.example.marketplace.user.store.dto.SalesMenuResponse;
 
 import java.util.Scanner;
@@ -31,7 +31,7 @@ public final class SalesMenuView {
 
     public void printOrder(TaxReceipt taxReceipt) {
 
-        String formattedDate = LocalDateTimeFormatter.formatDateTime(taxReceipt.getDateTime());
+        String formattedDate = Formatter.formatDateTime(taxReceipt.getDateTime());
 
         System.out.println("----------| TAX RECEIPT |----------");
         System.out.println("Order ID: " + taxReceipt.getOrderId());

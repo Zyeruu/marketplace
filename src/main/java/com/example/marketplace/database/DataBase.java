@@ -52,6 +52,13 @@ public final class DataBase {
                 .anyMatch(user -> user.getEmail().equals(email) && user.getPassword().equals(password));
     }
 
+    public User findUserByEmailAndPassword(String email, String password) {
+
+        return userList.stream()
+                .filter(user -> user.getEmail().equals(email) && user.getPassword().equals(password))
+                .findFirst().orElse(null);
+    }
+
 
     // ================================================| SELLER METHODS |===============================================
 

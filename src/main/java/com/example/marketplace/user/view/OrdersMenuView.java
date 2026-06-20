@@ -3,7 +3,7 @@ package main.java.com.example.marketplace.user.view;
 import main.java.com.example.marketplace.checkout.model.OrderedProduct;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.shared.utils.InputReader;
-import main.java.com.example.marketplace.shared.utils.LocalDateTimeFormatter;
+import main.java.com.example.marketplace.shared.utils.Formatter;
 import main.java.com.example.marketplace.user.dto.ProductReviewRequest;
 import main.java.com.example.marketplace.user.dto.UpdateReviewRequest;
 
@@ -67,7 +67,7 @@ public final class OrdersMenuView {
             for (int j = 0; j <  product.getReviewRating(); j++)
                 System.out.print("*");
 
-            System.out.println("\t" + LocalDateTimeFormatter.formatDateTime(product.getReviewDate()));
+            System.out.println("\t" + Formatter.formatDateTime(product.getReviewDate()));
 
             if (product.getReviewMessage() != null)
                 System.out.print("Review: " + product.getReviewMessage());

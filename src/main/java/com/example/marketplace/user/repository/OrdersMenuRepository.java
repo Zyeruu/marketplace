@@ -1,16 +1,11 @@
 package main.java.com.example.marketplace.user.repository;
 
 import main.java.com.example.marketplace.checkout.model.OrderedProduct;
-import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.shared.model.Review;
-import main.java.com.example.marketplace.shared.utils.IdGenerator;
-import main.java.com.example.marketplace.user.dto.ProductReviewRequest;
-import main.java.com.example.marketplace.user.dto.UpdateReviewRequest;
 import main.java.com.example.marketplace.user.model.User;
 import main.java.com.example.marketplace.checkout.model.TaxReceipt;
 import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
-import main.java.com.example.marketplace.shared.session.Session;
 import main.java.com.example.marketplace.user.store.model.Product;
 
 import java.util.List;
@@ -19,34 +14,45 @@ import java.util.stream.Collectors;
 public final class OrdersMenuRepository {
 
     private final DataBase dataBase;
-    private final Session session;
 
-    public OrdersMenuRepository(DataBase dataBase, Session session) {
+    public OrdersMenuRepository(DataBase dataBase) {
         this.dataBase = dataBase;
-        this.session = session;
     }
 
-    public List<TaxReceipt> findTaxReceiptListByEmail() {
+    public List<OrderedProduct> findOrderedProductListByEmail(String email) {
 
-        String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
 
         if (user == null)
             throw new NotFoundException("[!] User not found.");
 
-        List<TaxReceipt> taxReceiptListCopy = user.getOrdersMenuTaxReceiptList().stream()
-                .map(TaxReceipt::new)
-                .collect(Collectors.toList());
-
-        if (taxReceiptListCopy.isEmpty())
-            throw new NotFoundException("[!] No purchase history.");
-
-        return taxReceiptListCopy;
+        return user.getOrdersMenuOrderedProductList();
     }
 
-    public TaxReceipt findTaxReceiptByEmailAndOrderId(String orderId) {
+    public List<Review> findReviewListByEmail(String email) {
 
-        String email = session.getEmail();
+        User user = dataBase.findUserByEmail(email);
+
+        if (user == null)
+            throw new NotFoundException("[!] User not found.");
+
+        return user.getOrdersMenuReviewList();
+    }
+
+    public List<TaxReceipt> findTaxReceiptListByEmail(String email) {
+
+        User user = dataBase.findUserByEmail(email);
+
+        if (user == null)
+            throw new NotFoundException("[!] User not found.");
+
+        return user.getOrdersMenuTaxReceiptList().stream()
+                .map(TaxReceipt::new)
+                .collect(Collectors.toList());
+    }
+
+    public TaxReceipt findTaxReceiptByEmailAndOrderId(String email, String orderId) {
+
         User user = dataBase.findUserByEmail(email);
 
         if (user == null)
@@ -63,16 +69,12 @@ public final class OrdersMenuRepository {
         return new TaxReceipt(taxReceipt);
     }
 
-    public List<OrderedProduct> findReviewListByEmail() {
+    public List<OrderedProduct> findProductsReviewByEmail(String email) {
 
-        String email = session.getEmail();;
         User user = dataBase.findUserByEmail(email);
 
         if (user == null)
             throw new NotFoundException("[!] User not found.");
-
-        if (user.getOrdersMenuReviewList().isEmpty())
-            throw new NotFoundException("[!] No results were found.");
 
         return user.getOrdersMenuOrderedProductList().stream()
                 .filter(product -> product.getReview() != null)
@@ -80,9 +82,8 @@ public final class OrdersMenuRepository {
                 .collect(Collectors.toList());
     }
 
-    public List<OrderedProduct> findUnratedProductsByEmail() {
+    public List<OrderedProduct> findUnratedProductsByEmail(String email) {
 
-        String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
 
         if (user == null)
@@ -91,42 +92,19 @@ public final class OrdersMenuRepository {
         if (user.getOrdersMenuOrderedProductList().isEmpty())
             throw new NotFoundException("[!] You haven't made any purchases yet.");
 
-        List<OrderedProduct> unratedProductList = user.getOrdersMenuOrderedProductList().stream()
+        return user.getOrdersMenuOrderedProductList().stream()
                 .filter(product -> product.getReview() == null)
                 .map(OrderedProduct::new)
                 .collect(Collectors.toList());
-
-        if (unratedProductList.isEmpty())
-            throw new NotFoundException("[!] No results were found.");
-
-        return unratedProductList;
     }
 
-    public void saveReview(ProductReviewRequest reviewRequest) {
+    public void saveReview(String email, Review review, String productId) {
 
-        String email = session.getEmail();;
         User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
         OrderedProduct orderedProduct = user.getOrdersMenuOrderedProductList().stream()
-                .filter(product -> product.getId().equals(reviewRequest.productId()))
-                .findFirst()
-                .orElse(null);
-
-        if (orderedProduct == null)
-            throw new NotFoundException("[!] Product with ID \"" + reviewRequest.productId() + "\" was not found in your purchase list.");
-
+                .filter(product -> product.getId().equals(productId))
+                .findFirst().orElse(null);
         User seller = dataBase.findSellerByCnpj(orderedProduct.getSellerCnpj());
-
-        if (seller == null)
-            throw new NotFoundException("[!] The seller of this product is no longer active.");
-
-        if (orderedProduct.getReview() != null)
-            throw new AlreadyExistsException("[!] The product with ID \"" + reviewRequest.productId() + "\" already has a review.");
-
-        Review review = new Review(IdGenerator.generateReviewId(), reviewRequest.message(), reviewRequest.rating());
 
         user.getOrdersMenuReviewList().add(review);
         orderedProduct.setReview(review);
@@ -134,7 +112,7 @@ public final class OrdersMenuRepository {
         seller.getStoreReviewList().add(review);
         seller.updateReputation();
 
-        Product catalogProduct = dataBase.findProductById(reviewRequest.productId());
+        Product catalogProduct = dataBase.findProductById(productId);
 
         if (catalogProduct != null) {
 
@@ -143,9 +121,8 @@ public final class OrdersMenuRepository {
         }
     }
 
-    public void deleteReview(OrderedProduct orderedProduct) {
+    public void deleteReview(String email, OrderedProduct orderedProduct) {
 
-        String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
 
         Product catalogProduct = dataBase.findProductById(orderedProduct.getId());
@@ -165,64 +142,28 @@ public final class OrdersMenuRepository {
         orderedProduct.setReview(null);
     }
 
-    public void updateReview(UpdateReviewRequest updateReview) {
+    public void updateReviewMessage(OrderedProduct orderedProduct, String message) {
+        orderedProduct.setReviewMessage(message);
+    }
 
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
+    public void updateReviewRating(OrderedProduct orderedProduct, int rating) {
+        orderedProduct.setReviewRating(rating);
+    }
 
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
+    public void updateSellerAndProductReputation(String cnpj, String productId) {
 
-        if (user.getOrdersMenuReviewList().isEmpty())
-            throw new NotFoundException("[!] You don't have any published reviews yet.");
-
-        OrderedProduct orderedProduct = user.getOrdersMenuOrderedProductList().stream()
-                .filter(product -> product.getReview() != null)
-                .filter(product -> product.getReview().getId().equals(updateReview.reviewId()))
-                .findFirst()
-                .orElse(null);
-
-        if (orderedProduct == null)
-            throw new NotFoundException("[!] Review with ID \"" + updateReview.reviewId() + "\" not found.");
-
-        if (updateReview.deleteMessage() != null) {
-            if (orderedProduct.getReviewMessage() == null) {
-                throw new IllegalArgumentException("[!] Your review already has no message.");
-            }
-            else
-                orderedProduct.setReviewMessage(null);
-        }
-        else {
-            if (updateReview.message() != null) {
-                if (orderedProduct.getReviewMessage() != null) {
-                    if (updateReview.message().equals(orderedProduct.getReviewMessage()))
-                        throw new IllegalArgumentException("[!] The new review message must be different from the current message.");
-                }
-                orderedProduct.setReviewMessage(updateReview.message());
-            }
-        }
-
-        if (updateReview.rating() != null) {
-            if (orderedProduct.getReviewRating() == updateReview.rating()) {
-                throw new IllegalArgumentException("[!] The new review rating must be different from the current rating.");
-            }
-            else
-                orderedProduct.setReviewRating(updateReview.rating());
-        }
-
-        Product catalogProduct = dataBase.findProductById(orderedProduct.getId());
-        User seller = dataBase.findSellerByCnpj(orderedProduct.getSellerCnpj());
-
-        if (catalogProduct != null)
-            catalogProduct.updateReputation();
+        User seller = dataBase.findSellerByCnpj(cnpj);
+        Product product = dataBase.findProductById(productId);
 
         if (seller != null)
             seller.updateReputation();
+
+        if (product != null)
+            product.updateReputation();
     }
 
-    public OrderedProduct findReviewById(String reviewId) {
+    public OrderedProduct findReviewByEmailAndId(String email, String reviewId) {
 
-        String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
 
         if (user == null)

@@ -1,17 +1,12 @@
 package main.java.com.example.marketplace.user.store.repository;
 
 import main.java.com.example.marketplace.database.DataBase;
-import main.java.com.example.marketplace.exceptions.AlreadyExistsException;
 import main.java.com.example.marketplace.exceptions.EmptyCatalogException;
-import main.java.com.example.marketplace.exceptions.InsufficientStockException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.enums.ProductType;
-import main.java.com.example.marketplace.shared.session.Session;
-import main.java.com.example.marketplace.user.store.dto.UpdateProductRequest;
-import main.java.com.example.marketplace.user.store.dto.CatalogResponse;
+import main.java.com.example.marketplace.user.store.model.Catalog;
 import main.java.com.example.marketplace.user.store.model.Product;
 import main.java.com.example.marketplace.user.model.User;
-import main.java.com.example.marketplace.user.store.model.Reputation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,16 +15,23 @@ import java.util.stream.Collectors;
 public final class CatalogRepository {
 
     private final DataBase dataBase;
-    private final Session session;
 
-    public CatalogRepository(DataBase dataBase, Session session) {
+    public CatalogRepository(DataBase dataBase) {
         this.dataBase = dataBase;
-        this.session = session;
     }
 
-    public CatalogResponse findByEmail() {
+    public Catalog findByEmail(String email) {
 
-        String email = session.getEmail();
+        User user = dataBase.findUserByEmail(email);
+
+        if (user == null)
+            throw new NotFoundException("[!] User not found.");
+
+        return user.getCatalog();
+    }
+
+    public List<Product> findByEmailAndProductType(String email, ProductType productType) {
+
         User user = dataBase.findUserByEmail(email);
 
         if (user == null)
@@ -38,109 +40,14 @@ public final class CatalogRepository {
         if (user.getCatalogProductList().isEmpty())
             throw new EmptyCatalogException("[!] Your catalog is empty.");
 
-        List<Product> productList = user.getCatalogProductList().stream()
-                .map(Product::new)
-                .collect(Collectors.toList());
-
-        user.updateCatalog();
-
-        int totalProducts = user.getCatalogTotalProducts();
-        int totalFood = user.getCatalogTotalFood();
-        int totalMisc = user.getCatalogTotalMisc();
-
-        return new CatalogResponse(productList, totalProducts, totalFood, totalMisc);
-    }
-
-    public CatalogResponse findAvailableCatalog() {
-
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        if (user.getCatalogProductList().isEmpty())
-            throw new EmptyCatalogException("[!] Your catalog is empty.");
-
-        List<Product> productList = user.getCatalogProductList().stream()
-                .filter(Product::isAvailable)
-                .map(Product::new)
-                .collect(Collectors.toList());
-
-        if (productList.isEmpty())
-            throw new NotFoundException("[!] No results were found.");
-
-        user.updateCatalog();;
-
-        int totalProducts = user.getCatalogAvailableTotalProducts();
-        int totalFood = user.getCatalogAvailableTotalFood();
-        int totalMisc = user.getCatalogAvailableTotalMisc();
-
-        return new CatalogResponse(productList, totalProducts, totalFood, totalMisc);
-    }
-
-    public CatalogResponse findUnavailableCatalog() {
-
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        if (user.getCatalogProductList().isEmpty())
-            throw new EmptyCatalogException("[!] Your catalog is empty.");
-
-        List<Product> productList = user.getCatalogProductList().stream()
-                .filter(product -> !product.isAvailable())
-                .map(Product::new)
-                .collect(Collectors.toList());
-
-        if (productList.isEmpty())
-            throw new NotFoundException("[!] No results were found.");
-
-        user.updateCatalog();
-
-        int totalProducts = user.getCatalogUnavailableTotalProducts();
-        int totalFood = user.getCatalogUnavailableTotalFood();
-        int totalMisc = user.getCatalogUnavailableTotalMisc();
-
-        return new CatalogResponse(productList, totalProducts, totalFood, totalMisc);
-    }
-
-    public CatalogResponse findByEmailAndProductType(ProductType productType) {
-
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        if (user.getCatalogProductList().isEmpty())
-            throw new EmptyCatalogException("[!] Your catalog is empty.");
-
-        List<Product> productListCopy = user.getCatalogProductList().stream()
+        return user.getCatalogProductList().stream()
                 .filter(product -> product.getType() == productType)
                 .map(Product::new)
                 .collect(Collectors.toList());
-
-        if (productListCopy.isEmpty())
-            throw new NotFoundException("[!] No results were found.");
-
-        user.updateCatalog();
-
-        if (productType == ProductType.FOOD) {
-            int totalFood = user.getCatalogTotalFood();
-            return new CatalogResponse(productListCopy, null, totalFood, null);
-        }
-        else {
-            int totalMisc = user.getCatalogTotalMisc();
-            return new CatalogResponse(productListCopy, null, null, totalMisc);
-        }
     }
 
-    public CatalogResponse findByEmailAndProductName(String productName) {
+    public List<Product> findByEmailAndProductName(String email, String productName) {
 
-        String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
 
         if (user == null)
@@ -151,31 +58,15 @@ public final class CatalogRepository {
 
         List<Product> productListCopy = new ArrayList<>();
 
-        int totalFood = 0;
-        int totalMisc = 0;
-
-        for (Product product : user.getCatalogProductList()) {
-            if (product.getName().toLowerCase().contains(productName.toLowerCase())) {
+        for (Product product : user.getCatalogProductList())
+            if (product.getName().toLowerCase().contains(productName.toLowerCase()))
                 productListCopy.add(new Product(product));
 
-                if (product.getType() == ProductType.FOOD)
-                    totalFood++;
-                else
-                    totalMisc++;
-            }
-        }
-
-        if (productListCopy.isEmpty())
-            throw new NotFoundException("[!] No results were found.");
-
-        int totalProducts = totalFood + totalMisc;
-
-        return new CatalogResponse(productListCopy, totalProducts, totalFood, totalMisc);
+        return productListCopy;
     }
 
-    public Product findByEmailAndProductId(String productId) {
+    public Product findByEmailAndId(String email, String productId) {
 
-        String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
 
         if (user == null)
@@ -184,294 +75,72 @@ public final class CatalogRepository {
         if (user.getCatalogProductList().isEmpty())
             throw new EmptyCatalogException("[!] Your catalog is empty.");
 
-        Product catalogProduct = user.getCatalogProductList().stream()
+        return user.getCatalogProductList().stream()
                 .filter(product -> product.getId().equals(productId))
                 .map(Product::new)
                 .findFirst()
                 .orElse(null);
-
-        if (catalogProduct == null)
-            throw new NotFoundException("Product with ID \"" + productId + "\" not found.");
-
-        return catalogProduct;
     }
 
-    public void saveProduct(Product product) {
+    public void saveProduct(Catalog catalog, Product product) {
 
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        if (user.getCatalogProductList().stream()
-                .anyMatch(p -> p.getName().equalsIgnoreCase(product.getName())))
-            throw new AlreadyExistsException("[!] The product you want to add already exists in your catalog.");
-
-        product.setStoreName(session.getStoreName());
-        user.getCatalogProductList().add(product);
+        catalog.getProductList().add(product);
         dataBase.addToProductList(product);
-        user.updateCatalog();
+        catalog.updateCatalog();
     }
 
-    public void removeProduct(Product product) {
+    public void deleteProduct(Catalog catalog, Product product) {
 
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        user.getCatalogProductList().remove(product);
+        catalog.getProductList().remove(product);
         dataBase.deleteFromProductList(product);
-        user.updateCatalog();
+        catalog.updateCatalog();
     }
 
-    public void updateProductName(UpdateProductRequest updateName) {
+    public void updateProductName(Catalog catalog, Product product, String name) {
 
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] user not found.");
-
-        if (user.getCatalogProductList().isEmpty())
-            throw new EmptyCatalogException("[!] Your catalog is empty.");
-
-        Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateName.id()))
-                .findFirst()
-                .orElse(null);
-
-        if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateName.id() + "\" not found.");
-
-        if (product.getName().equals(updateName.name()))
-            throw new IllegalArgumentException("[!] The new product name must be different from current name.");
-
-        product.setName(updateName.name());
-        user.updateCatalog();
+        product.setName(name);
+        catalog.updateCatalog();
     }
 
-    public void updateProductType(UpdateProductRequest updateType) {
+    public void updateProductType(Catalog catalog, Product product, ProductType type) {
 
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] user not found.");
-
-        Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateType.id()))
-                .findFirst()
-                .orElse(null);
-
-        if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateType.id() + "\" not found.");
-
-        if (product.getType() == updateType.type())
-            throw new IllegalArgumentException("[!] The new product type must be different from the current type.");
-
-        product.setType(updateType.type());
-        user.updateCatalog();
+        product.setType(type);
+        catalog.updateCatalog();
     }
 
-    public void updateProductBrand(UpdateProductRequest updateBrand) {
+    public void updateProductBrand(Catalog catalog, Product product, String brand) {
 
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] user not found.");
-
-        Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateBrand.id()))
-                .findFirst()
-                .orElse(null);
-
-        if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateBrand.id() + "\" not found.");
-
-        if (product.getType() == ProductType.FOOD)
-            throw new IllegalArgumentException("[!] The product with ID \"" + updateBrand.id() +
-                    "\" is a Food item, so it does not have a brand.");
-
-        if (product.getBrand().equals(updateBrand.brand()))
-            throw new IllegalArgumentException("[!] The new product brand must be different from the current brand.");
-
-        product.setBrand(updateBrand.brand());
-        user.updateCatalog();
+        product.setBrand(brand);
+        catalog.updateCatalog();
     }
 
-    public void updateProductPrice(UpdateProductRequest updatePrice) {
+    public void updateProductPrice(Catalog catalog, Product product, float price) {
 
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updatePrice.id()))
-                .findFirst()
-                .orElse(null);
-
-        if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updatePrice.id() + "\" not found.");
-
-        if (product.getUnitPrice() == updatePrice.unitPrice())
-            throw new IllegalArgumentException("[!] The new stock mus be different from the current stock.");
-
-        product.setUnitPrice(updatePrice.unitPrice());
-        user.updateCatalog();
+        product.setUnitPrice(price);
+        catalog.updateCatalog();
     }
 
-    public void updateProductWeight(UpdateProductRequest updateWeight) {
+    public void updateProductWeight(Catalog catalog, Product product, float weight) {
 
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateWeight.id()))
-                .findFirst()
-                .orElse(null);
-
-        if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateWeight.id() + "\" not found.");
-
-        if (product.getWeight() == updateWeight.weight())
-            throw new IllegalArgumentException("[!] The new weight must be different from the current weight.");
-
-        product.setWeight(updateWeight.weight());
-        user.updateCatalog();
+        product.setWeight(weight);
+        catalog.updateCatalog();
     }
 
-    public void updateProductStock(UpdateProductRequest updateStock) {
+    public void updateProductStock(Catalog catalog, Product product, int stock) {
 
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateStock.id()))
-                .findFirst()
-                .orElse(null);
-
-        if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateStock.id() + "\" not found.");
-
-        if (product.getStock() == updateStock.stock())
-            throw new IllegalArgumentException("[!] The new stock must be different from the current stock.");
-
-        product.setStock(updateStock.stock());
-        user.updateCatalog();
+        product.setStock(stock);
+        catalog.updateCatalog();
     }
 
-    public void updateProductWarranty(UpdateProductRequest updateWarranty) {
+    public void updateProductWarranty(Catalog catalog, Product product, int warranty) {
 
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateWarranty.id()))
-                .findFirst()
-                .orElse(null);
-
-        if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateWarranty.id() + "\" not found.");
-
-        if (product.getType() == ProductType.FOOD)
-            throw new IllegalArgumentException("[!] The product with ID \"" + updateWarranty.id() +
-                    "\" is a Food item, so it does not have warranty coverage.");
-
-        if (product.getWarranty().equals(updateWarranty.warranty()))
-            throw new IllegalArgumentException("[!] The product warranty must be different from the current warranty.");
-
-        product.setWarranty(updateWarranty.warranty());
-        user.updateCatalog();
+        product.setWarranty(warranty);
+        catalog.updateCatalog();
     }
 
-    public void updateAvailability(UpdateProductRequest updateAvailability) {
-
-        String email = session.getEmail();;
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(updateAvailability.id()))
-                .findFirst()
-                .orElse(null);
-
-        if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + updateAvailability.id() + "\" not found.");
-
-        if (product.isAvailable() == updateAvailability.available()) {
-            if (product.isAvailable()) {
-                throw new IllegalArgumentException("[!] The product is already available.");
-            }
-            else
-                throw new IllegalArgumentException("[!] The product is already unavailable.");
-        }
-        else {
-            if (updateAvailability.available() && product.getStock() == 0)
-                throw new InsufficientStockException("[!] The product you want to make available is out of stock. Update the stock first.");
-        }
+    public void updateProductAvailability(Catalog catalog, Product product, boolean availability) {
         
-        product.setAvailable(updateAvailability.available());
-        user.updateCatalog();
-    }
-
-    public Reputation findProductReviewByProductId(String productId) {
-
-        String email = session.getEmail();;
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        if (user.getCatalogProductList().isEmpty())
-            throw new EmptyCatalogException("[!] Your catalog is empty");
-
-        Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(productId))
-                .findFirst()
-                .orElse(null);
-
-        if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
-
-        if (product.getReviewList().isEmpty())
-            throw new NotFoundException("[!] \"" + product.getName() + "\" has no reviews yet.");
-
-        return new Reputation(product.getReputation());
-    }
-
-    public Product findProductById(String productId) {
-
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        if (user.getCatalogProductList().isEmpty())
-            throw new EmptyCatalogException("[!] Your catalog is empty.");
-
-        Product product = user.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(productId))
-                .findFirst()
-                .orElse(null);
-
-        if (product == null)
-            throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
-
-        return product;
+        product.setAvailable(availability);
+        catalog.updateCatalog();
     }
 }

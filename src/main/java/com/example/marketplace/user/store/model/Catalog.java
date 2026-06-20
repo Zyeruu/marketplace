@@ -7,7 +7,7 @@ import java.util.List;
 
 public final class Catalog {
 
-    private final List<Product> productList = new ArrayList<>();
+    private final List<Product> productList;
     private int totalProducts = 0;
     private int totalFood = 0;
     private int totalMisc = 0;
@@ -18,6 +18,23 @@ public final class Catalog {
     private int unavailableTotalFood = 0;
     private int unavailableTotalMisc = 0;
 
+    public Catalog() {
+        this.productList = new ArrayList<>();
+        this.totalProducts = 0;
+        this.totalFood = 0;
+        this.totalMisc = 0;
+        this.availableTotalProducts = 0;
+        this.availableTotalFood = 0;
+        this.availableTotalMisc = 0;
+        this.unavailableTotalProducts = 0;
+        this.unavailableTotalFood = 0;
+        this.unavailableTotalMisc = 0;
+    }
+
+    public Catalog(List<Product> productList) {
+        this.productList = productList;
+        updateCatalog();
+    }
 
     public void updateCatalog() {
 

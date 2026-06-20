@@ -1,128 +1,36 @@
 package main.java.com.example.marketplace.user.repository;
 
 import main.java.com.example.marketplace.exceptions.*;
-import main.java.com.example.marketplace.user.dto.CartRequest;
-import main.java.com.example.marketplace.user.dto.CartResponse;
+import main.java.com.example.marketplace.user.model.Cart;
 import main.java.com.example.marketplace.user.model.User;
 import main.java.com.example.marketplace.user.model.CartProduct;
 import main.java.com.example.marketplace.database.DataBase;
 import main.java.com.example.marketplace.user.store.model.Product;
 import main.java.com.example.marketplace.shared.enums.ProductType;
-import main.java.com.example.marketplace.shared.session.Session;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class CartRepository {
 
     private final DataBase dataBase;
-    private final Session session;
 
-    public CartRepository(DataBase dataBase, Session session) {
+    public CartRepository(DataBase dataBase) {
         this.dataBase = dataBase;
-        this.session = session;
     }
 
-    public CartResponse findByEmail() {
+    public Cart findAllByEmail(String email) {
 
-        String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
 
         if (user == null)
             throw new NotFoundException("[!] User not found.");
 
-        if (user.getCartProductList().isEmpty())
-            throw new EmptyCartException("[!] Your cart is empty.");
-
-        List<CartProduct> cartProductListCopy = user.getCartProductList().stream()
-                .map(CartProduct::new)
-                .collect(Collectors.toList());
-
-        float shipping = user.getSelectedShipping();
-        float totalCost = user.getSelectedTotalCost();
-        int totalProducts = user.getCartTotalProducts();
-        int totalFood = user.getCartTotalFood();
-        int totalMisc = user.getCartTotalMisc();
-
-        return new CartResponse(cartProductListCopy, totalCost, shipping, totalProducts, totalFood, totalMisc);
+        return new Cart(user.getCart());
     }
 
-    public CartResponse findByEmailAndSelected() {
+    public Cart findByEmailAndProductType(String email, ProductType productType) {
 
-        String email = session.getEmail();;
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        if (user.getCartProductList().isEmpty())
-            throw new EmptyCartException("[!] Your cart is empty.");
-
-        List<CartProduct> cartProductListCopy = user.getCartProductList().stream()
-                .filter(CartProduct::isSelected)
-                .map(CartProduct::new)
-                .collect(Collectors.toList());
-
-        if (cartProductListCopy.isEmpty())
-            throw new NotFoundException("[!] No results were found.");
-
-        float shipping = user.getSelectedShipping();
-
-        float totalCost = shipping + (float) cartProductListCopy.stream()
-                .mapToDouble(product -> product.getUnitPrice() * product.getQuantity())
-                .sum();
-
-        int totalFood = (int) cartProductListCopy.stream()
-                .filter(product -> product.getType() == ProductType.FOOD)
-                .count();
-
-        int totalMisc = (int) cartProductListCopy.stream()
-                .filter(product -> product.getType() == ProductType.MISCELLANEOUS)
-                .count();
-
-        return new CartResponse(cartProductListCopy, totalCost, shipping, totalFood + totalMisc, totalFood, totalMisc);
-    }
-
-    public CartResponse findByEmailAndDeselected() {
-
-        String email = session.getEmail();;
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        if (user.getCartProductList().isEmpty())
-            throw new EmptyCartException("[!] Your cart is empty.");
-
-        List<CartProduct> cartProductListCopy = user.getCartProductList().stream()
-                .filter(product -> !product.isSelected())
-                .map(CartProduct::new)
-                .collect(Collectors.toList());
-
-        if (cartProductListCopy.isEmpty())
-            throw new NotFoundException("[!] No results were found.");
-
-        float shipping = user.getDeselectedShipping();
-
-        float totalCost = shipping + (float) cartProductListCopy.stream()
-                .mapToDouble(product -> product.getUnitPrice() * product.getQuantity())
-                .sum();
-
-        int totalFood = (int) cartProductListCopy.stream()
-                .filter(product -> product.getType() == ProductType.FOOD)
-                .count();
-
-        int totalMisc = (int) cartProductListCopy.stream()
-                .filter(product -> product.getType() == ProductType.MISCELLANEOUS)
-                .count();
-
-        return new CartResponse(cartProductListCopy, totalCost, shipping, totalFood + totalMisc, totalFood, totalMisc);
-    }
-
-    public CartResponse findByEmailAndProductType(ProductType productType) {
-
-        String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
 
         if (user == null)
@@ -145,22 +53,18 @@ public final class CartRepository {
 
         float shipping = user.getCartShipping();
 
-        if (cartProductListCopy.isEmpty())
-            throw new NotFoundException("[!] No results were found.");
-
         if (productType == ProductType.FOOD) {
             int totalFood = user.getCartTotalFood();
-            return new CartResponse(cartProductListCopy, totalCost, shipping, null, totalFood, null);
+            return new Cart(cartProductListCopy, totalCost, shipping, 0, totalFood, 0);
         }
         else {
             int totalMisc = user.getCartTotalMisc();
-            return new CartResponse(cartProductListCopy, totalCost, shipping, null, null, totalMisc);
+            return new Cart(cartProductListCopy, totalCost, shipping, 0, 0, totalMisc);
         }
     }
 
-    public CartResponse findByEmailAndProductName(String productName) {
+    public Cart findByEmailAndProductName(String email, String productName) {
 
-        String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
 
         if (user == null)
@@ -172,7 +76,6 @@ public final class CartRepository {
         List<CartProduct> cartProductListCopy = new ArrayList<>();
 
         float totalCost = 0;
-        int totalProducts;
         int totalFood = 0;
         int totalMisc = 0;
 
@@ -189,45 +92,27 @@ public final class CartRepository {
             }
         }
 
-        totalProducts = totalFood + totalMisc;
-
-        if (cartProductListCopy.isEmpty())
-            throw new NotFoundException("[!] No results were found.");
-
+        int totalProducts = totalFood + totalMisc;
         float shipping = user.getCartShipping();
 
-        return new CartResponse(cartProductListCopy, totalCost, shipping, totalProducts, totalFood, totalMisc);
+        return new Cart(cartProductListCopy, totalCost, shipping, totalProducts, totalFood, totalMisc);
     }
 
-    public CartProduct findByEmailAndProductId(String productId) {
+    public CartProduct findByEmailAndProductId(String email, String productId) {
 
-        String email = session.getEmail();
         User user = dataBase.findUserByEmail(email);
 
-        if (user == null) {
-            session.updateLastProductViewed(null);
+        if (user == null)
             throw new NotFoundException("[!] User not found.");
-        }
 
-        if (user.getCartProductList().isEmpty()) {
-            session.updateLastProductViewed(null);
+        if (user.getCartProductList().isEmpty())
             throw new EmptyCartException("[!] Your cart is empty.");
-        }
 
-        CartProduct cartProduct = user.getCartProductList().stream()
+        return user.getCartProductList().stream()
                 .filter(product -> product.getId().equals(productId))
                 .map(CartProduct::new)
                 .findFirst()
                 .orElse(null);
-
-        if (cartProduct == null) {
-            session.updateLastProductViewed(null);
-            throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
-        }
-
-        session.updateLastProductViewed(productId);
-
-        return cartProduct;
     }
 
     public boolean existsReviewByProductId(String productId) {
@@ -238,228 +123,45 @@ public final class CartRepository {
                 .anyMatch(product -> !product.getReviewList().isEmpty());
     }
 
-    public void addProduct(CartRequest cartRequest) {
-
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        String productId = cartRequest.id();
-        int quantToBeAdded = cartRequest.quantity();
-
-        Product catalogProduct = dataBase.findAvailableProductById(productId);
-
-        if (catalogProduct == null)
-            throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
-
-        if (user.getStore() != null)
-            if (user.getCatalogProductList().stream().anyMatch(product -> product.getId().equals(productId)))
-                throw new OwnProductException("[!] You cannot add your own product.");
-
-        if (quantToBeAdded > catalogProduct.getStock())
-            throw new InsufficientStockException("[!] Insufficient stock for the requested quantity.");
-
-        CartProduct cartProduct = user.getCartProductList().stream()
-                .filter(product -> product.getId().equals(productId))
-                .findFirst()
-                .orElse(null);
-
-        if (cartProduct != null) {
-
-            if (cartProduct.getQuantity() + cartRequest.quantity() > catalogProduct.getStock())
-                throw new InsufficientStockException("[!] Insufficient stock for the requested quantity.");
-
-            cartProduct.setQuantity(cartProduct.getQuantity() + cartRequest.quantity());
-            return;
-        }
-
-        user.getCartProductList().add(new CartProduct(
-                catalogProduct.getName(),
-                productId,
-                catalogProduct.getStoreName(),
-                catalogProduct.getType(),
-                catalogProduct.getBrand(),
-                catalogProduct.getUnitPrice(),
-                catalogProduct.getWeight(),
-                cartRequest.quantity(),
-                catalogProduct.getWarranty()));
-
-        user.updateCart();
+    public void addProduct(Cart cart, CartProduct product) {
+        cart.getProductList().add(product);
+        cart.updateCart();
     }
 
-    public void addProductByStoreNameAndProductId(CartRequest cartRequest) {
-
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        User seller = dataBase.findSellerByStoreName(session.getLastStoreViewed());
-
-        if (seller == null)
-            throw new NotFoundException("[!] Seller named \"" + session.getLastStoreViewed() + "\" not found.");
-
-        if (seller.getStore() == null)
-            throw new NotFoundException("[!] " + session.getLastStoreViewed() + "'s catalog could not be found.");
-
-        if (seller.getCatalogProductList().isEmpty())
-            throw new EmptyCatalogException(session.getLastStoreViewed() + " has no products listed.");
-
-        String productId = cartRequest.id();
-        int quantToBeAdded = cartRequest.quantity();
-
-        Product catalogProduct = seller.getCatalogProductList().stream()
-                .filter(p -> p.getId().equals(productId))
-                .findFirst()
-                .orElse(null);
-
-        if (catalogProduct == null)
-            throw new NotFoundException("Product with ID \"" + productId + "\" not found in " + session.getLastStoreViewed() + "'s catalog.");
-
-        if (quantToBeAdded > catalogProduct.getStock())
-            throw new InsufficientStockException("[!] Insufficient stock for the requested quantity.");
-
-        CartProduct cartProduct = user.getCartProductList().stream()
-                .filter(product -> product.getId().equals(productId))
-                .findFirst()
-                .orElse(null);
-
-        if (cartProduct != null) {
-
-            if (cartProduct.getQuantity() + cartRequest.quantity() > catalogProduct.getStock())
-                throw new InsufficientStockException("[!] Insufficient stock for the requested quantity.");
-
-            cartProduct.setQuantity(cartProduct.getQuantity() + cartRequest.quantity());
-            return;
-        }
-
-        user.getCartProductList().add(new CartProduct(
-                catalogProduct.getName(),
-                productId,
-                catalogProduct.getStoreName(),
-                catalogProduct.getType(),
-                catalogProduct.getBrand(),
-                catalogProduct.getUnitPrice(),
-                catalogProduct.getWeight(),
-                cartRequest.quantity(),
-                catalogProduct.getWarranty()));
-
-        user.updateCart();
+    public void addProduct(CartProduct product, int quantity) {
+        product.setQuantity(product.getQuantity() + quantity);
     }
 
-    public void removeProduct(CartRequest cartRequest) {
-
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        if (user.getCartProductList().isEmpty())
-            throw new EmptyCartException("[!] Your cart is empty.");
-
-        CartProduct cartProduct = user.getCartProductList().stream()
-                .filter(product -> product.getId().equals(cartRequest.id()))
-                .findFirst()
-                .orElse(null);
-
-        if (cartProduct == null)
-            throw new NotFoundException("[!] Product with ID \"" + cartRequest.id() + "\" not found.");
-
-        if (cartProduct.getQuantity() == cartRequest.quantity())
-            user.getCartProductList().remove(cartProduct);
-        else
-            cartProduct.setQuantity(cartProduct.getQuantity() - cartRequest.quantity());
-
-        user.updateCart();
+    public void removeProduct(Cart cart, CartProduct cartProduct) {
+        cart.getProductList().remove(cartProduct);
+        cart.updateCart();
     }
 
-    public void selectProduct(String productId) {
+    public void removeProduct(CartProduct cartProduct, int quantity) {
+        cartProduct.setQuantity(cartProduct.getQuantity() - quantity);
+    }
 
-        String email = session.getEmail();;
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        if (user.getCartProductList().isEmpty())
-            throw new EmptyCartException("[!] Your cart is empty.");
-
-        CartProduct cartProduct = user.getCartProductList().stream()
-                .filter(product -> product.getId().equals(productId))
-                .findFirst()
-                .orElse(null);
-
-        if (cartProduct == null)
-            throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
-
-        if (cartProduct.isSelected())
-            throw new ProductSelectionStateException("[!] Product already selected.");
-
+    public void selectProduct(CartProduct cartProduct) {
         cartProduct.setSelected(true);
     }
 
-    public void deselectProduct(String productId) {
-
-        String email = session.getEmail();;
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        if (user.getCartProductList().isEmpty())
-            throw new EmptyCartException("[!] Your cart is empty.");
-
-        CartProduct cartProduct = user.getCartProductList().stream()
-                .filter(product -> product.getId().equals(productId))
-                .findFirst()
-                .orElse(null);
-
-        if (cartProduct == null)
-            throw new NotFoundException("[!] Product with ID \"" + productId + "\" not found.");
-
-        if (!cartProduct.isSelected())
-            throw new ProductSelectionStateException("[!] Product already deselected.");
-
+    public void deselectProduct(CartProduct cartProduct) {
         cartProduct.setSelected(false);
     }
 
-    public void selectAll() {
+    public void selectAll(Cart cart) {
 
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        if (user.getCartProductList().isEmpty())
-            throw new EmptyCartException("[!] Your cart is empty.");
-
-        if (user.getCartProductList().stream().allMatch(CartProduct::isSelected))
-            throw new IllegalArgumentException("[!] All products are already selected.");
-
-        for (CartProduct product : user.getCartProductList())
+        for (CartProduct product : cart.getProductList())
             product.setSelected(true);
     }
 
-    public void deselectAll() {
+    public void deselectAll(Cart cart) {
 
-        String email = session.getEmail();
-        User user = dataBase.findUserByEmail(email);
-
-        if (user == null)
-            throw new NotFoundException("[!] User not found.");
-
-        if (user.getCartProductList().isEmpty())
-            throw new EmptyCartException("[!] Your cart is empty.");
-
-        if (user.getCartProductList().stream().noneMatch(CartProduct::isSelected))
-            throw new IllegalArgumentException("[!] All products are already deselected.");
-
-        for (CartProduct product : user.getCartProductList())
+        for (CartProduct product : cart.getProductList())
             product.setSelected(false);
+    }
+
+    public Product findAvailableProductById(String productId) {
+        return dataBase.findAvailableProductById(productId);
     }
 }

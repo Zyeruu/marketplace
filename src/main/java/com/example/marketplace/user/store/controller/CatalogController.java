@@ -5,30 +5,33 @@ import main.java.com.example.marketplace.exceptions.EmptyCatalogException;
 import main.java.com.example.marketplace.exceptions.InsufficientStockException;
 import main.java.com.example.marketplace.exceptions.NotFoundException;
 import main.java.com.example.marketplace.shared.enums.ProductType;
-import main.java.com.example.marketplace.shared.utils.Normalizer;
-import main.java.com.example.marketplace.shared.utils.Validator;
+import main.java.com.example.marketplace.shared.session.Session;
 import main.java.com.example.marketplace.user.store.dto.UpdateProductRequest;
 import main.java.com.example.marketplace.user.store.dto.CatalogResponse;
 import main.java.com.example.marketplace.user.store.model.Product;
 import main.java.com.example.marketplace.user.store.model.Reputation;
-import main.java.com.example.marketplace.user.store.repository.CatalogRepository;
+import main.java.com.example.marketplace.user.store.service.CatalogService;
 import main.java.com.example.marketplace.user.store.view.CatalogView;
 
 public final class CatalogController {
 
     private final CatalogView view;
-    private final CatalogRepository repository;
+    private final CatalogService service;
+    private final Session session;
 
-    public CatalogController(CatalogView view, CatalogRepository repository) {
+    public CatalogController(CatalogView view, CatalogService service, Session session) {
         this.view = view;
-        this.repository = repository;
+        this.service = service;
+        this.session = session;
     }
 
     public boolean printCatalog() {
 
+        String email = session.getLoggedUserEmail();
+
         try {
-            CatalogResponse catalogResponse = repository.findByEmail();
-            view.printCatalog(catalogResponse);
+            CatalogResponse catalog = service.findByEmail(email);
+            view.printCatalog(catalog);
             return true;
         }
         catch (NotFoundException | EmptyCatalogException e) {
@@ -39,9 +42,11 @@ public final class CatalogController {
 
     public boolean printAvailableCatalog() {
 
+        String email = session.getLoggedUserEmail();
+
         try {
-            CatalogResponse catalogResponse = repository.findAvailableCatalog();
-            view.printCatalog(catalogResponse);
+            CatalogResponse catalog = service.findAvailableCatalogByEmail(email);
+            view.printCatalog(catalog);
             return true;
         }
         catch (NotFoundException | EmptyCatalogException e) {
@@ -52,9 +57,11 @@ public final class CatalogController {
 
     public boolean printUnavailableCatalog() {
 
+        String email = session.getLoggedUserEmail();
+
         try {
-            CatalogResponse catalogResponse = repository.findUnavailableCatalog();
-            view.printCatalog(catalogResponse);
+            CatalogResponse catalog = service.findUnavailableCatalogByEmail(email);
+            view.printCatalog(catalog);
             return true;
         }
         catch (NotFoundException | EmptyCatalogException e) {
@@ -65,11 +72,12 @@ public final class CatalogController {
 
     public boolean printCatalogByProductType() {
 
+        String email = session.getLoggedUserEmail();
         ProductType productType = view.getProductType();
 
         try {
-            CatalogResponse catalogResponse = repository.findByEmailAndProductType(productType);
-            view.printCatalog(catalogResponse);
+            CatalogResponse catalog = service.findByEmailAndProductType(email, productType);
+            view.printCatalog(catalog);
             return true;
         }
         catch (NotFoundException | EmptyCatalogException e) {
@@ -80,10 +88,11 @@ public final class CatalogController {
 
     public boolean printCatalogByProductName() {
 
+        String email = session.getLoggedUserEmail();
         String productName = view.getProductName();
 
         try {
-            CatalogResponse catalogResponse = repository.findByEmailAndProductName(productName);
+            CatalogResponse catalogResponse = service.findByEmailAndProductName(email, productName);
             view.printCatalog(catalogResponse);
             return true;
         }
@@ -95,10 +104,11 @@ public final class CatalogController {
 
     public void printAllProductDetails() {
 
+        String email = session.getLoggedUserEmail();
         String productId = view.getProductId();
 
         try {
-            Product product = repository.findByEmailAndProductId(productId);
+            Product product = service.findByEmailAndId(email, productId);
             view.printCatalogProduct(product);
         }
         catch (NotFoundException | EmptyCatalogException e) {
@@ -108,18 +118,14 @@ public final class CatalogController {
 
     public void addProductToCatalog() {
 
+        String email = session.getLoggedUserEmail();
         Product product = view.getProductData();
+        product.setStoreName(session.getLoggedUserStoreName());
 
         try {
-            product.setName(Normalizer.normalizeName(product.getName()));
-            Validator.isValidProductName(product.getName());
+            service.normalizeAndValidateProduct(product);
 
-            if (product.getType() == ProductType.MISCELLANEOUS) {
-                product.setBrand(Normalizer.normalizeBrandName(product.getBrand()));
-                Validator.isValidBrandName(product.getBrand());
-            }
-
-            repository.saveProduct(product);
+            service.verifyCatalogAndSaveProduct(email, product);
             view.printMessage("[+] Product added to catalog.");
         }
         catch (NotFoundException | AlreadyExistsException | IllegalArgumentException e) {
@@ -129,13 +135,14 @@ public final class CatalogController {
 
     public void deleteCatalogProduct() {
 
+        String email = session.getLoggedUserEmail();
         String productId = view.getProductId();
 
         try {
-            Product product = repository.findProductById(productId);
+            Product product = service.findByEmailAndId(email, productId);
 
             if (view.getFinalDecision()) {
-                repository.removeProduct(product);
+                service.deleteProduct(email, product);
                 view.printMessage("[-] Product deleted.");
             }
             else
@@ -174,16 +181,16 @@ public final class CatalogController {
 
     public void updateProductName() {
 
+        String email = session.getLoggedUserEmail();
         String productId = view.getProductId();
         String productName = view.getProductName();
 
         try {
-            productName = Normalizer.normalizeName(productName);
-            Validator.isValidProductName(productName);
+            productName = service.normalizeAndValidateProductName(productName);
 
-            UpdateProductRequest updateName = UpdateProductRequest.withName(productId,productName);
+            UpdateProductRequest request = UpdateProductRequest.withName(productId, productName);
 
-            repository.updateProductName(updateName);
+            service.verifyAndUpdateProductName(email, request);
             view.printMessage("[*] Name updated.");
         }
         catch (NotFoundException | IllegalArgumentException | EmptyCatalogException e) {
@@ -193,12 +200,13 @@ public final class CatalogController {
 
     public void updateProductType() {
 
+        String email = session.getLoggedUserEmail();
         String productId = view.getProductId();
         ProductType productType = view.getProductType();
-        UpdateProductRequest updateType = UpdateProductRequest.withType(productId, productType);
+        UpdateProductRequest request = UpdateProductRequest.withType(productId, productType);
 
         try {
-            repository.updateProductType(updateType);
+            service.verifyAndUpdateProductType(email, request);
             view.printMessage("[*] Type updated.");
         }
         catch (NotFoundException | IllegalArgumentException e) {
@@ -208,16 +216,16 @@ public final class CatalogController {
 
     public void updateProductBrand() {
 
+        String email = session.getLoggedUserEmail();
         String productId = view.getProductId();
         String productBrandName = view.getProductBrand();
 
         try {
-            productBrandName = Normalizer.normalizeBrandName(productBrandName);
-            Validator.isValidBrandName(productBrandName);
+            productBrandName = service.normalizeAndValidateProductBrand(productBrandName);
 
             UpdateProductRequest updateBrand = UpdateProductRequest.withBrand(productId, productBrandName);
 
-            repository.updateProductBrand(updateBrand);
+            service.verifyAndUpdateProductBrand(email, updateBrand);
             view.printMessage("[*] Brand updated.");
         }
         catch (NotFoundException | IllegalArgumentException e) {
@@ -227,12 +235,13 @@ public final class CatalogController {
 
     public void updateProductPrice() {
 
+        String email = session.getLoggedUserEmail();
         String productId = view.getProductId();
         float productPrice = view.getProductPrice();
         UpdateProductRequest updatePrice = UpdateProductRequest.withPrice(productId, productPrice);
 
         try {
-            repository.updateProductPrice(updatePrice);
+            service.verifyAndUpdateProductPrice(email, updatePrice);
             view.printMessage("[*] Price updated.");
         }
         catch (NotFoundException | IllegalArgumentException e) {
@@ -242,12 +251,13 @@ public final class CatalogController {
 
     public void updateProductWeight() {
 
+        String email = session.getLoggedUserEmail();
         String productId = view.getProductId();
         float productWeight = view.getProductWeight();
         UpdateProductRequest updateWeight = UpdateProductRequest.withWeight(productId, productWeight);
 
         try {
-            repository.updateProductWeight(updateWeight);
+            service.verifyAndUpdateProductWeight(email, updateWeight);
             view.printMessage("[*] Weight updated.");
         }
         catch (NotFoundException | IllegalArgumentException e) {
@@ -257,13 +267,13 @@ public final class CatalogController {
 
     public void updateProductStock() {
 
-
+        String email = session.getLoggedUserEmail();
         String productId = view.getProductId();
         int productStock = view.getProductStock();
         UpdateProductRequest updateStock = UpdateProductRequest.withStock(productId, productStock);
 
         try {
-            repository.updateProductStock(updateStock);
+            service.verifyAndUpdateProductStock(email, updateStock);
             view.printMessage("[*] Stock updated.");
         }
         catch (NotFoundException | IllegalArgumentException e) {
@@ -273,12 +283,13 @@ public final class CatalogController {
 
     public void updateProductWarranty() {
 
+        String email = session.getLoggedUserEmail();
         String productId = view.getProductId();
         int productWarranty = view.getProductWarranty();
         UpdateProductRequest updateWarranty = UpdateProductRequest.withWarranty(productId, productWarranty);
 
         try {
-            repository.updateProductWarranty(updateWarranty);
+            service.verifyAndUpdateProductWarranty(email, updateWarranty);
             view.printMessage("[*] Warranty updated.");
         }
         catch (NotFoundException | IllegalArgumentException e) {
@@ -288,12 +299,13 @@ public final class CatalogController {
 
     public void updateProductAvailability() {
 
+        String email = session.getLoggedUserEmail();
         String productId = view.getProductId();
         boolean availability = view.getAvailability();
         UpdateProductRequest updateProductRequest = UpdateProductRequest.withAvailable(productId, availability);
 
         try {
-            repository.updateAvailability(updateProductRequest);
+            service.verifyAndUpdateProductAvailability(email, updateProductRequest);
 
             if (availability)
                 view.printMessage("[*] Product marked as available.");
@@ -308,10 +320,10 @@ public final class CatalogController {
             view.printMessage(e.getMessage());
 
             int productStock = view.getProductStock();
-            UpdateProductRequest updateStock = UpdateProductRequest.withStock(productId, productStock);
+            UpdateProductRequest request = UpdateProductRequest.withStock(productId, productStock);
 
             try {
-                repository.updateProductStock(updateStock);
+                service.verifyAndUpdateProductStock(email, request);
             }
             catch (NotFoundException | IllegalArgumentException ex) {
                 view.printMessage(ex.getMessage());
@@ -321,10 +333,11 @@ public final class CatalogController {
 
     public void searchForProductReview() {
 
+        String email = session.getLoggedUserEmail();
         String productId = view.getProductId();
 
         try {
-            Reputation productReputation = repository.findProductReviewByProductId(productId);
+            Reputation productReputation = service.findProductReviewByEmailAndProductId(email, productId);
             view.printReviews(productReputation);
         }
         catch (NotFoundException | EmptyCatalogException e) {

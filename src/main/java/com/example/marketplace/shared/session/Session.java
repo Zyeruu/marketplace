@@ -2,44 +2,44 @@ package main.java.com.example.marketplace.shared.session;
 
 public final class Session {
 
-    private String email;
-    private String cnpj;
-    private String storeName;
+    private String loggedUserEmail;
+    private String loggedUserStoreCnpj;
+    private String loggedUserStoreName;
     private boolean logged;
     private boolean hasStore;
     private String lastStoreViewed;
     private String lastProductViewed;
 
     public Session() {
-        this.email = null;
-        this.cnpj = null;
-        this.storeName = null;
+        this.loggedUserEmail = null;
+        this.loggedUserStoreCnpj = null;
+        this.loggedUserStoreName = null;
     }
 
     public void login(String email) {
-        this.email = email;
+        this.loggedUserEmail = email;
         this.logged = true;
         this.hasStore = false;
     }
     public void login(String email, String cnpj, String storeName) {
-        this.email = email;
-        this.cnpj = cnpj;
-        this.storeName = storeName;
+        this.loggedUserEmail = email;
+        this.loggedUserStoreCnpj = cnpj;
+        this.loggedUserStoreName = storeName;
         this.logged = true;
         this.hasStore = true;
     }
 
     public void logout() {
-        this.email = null;
-        this.cnpj = null;
-        this.storeName = null;
+        this.loggedUserEmail = null;
+        this.loggedUserStoreCnpj = null;
+        this.loggedUserStoreName = null;
         this.logged = false;
         this.hasStore = false;
     }
 
     public void updateHasStore(String storeName, String cnpj, boolean hasStore) {
-        this.storeName = storeName;
-        this.cnpj = cnpj;
+        this.loggedUserStoreName = storeName;
+        this.loggedUserStoreCnpj = cnpj;
         this.hasStore = hasStore;
     }
 
@@ -52,16 +52,16 @@ public final class Session {
     }
 
     // Getters
-    public String getCnpj() {
-        return cnpj;
+    public String getLoggedUserStoreCnpj() {
+        return loggedUserStoreCnpj;
     }
 
-    public String getEmail() {
-        return email;
+    public String getLoggedUserEmail() {
+        return loggedUserEmail;
     }
 
-    public String getStoreName() {
-        return storeName;
+    public String getLoggedUserStoreName() {
+        return loggedUserStoreName;
     }
 
     public boolean isLogged() {
@@ -81,12 +81,12 @@ public final class Session {
     }
 
     // Setters
-    public void setEmail(String email) {
-        this.email = email;
+    public void setLoggedUserEmail(String loggedUserEmail) {
+        this.loggedUserEmail = loggedUserEmail;
     }
 
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
+    public void setLoggedUserStoreName(String loggedUserStoreName) {
+        this.loggedUserStoreName = loggedUserStoreName;
     }
 
     public void setHasStore(boolean hasStore) {

@@ -1,10 +1,13 @@
 package main.java.com.example.marketplace.config;
 
+import main.java.com.example.marketplace.checkout.service.CheckoutService;
 import main.java.com.example.marketplace.user.account.controller.AccountController;
 import main.java.com.example.marketplace.user.account.repository.AccountRepository;
+import main.java.com.example.marketplace.user.account.service.AccountService;
 import main.java.com.example.marketplace.user.account.view.AccountView;
 import main.java.com.example.marketplace.user.auth.controller.AuthController;
 import main.java.com.example.marketplace.user.auth.repository.AuthRepository;
+import main.java.com.example.marketplace.user.auth.service.AuthService;
 import main.java.com.example.marketplace.user.auth.view.AuthView;
 import main.java.com.example.marketplace.user.controller.CartController;
 import main.java.com.example.marketplace.user.controller.OrdersMenuController;
@@ -12,13 +15,19 @@ import main.java.com.example.marketplace.user.repository.CartRepository;
 import main.java.com.example.marketplace.user.repository.OrdersMenuRepository;
 import main.java.com.example.marketplace.user.search.controller.SearchController;
 import main.java.com.example.marketplace.user.search.repository.SearchRepository;
+import main.java.com.example.marketplace.user.search.service.SearchService;
 import main.java.com.example.marketplace.user.search.view.SearchView;
+import main.java.com.example.marketplace.user.service.CartService;
+import main.java.com.example.marketplace.user.service.OrdersMenuService;
 import main.java.com.example.marketplace.user.store.controller.CatalogController;
 import main.java.com.example.marketplace.user.store.controller.SalesMenuController;
 import main.java.com.example.marketplace.user.store.controller.StoreController;
 import main.java.com.example.marketplace.user.store.repository.CatalogRepository;
 import main.java.com.example.marketplace.user.store.repository.SalesMenuRepository;
 import main.java.com.example.marketplace.user.store.repository.StoreRepository;
+import main.java.com.example.marketplace.user.store.service.CatalogService;
+import main.java.com.example.marketplace.user.store.service.SalesMenuService;
+import main.java.com.example.marketplace.user.store.service.StoreService;
 import main.java.com.example.marketplace.user.store.view.CatalogView;
 import main.java.com.example.marketplace.user.store.view.SalesMenuView;
 import main.java.com.example.marketplace.user.store.view.StoreView;
@@ -46,6 +55,16 @@ public final class DependencyInjector {
     private final CatalogRepository catalogRepository;
     private final SearchRepository searchRepository;
 
+    private final AuthService authService;
+    private final AccountService accountService;
+    private final CheckoutService checkoutService;
+    private final CartService cartService;
+    private final OrdersMenuService ordersMenuService;
+    private final StoreService storeService;
+    private final SalesMenuService salesMenuService;
+    private final CatalogService catalogService;
+    private final SearchService searchService;
+
     private final AuthController authController;
     private final AccountController accountController;
     private final CheckoutController checkoutController;
@@ -59,28 +78,37 @@ public final class DependencyInjector {
     public DependencyInjector() {
 
         this.dataBase = new DataBase();
-
         this.session = new Session();
 
-        this.authRepository = new AuthRepository(dataBase, session);
-        this.accountRepository = new AccountRepository(dataBase, session);
-        this.checkoutRepository = new CheckoutRepository(dataBase, session);
-        this.cartRepository = new CartRepository(dataBase, session);
-        this.ordersMenuRepository = new OrdersMenuRepository(dataBase, session);
-        this.storeRepository = new StoreRepository(dataBase, session);
-        this.salesMenuRepository = new SalesMenuRepository(dataBase, session);
-        this.catalogRepository = new CatalogRepository(dataBase, session);
-        this.searchRepository = new SearchRepository(dataBase, session);
+        this.authRepository = new AuthRepository(dataBase);
+        this.accountRepository = new AccountRepository(dataBase);
+        this.checkoutRepository = new CheckoutRepository(dataBase);
+        this.cartRepository = new CartRepository(dataBase);
+        this.ordersMenuRepository = new OrdersMenuRepository(dataBase);
+        this.storeRepository = new StoreRepository(dataBase);
+        this.salesMenuRepository = new SalesMenuRepository(dataBase);
+        this.catalogRepository = new CatalogRepository(dataBase);
+        this.searchRepository = new SearchRepository(dataBase);
 
-        this.authController = new AuthController(new AuthView(), authRepository, session);
-        this.accountController = new AccountController(new AccountView(), accountRepository, session);
-        this.checkoutController = new CheckoutController(new CheckoutView(), checkoutRepository);
-        this.cartController = new CartController(new CartView(), cartRepository);
-        this.ordersMenuController = new OrdersMenuController(new OrdersMenuView(), ordersMenuRepository);
-        this.storeController = new StoreController(new StoreView(), storeRepository);
-        this.salesMenuController = new SalesMenuController(new SalesMenuView(), salesMenuRepository);
-        this.catalogController = new CatalogController(new CatalogView(), catalogRepository);
-        this.searchController = new SearchController(new SearchView(), searchRepository);
+        this.authService = new AuthService(authRepository);
+        this.accountService = new AccountService(accountRepository);
+        this.checkoutService = new CheckoutService(checkoutRepository, accountService);
+        this.cartService = new CartService(cartRepository, accountService);
+        this.ordersMenuService = new OrdersMenuService(ordersMenuRepository, accountService);
+        this.storeService = new StoreService(storeRepository, accountService);
+        this.salesMenuService = new SalesMenuService(salesMenuRepository);
+        this.catalogService = new CatalogService(catalogRepository);
+        this.searchService = new SearchService(searchRepository, accountService);
+
+        this.authController = new AuthController(new AuthView(), authService, session);
+        this.accountController = new AccountController(new AccountView(), accountService, session);
+        this.checkoutController = new CheckoutController(new CheckoutView(), checkoutService, session);
+        this.cartController = new CartController(new CartView(), cartService, session);
+        this.ordersMenuController = new OrdersMenuController(new OrdersMenuView(), ordersMenuService, session);
+        this.storeController = new StoreController(new StoreView(), storeService, session);
+        this.salesMenuController = new SalesMenuController(new SalesMenuView(), salesMenuService, session);
+        this.catalogController = new CatalogController(new CatalogView(), catalogService, session);
+        this.searchController = new SearchController(new SearchView(), searchService, session);
     }
 
     // Getters
